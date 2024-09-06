@@ -1,0 +1,65 @@
+#!/bin/bash
+
+#Controllers and Sensors / Calibrate Control Sticks
+
+send_command() {
+    echo -ne "$1" > /dev/hidg0
+}
+
+##Select Controller
+send_command '\x01\x00\x00\x80\x80\x80\x80\x00'
+sleep 0.1
+send_command '\x00\x00\x00\x80\x80\x80\x80\x00'
+sleep 0.1
+
+##Select Stick
+#Stick N
+send_command '\x00\x00\x00\x80\x00\x80\x80\x00'
+sleep 10
+
+
+#Stick Centre
+send_command '\x00\x00\x00\x80\x80\x00\x00\x00'
+sleep 0.5
+
+#Stick N
+send_command '\x00\x00\x00\x80\x00\x00\x00\x00'
+sleep 0.5
+
+#Stick NE
+send_command '\x00\x00\x00\xFF\x00\x00\x00\x00'
+sleep 0.5
+
+#Stick E
+send_command '\x00\x00\x00\xFF\x80\x00\x00\x00'
+sleep 0.5
+
+#Stick SE
+send_command '\x00\x00\x00\xFF\xFF\x00\x00\x00'
+sleep 0.5
+
+#Stick S
+send_command '\x00\x00\x00\x80\xFF\x00\x00\x00'
+sleep 0.5
+
+#Stick SW
+send_command '\x00\x00\x00\x00\xFF\x00\x00\x00'
+sleep 0.5
+
+#Stick W
+send_command '\x00\x00\x00\x00\x80\x00\x00\x00'
+sleep 0.5
+
+#Stick NW
+send_command '\x00\x00\x00\x00\x00\x00\x00\x00'
+sleep 0.5
+
+#Stick Centre
+send_command '\x00\x00\x00\x80\x80\x80\x80\x00'
+sleep 1
+
+#Return to stick selection
+send_command '\x02\x00\x00\x80\x80\x80\x80\x00'
+sleep 0.1
+send_command '\x00\x00\x00\x80\x80\x80\x80\x00'
+sleep 0.1
