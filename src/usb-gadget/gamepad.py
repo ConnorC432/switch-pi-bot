@@ -48,15 +48,18 @@ class Gamepad:
         self.device_path = device_path
 
     #Write to USB Gadget block device
-    def _write(self, data):
+    def _write(self, write_time, data):
         with open(self.device_path, "wb") as device:
             try:
                 device.write(data)
+                time.sleep(write_time)
+                device.write(self.DEFAULT_STATE)
 
             except Exception as e:
                 print(f"Cant write to block device: {e}")
 
     def press_button(self, hold_time, *buttons):
+        report_hex = self.DEFAULT_STATE
         byte_1 = 0x00
         byte_2 = 0x00
 
@@ -74,15 +77,12 @@ class Gamepad:
         byte_2 &= 0xFF
 
         #Add button hex to report hex
-        report_hex = self.DEFAULT_STATE
         report_hex[0] = byte_1
         report_hex[1] = byte_2
         print(f"Sending to HID Device: {report_hex}")
 
         #Write hex to block device
-        self._write(report_hex)
-        time.sleep(hold_time)
-        self._write(self.DEFAULT_STATE)
+        self._write(hold_time, report_hex)
 
     def press_dpad(self, hold_time, direction):
         report_hex = self.DEFAULT_STATE
@@ -93,9 +93,7 @@ class Gamepad:
 
             print(f"Sending to HID Device: {report_hex}")
 
-            self._write(report_hex)
-            time.sleep(hold_time)
-            self._write(self.DEFAULT_STATE)
+            self._write(hold_time, report_hex)
 
     def move_left_stick(self, hold_time, direction):
         report_hex = self.DEFAULT_STATE
@@ -109,9 +107,7 @@ class Gamepad:
 
             print(f"Sending to HID Device: {report_hex}")
 
-            self._write(report_hex)
-            time.sleep(hold_time)
-            self._write(self.DEFAULT_STATE)
+            self._write(hold_time, report_hex)
 
     def move_right_stick(self, hold_time, direction):
         report_hex = self.DEFAULT_STATE
@@ -125,9 +121,7 @@ class Gamepad:
 
             print(f"Sending to HID Device: {report_hex}")
 
-            self._write(report_hex)
-            time.sleep(hold_time)
-            self._write(self.DEFAULT_STATE)
+            self._write(hold_time, report_hex)
 
 
 if __name__ == "__main__":
