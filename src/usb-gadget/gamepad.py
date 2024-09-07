@@ -116,8 +116,8 @@ class Gamepad:
         if direction in self.AXES_HEX:
             x_hex, y_hex = self.AXES_HEX[direction]
 
-            report_hex[4] = x_hex
-            report_hex[5] = y_hex
+            report_hex[3] = x_hex
+            report_hex[4] = y_hex
 
             print(f"Sending to HID Device: {report_hex}")
 
@@ -133,8 +133,8 @@ class Gamepad:
         if direction in self.AXES_HEX:
             x_hex, y_hex = self.AXES_HEX[direction]
 
-            report_hex[6] = x_hex
-            report_hex[7] = y_hex
+            report_hex[5] = x_hex
+            report_hex[6] = y_hex
 
             print(f"Sending to HID Device: {report_hex}")
 
