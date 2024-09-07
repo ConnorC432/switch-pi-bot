@@ -72,6 +72,7 @@ class Gamepad:
         report_hex = self.default_state
         report_hex[0] = byte_1
         report_hex[1] = byte_2
+        print(f"Sending to HID Device: {report_hex}")
 
         #Write hex to block device
         self._write(report_hex)
@@ -84,6 +85,8 @@ class Gamepad:
         if direction in self.DPAD_HEX:
             #Add DPad hex
             report_hex[2] = self.DPAD_HEX[direction]
+
+            print(f"Sending to HID Device: {report_hex}")
 
             self._write(report_hex)
             time.sleep(hold_time)
@@ -99,6 +102,8 @@ class Gamepad:
             report_hex[4] = x_hex
             report_hex[5] = y_hex
 
+            print(f"Sending to HID Device: {report_hex}")
+
             self._write(report_hex)
             time.sleep(hold_time)
             self._write(self.default_state)
@@ -112,6 +117,8 @@ class Gamepad:
 
             report_hex[6] = x_hex
             report_hex[7] = y_hex
+
+            print(f"Sending to HID Device: {report_hex}")
 
             self._write(report_hex)
             time.sleep(hold_time)
