@@ -22,11 +22,15 @@ class Gamepad:
 
     #DPad Hex Values
     DPAD_HEX = {
-        'right': 0x01,
-        'left': 0x05,
-        'down': 0x03,
-        'up': 0x07,
-        'center': 0x00
+        'center': 0x08,
+        'N': 0x00,
+        'NE': 0x01,
+        'E': 0x02,
+        'SE': 0x03,
+        'S': 0x04,
+        'SW': 0x05,
+        'W': 0x06,
+        'NW': 0x07,
     }
 
     #Stick Axes Map
@@ -42,7 +46,7 @@ class Gamepad:
         'NW': (0x00, 0x00),
     }
 
-    DEFAULT_STATE = bytearray([0x00, 0x00, 0x00, 0x80, 0x80, 0x80, 0x80, 0x00])
+    DEFAULT_STATE = bytearray([0x00, 0x00, 0x08, 0x80, 0x80, 0x80, 0x80, 0x00])
 
     def __init__(self, device_path="/dev/hidg0"):
         self.device_path = device_path
@@ -60,8 +64,8 @@ class Gamepad:
         with open(self.device_path, "wb") as device:
             try:
                 print(self.DEFAULT_STATE)
-                device.write(bytearray([0x00, 0x00, 0x00, 0x80, 0x80, 0x80, 0x80, 0x00]))
-                return bytearray([0x00, 0x00, 0x00, 0x80, 0x80, 0x80, 0x80, 0x00])
+                device.write(bytearray([0x00, 0x00, 0x08, 0x80, 0x80, 0x80, 0x80, 0x00]))
+                return bytearray([0x00, 0x00, 0x08, 0x80, 0x80, 0x80, 0x80, 0x00])
 
             except Exception as e:
                 print(f"Cant write to block device: {e}")
