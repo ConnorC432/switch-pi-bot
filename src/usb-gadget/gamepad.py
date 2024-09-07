@@ -59,8 +59,9 @@ class Gamepad:
     def _clear(self):
         with open(self.device_path, "wb") as device:
             try:
-                device.write(self.DEFAULT_STATE)
-                return self.DEFAULT_STATE
+                print(self.DEFAULT_STATE)
+                device.write(bytearray([0x00, 0x00, 0x00, 0x80, 0x80, 0x80, 0x80, 0x00]))
+                return bytearray([0x00, 0x00, 0x00, 0x80, 0x80, 0x80, 0x80, 0x00])
 
             except Exception as e:
                 print(f"Cant write to block device: {e}")
