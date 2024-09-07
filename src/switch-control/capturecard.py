@@ -34,22 +34,22 @@ class VideoCapture:
         if not self.cap.isOpened():
             raise OSError(f"Unable to open video device {self.device}")
 
-        def is_open(self):
-            return self.cap.isOpened()
+    def is_open(self):
+        return self.cap.isOpened()
 
-        def read_frames(self):
-            if not self.cap.isOpened():
-                raise OSError(f"Unable to open video device {self.device}")
+    def read_frames(self):
+        if not self.cap.isOpened():
+            raise OSError(f"Unable to open video device {self.device}")
 
-            ret, frame = self.cap.read()
-            if not ret:
-                raise OSError(f"Unable to read frame from video device {self.device}")
+        ret, frame = self.cap.read()
+        if not ret:
+            raise OSError(f"Unable to read frame from video device {self.device}")
 
-            return frame
+        return frame
 
-        def release(self):
-            if self.cap:
-                self.cap.release()
+    def release(self):
+        if self.cap:
+            self.cap.release()
 
-        def __del__(self):
-            self.release()
+    def __del__(self):
+        self.release()
