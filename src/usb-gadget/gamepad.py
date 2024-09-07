@@ -92,6 +92,7 @@ class Gamepad:
     def move_left_stick(self, hold_time, direction):
         report_hex = self.default_state
 
+        #Set X and Y axes to hex value
         if direction in self.AXES_HEX:
             x_hex, y_hex = self.AXES_HEX[direction]
 
@@ -105,6 +106,7 @@ class Gamepad:
     def move_right_stick(self, hold_time, direction):
         report_hex = self.default_state
 
+        #Set Rx and Ry axes to hex value
         if direction in self.AXES_HEX:
             x_hex, y_hex = self.AXES_HEX[direction]
 

@@ -20,3 +20,5 @@ curl -o /usr/bin/usbgadget.sh https://raw.githubusercontent.com/ConnorC432/RPi-S
 
 #Initialise usb gadget on boot
 sed -i '/exit 0/i /usr/bin/usbgadget.sh &' /etc/rc.local
+
+reboot now
