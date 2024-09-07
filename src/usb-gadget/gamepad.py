@@ -42,9 +42,10 @@ class Gamepad:
         'NW': (0x00, 0x00),
     }
 
+    DEFAULT_STATE = bytearray([0x00, 0x00, 0x00, 0x80, 0x80, 0x80, 0x80, 0x00])
+
     def __init__(self, device_path="/dev/hidg0"):
         self.device_path = device_path
-        self.default_state = bytearray([0x00, 0x00, 0x00, 0x80, 0x80, 0x80, 0x80, 0x00])
 
     #Write to USB Gadget block device
     def _write(self, data):
@@ -73,7 +74,7 @@ class Gamepad:
         byte_2 &= 0xFF
 
         #Add button hex to report hex
-        report_hex = self.default_state
+        report_hex = self.DEFAULT_STATE
         report_hex[0] = byte_1
         report_hex[1] = byte_2
         print(f"Sending to HID Device: {report_hex}")
@@ -81,10 +82,10 @@ class Gamepad:
         #Write hex to block device
         self._write(report_hex)
         time.sleep(hold_time)
-        self._write(self.default_state)
+        self._write(self.DEFAULT_STATE)
 
     def press_dpad(self, hold_time, direction):
-        report_hex = self.default_state
+        report_hex = self.DEFAULT_STATE
 
         if direction in self.DPAD_HEX:
             #Add DPad hex
@@ -94,10 +95,10 @@ class Gamepad:
 
             self._write(report_hex)
             time.sleep(hold_time)
-            self._write(self.default_state)
+            self._write(self.DEFAULT_STATE)
 
     def move_left_stick(self, hold_time, direction):
-        report_hex = self.default_state
+        report_hex = self.DEFAULT_STATE
 
         #Set X and Y axes to hex value
         if direction in self.AXES_HEX:
@@ -110,10 +111,10 @@ class Gamepad:
 
             self._write(report_hex)
             time.sleep(hold_time)
-            self._write(self.default_state)
+            self._write(self.DEFAULT_STATE)
 
     def move_right_stick(self, hold_time, direction):
-        report_hex = self.default_state
+        report_hex = self.DEFAULT_STATE
 
         #Set Rx and Ry axes to hex value
         if direction in self.AXES_HEX:
@@ -126,7 +127,7 @@ class Gamepad:
 
             self._write(report_hex)
             time.sleep(hold_time)
-            self._write(self.default_state)
+            self._write(self.DEFAULT_STATE)
 
 
 if __name__ == "__main__":
