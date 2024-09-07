@@ -22,11 +22,15 @@ class Gamepad:
 
     #DPad Hex Values
     DPAD_HEX = {
-        'right': 0x01,
-        'left': 0x05,
-        'down': 0x03,
-        'up': 0x07,
-        'center': 0x00
+        'center': (0x08),
+        'N': (0x00),
+        'NE': (0x01),
+        'E': (0x02),
+        'SE': (0x03),
+        'S': (0x04),
+        'SW': (0x05),
+        'W': (0x06),
+        'NW': (0x07),
     }
 
     #Stick Axes Map
