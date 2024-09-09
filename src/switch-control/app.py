@@ -87,8 +87,8 @@ def start_program():
 
             # Optionally capture stdout/stderr or return it in the response
             stdout, stderr = process.communicate()
-
             return_code = process.returncode
+
             if return_code != 0:
                 status_data['status'] = 'Error'
                 with open(STATUS_FILE_PATH, 'w') as status_file:

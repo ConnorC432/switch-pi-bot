@@ -8,8 +8,8 @@
     "id": 1,
     "name": "basicprogram",
     "settings": {
-      "waitTime": "3",
-      "exitStatus": "True"
+      "WaitTime": "3",
+      "ExitStatus": "True"
     }
   }
 }

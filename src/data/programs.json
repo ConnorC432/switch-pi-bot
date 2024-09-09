@@ -4,8 +4,24 @@
       "id": 1,
       "name": "basicprogram",
       "settings": {
-        "waitTime": "3",
-        "exitStatus": "True"
+        "WaitTime": "3",
+        "ExitStatus": "True"
+      }
+    },
+    {
+      "id": 1,
+      "name": "capturevideo",
+      "settings": {
+        "Device": "/dev/hidg0",
+        "Image": "Test1"
+      }
+    },
+    {
+      "id": 1,
+      "name": "capturetext",
+      "settings": {
+        "Device": "/dev/hidg0",
+        "Text": "Test1"
       }
     }
   ]
