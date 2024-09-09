@@ -17,6 +17,8 @@ import {
     Paper
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
 import Link from 'next/link';
 import { ThemeProvider } from '@mui/material/styles';
 import { lightTheme, darkTheme } from './theme';
@@ -106,6 +108,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     >
                         <Typography variant="h6">Pi Bot</Typography>
                     </Box>
+                    <IconButton
+                        color="inherit"
+                        aria-label="toggle theme"
+                        onClick={handleThemeToggle}
+                        sx={{ zIndex:1301 }}
+                    >
+                        {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
+                    </IconButton>
                 </Paper>
 
                 {/* Drawer */}
@@ -118,7 +128,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                             width: drawerWidth,
                             boxSizing: 'border-box',
                             zIndex: 1200, // Ensure drawer is below header but above content
-                            backgroundColor: theme.palette.background.paper,
                         },
                     }}
                 >
