@@ -261,7 +261,7 @@ cython_debug/
 #.idea/
 
 !/src/usb-gadget/*.sh
-!/src/usb-gadget/Test Scripts/.sh### VirtualEnv template
+!/src/switch-control/Test Scripts/.sh### VirtualEnv template
 # Virtualenv
 # http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
 .Python
