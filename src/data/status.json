@@ -1,0 +1,15 @@
+{
+  "status": "Finished",
+  "currentGame": {
+    "id": "templates",
+    "name": "templates"
+  },
+  "currentProgram": {
+    "id": 1,
+    "name": "basicprogram",
+    "settings": {
+      "waitTime": "3",
+      "exitStatus": "True"
+    }
+  }
+}

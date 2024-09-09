@@ -22,7 +22,7 @@ def find_gadgets():
 
 
 class Gamepad:
-    #Button Hex Values
+    # Button Hex Values
     BUTTON_HEX = {
         "Y": (0x01, 0x00),
         "B": (0x02, 0x00),
@@ -40,7 +40,7 @@ class Gamepad:
         "Capture": (0x00, 0x20)
     }
 
-    #DPad Hex Values
+    # DPad Hex Values
     DPAD_HEX = {
         "center": 0x08,
         "N": 0x00,
@@ -53,7 +53,7 @@ class Gamepad:
         "NW": 0x07
     }
 
-    #Stick Axes Map
+    # Stick Axes Map
     AXES_HEX = {
         "center": (0x80, 0x80),
         "N": (0x80, 0x00),
@@ -71,7 +71,7 @@ class Gamepad:
     def __init__(self, device_path="/dev/hidg0"):
         self.device_path = device_path
 
-    #Write to USB Gadget block device
+    # Write to USB Gadget block device
     def _write(self, data):
         with open(self.device_path, "wb") as device:
             try:
@@ -96,24 +96,24 @@ class Gamepad:
         byte_2 = 0x00
 
         for button in buttons:
-            #Get hex values from dictionary
+            # Get hex values from dictionary
             if button in self.BUTTON_HEX:
                 hex_1, hex_2 = self.BUTTON_HEX[button]
 
-                #Add to combined byte with bitwise OR
+                # Add to combined byte with bitwise OR
                 byte_1 |= hex_1
                 byte_2 |= hex_2
 
-        #Ensure bytes are within limit with bitwise AND
+        # Ensure bytes are within limit with bitwise AND
         byte_1 &= 0xFF
         byte_2 &= 0xFF
 
-        #Add button hex to report hex
+        # Add button hex to report hex
         report_hex[0] = byte_1
         report_hex[1] = byte_2
         print(f"Sending to HID Device: {report_hex}")
 
-        #Write hex to block device
+        # Write hex to block device
         self._write(report_hex)
         time.sleep(hold_time)
         report_hex = self._clear()
@@ -123,7 +123,7 @@ class Gamepad:
         report_hex = bytearray(self.DEFAULT_STATE)
 
         if direction in self.DPAD_HEX:
-            #Add DPad hex
+            # Add DPad hex
             report_hex[2] = self.DPAD_HEX[direction]
 
             print(f"Sending to HID Device: {report_hex}")
@@ -136,7 +136,7 @@ class Gamepad:
     def move_left_stick(self, hold_time, direction):
         report_hex = bytearray(self.DEFAULT_STATE)
 
-        #Set X and Y axes to hex value
+        # Set X and Y axes to hex value
         if direction in self.AXES_HEX:
             x_hex, y_hex = self.AXES_HEX[direction]
 
@@ -153,7 +153,7 @@ class Gamepad:
     def move_right_stick(self, hold_time, direction):
         report_hex = bytearray(self.DEFAULT_STATE)
 
-        #Set Rx and Ry axes to hex value
+        # Set Rx and Ry axes to hex value
         if direction in self.AXES_HEX:
             x_hex, y_hex = self.AXES_HEX[direction]
 
