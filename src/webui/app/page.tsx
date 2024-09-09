@@ -49,6 +49,7 @@ export default function Page() {
     const [settings, setSettings] = React.useState<{ [key: string]: any }>({});
     const [status, setStatus] = React.useState<StatusResponse | null>(null);
     const [loading, setLoading] = React.useState(false);
+    const [captureSrc, setCaptureSrc] = React.useState<string>(`http://localhost:5000/video-stream?${Date.now()}`);
 
     const theme = useTheme();
 
@@ -97,6 +98,15 @@ export default function Page() {
         const interval = setInterval(fetchStatus, 1000); // Poll every second
 
         return () => clearInterval(interval); // Cleanup interval on component unmount
+    }, []);
+
+    // Update Capture image
+    React.useEffect(() => {
+        const interval = setInterval(() => {
+            setCaptureSrc(`http://localhost:5000/video-stream?${Date.now()}`);
+        }, 100);
+
+        return () => clearInterval(interval);
     }, []);
 
     // Handle game change
@@ -197,9 +207,16 @@ export default function Page() {
                     justifyContent: 'center',
                 }}
             >
-                <img src="http://localhost:5000/video_feed"
+                <img src={captureSrc}
                      alt="Capture Card Unavailable"
-                     style={{width: '100%', height: '100%', objectFit: 'cover'}}/>
+                     style={{
+                         position: 'absolute',
+                         top: 0,
+                         left: 0,
+                         width: '100%',
+                         height: '100%',
+                         objectFit: 'fill'
+                }}/>
             </Box>
 
             {/* Status Display */}
