@@ -191,13 +191,15 @@ export default function Page() {
                     overflow: 'hidden',
                     borderRadius: 1,
                     boxShadow: 3,
-                    backgroundColor: '#e0e0e0', // Light gray background
+                    backgroundColor: 'theme.palette.background.paper',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                 }}
             >
-                <Typography variant="h6" color="textSecondary">Video Stream Placeholder</Typography>
+                <img src="http://localhost:5000/video_feed"
+                     alt="Capture Card Unavailable"
+                     style={{width: '100%', height: '100%', objectFit: 'cover'}}/>
             </Box>
 
             {/* Status Display */}
