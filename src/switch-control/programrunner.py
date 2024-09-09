@@ -8,8 +8,8 @@ class ProgramRunner:
         self.base_dir = os.path.dirname(os.path.abspath(__file__))
         self.scripts_dir = os.path.join(self.base_dir, 'programs')
 
-        self.status_file_path = os.path.join(self.base_dir, '../data/status.json')
-        self.programs_file_path = os.path.join(self.base_dir, '../data/programs.json')
+        self.status_file_path = os.path.join(self.base_dir, 'data', 'status.json')
+        self.programs_file_path = os.path.join(self.base_dir, 'data', 'programs.json')
 
         print(f"Initialized ProgramRunner with base_dir={self.base_dir}, scripts_dir={self.scripts_dir}, "
               f"status_file_path={self.status_file_path}, programs_file_path={self.programs_file_path}")

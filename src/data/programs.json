@@ -4,8 +4,7 @@
       "id": 1,
       "name": "basicprogram",
       "settings": {
-        "WaitTime": "3",
-        "ExitStatus": "True"
+        "Text": "SUPER MARIO ODYSSEY"
       }
     },
     {
@@ -20,7 +19,6 @@
       "id": 1,
       "name": "capturetext",
       "settings": {
-        "Device": "/dev/hidg0",
         "Text": "Test1"
       }
     }

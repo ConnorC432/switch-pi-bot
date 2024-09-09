@@ -139,7 +139,7 @@ if __name__ == "__main__":
     Example: Wait for an image match
     template_path = 'path/to/template.jpg'
     timeout = 30
-    if analyzer.wait_for_image_match(template_path, timeout):
+    if analyser.wait_for_image_match(template_path, timeout):
         print(f"Image match found within {timeout} seconds.")
     else:
         print(f"No image match found within {timeout} seconds.")
@@ -147,7 +147,7 @@ if __name__ == "__main__":
     # Example: Wait for specific text
     search_text = 'Example Text'
     timeout = 30
-    if analyzer.wait_for_text(search_text, timeout):
+    if analyser.wait_for_text(search_text, timeout):
         print(f"Text '{search_text}' found within {timeout} seconds.")
     else:
         print(f"Text '{search_text}' not found within {timeout} seconds.")

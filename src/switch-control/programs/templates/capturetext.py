@@ -7,21 +7,23 @@ base_dir = os.path.dirname(os.path.abspath(__file__))
 if os.path.basename(os.getcwd()) == 'switch-control':
     root_dir = os.path.abspath(os.path.join(base_dir, "..", "switch-control"))
 else:
-    root_dir = os.path.abspath(os.path.join(base_dir, "../../../switch-control"))
+    root_dir = os.path.abspath(os.path.join(base_dir, "../../..", "switch-control"))
 
 sys.path.insert(0, root_dir)
 
 
 def program(settings):
     # JSON Settings to Variables [Setting name from JSON, Default Value]
-    wait_time = int(settings.get("WaitTime", "1"))
-    exit_status = settings.get("ExitStatus", "True") == "True"
+    reference_text = settings.get("Text", "Text")
 
-    # Put Script Code Here
-    import time
+    print(root_dir)
+    from captureanalysis import CaptureAnalyser
 
-    time.sleep(wait_time)
-    return exit_status  # End Script (True = Finished, False = Error)
+    analyser = CaptureAnalyser()
+    if analyser.wait_for_text(reference_text, 60):
+        return True
+    else:
+        return False
 
 
 def parse_args(args):

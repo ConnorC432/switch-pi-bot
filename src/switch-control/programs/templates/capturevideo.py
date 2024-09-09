@@ -5,9 +5,9 @@ import json
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
 if os.path.basename(os.getcwd()) == 'switch-control':
-    root_dir = os.path.abspath(os.path.join(base_dir, "..", "data"))
+    root_dir = os.path.abspath(os.path.join(base_dir, "..", "switch-control"))
 else:
-    root_dir = os.path.abspath(os.path.join(base_dir, "../../../data"))
+    root_dir = os.path.abspath(os.path.join(base_dir, "../../../switch-control"))
 
 sys.path.insert(0, root_dir)
 
