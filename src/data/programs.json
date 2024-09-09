@@ -1,37 +1,11 @@
 {
-  "Game1": [
+  "templates": [
     {
       "id": 1,
-      "name": "Program A",
+      "name": "basicprogram",
       "settings": {
-        "setting1": "Value A1",
-        "setting2": "Value A2"
-      }
-    },
-    {
-      "id": 2,
-      "name": "Program B",
-      "settings": {
-        "setting1": "Value B1",
-        "setting2": "Value B2"
-      }
-    }
-  ],
-  "Game2": [
-    {
-      "id": 3,
-      "name": "Program C",
-      "settings": {
-        "setting1": "Value C1",
-        "setting2": "Value C2"
-      }
-    },
-    {
-      "id": 4,
-      "name": "Program D",
-      "settings": {
-        "setting1": "Value D1",
-        "setting2": "Value D2"
+        "waitTime": "3",
+        "exitStatus": "True"
       }
     }
   ]

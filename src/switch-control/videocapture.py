@@ -2,7 +2,7 @@ import cv2
 import os
 
 
-REFERENCE_IMAGE_DIR = "images"
+REFERENCE_IMAGE_DIR = "assets"
 
 def find_capture_cards():
     capture_cards = []

@@ -52,6 +52,12 @@ export default function Page() {
 
     const theme = useTheme();
 
+    const formatKey = (key: string) => {
+        return key
+            .replace(/([a-z])([A-Z])/g, '$1 $2')  // Add space before capital letters
+            .replace(/^./, (str) => str.toUpperCase());  // Capitalize the first letter
+    }
+
     // Fetch JSON data for games/programs
     React.useEffect(() => {
         async function fetchData() {
@@ -140,7 +146,7 @@ export default function Page() {
     const startProgram = async () => {
         if (selectedProgram) {
             setLoading(true);
-            const response = await fetch('/api/programs/start-program', {
+            const response = await fetch('http://localhost:5000/start-program', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -289,7 +295,7 @@ export default function Page() {
                                 <TextField
                                     key={key}
                                     fullWidth
-                                    label={key}
+                                    label={formatKey(key)}
                                     value={settings[key] || ''}
                                     onChange={handleSettingChange(key)}
                                     sx={{ mb: 2 }}

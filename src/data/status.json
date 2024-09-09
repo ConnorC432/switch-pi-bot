@@ -1,15 +1,15 @@
 {
-  "status": "Starting",
+  "status": "Finished",
   "currentGame": {
-    "id": "Game1",
-    "name": "Game1"
+    "id": "templates",
+    "name": "templates"
   },
   "currentProgram": {
     "id": 1,
-    "name": "Program A",
+    "name": "basicprogram",
     "settings": {
-      "setting1": "Value A1",
-      "setting2": "Value A2"
+      "waitTime": "3",
+      "exitStatus": "True"
     }
   }
 }
