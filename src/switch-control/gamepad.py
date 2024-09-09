@@ -1,49 +1,69 @@
+import os
 import time
+
+
+def find_gadgets():
+    gadgets = []
+
+    for gadget_device in os.listdir("/dev"):
+        if gadget_device.startswith("hidg"):
+            #Test device
+            with open(gadget_device, "wb") as hid_device:
+                try:
+                    hid_device.write(bytearray([0x00, 0x00, 0x08, 0x80, 0x80, 0x80, 0x80, 0x00]))
+
+                except Exception as e:
+                    print(f"Cant write to block device: {e}")
+                    continue
+
+                gadgets.append(f"/dev/{gadget_device}")
+
+    return gadgets
 
 
 class Gamepad:
     #Button Hex Values
     BUTTON_HEX = {
-        'Y': (0x01, 0x00),
-        'B': (0x02, 0x00),
-        'A': (0x04, 0x00),
-        'X': (0x08, 0x00),
-        'L': (0x10, 0x00),
-        'R': (0x20, 0x00),
-        'ZL': (0x40, 0x00),
-        'ZR': (0x80, 0x00),
-        'Minus': (0x00, 0x01),
-        'Plus': (0x00, 0x02),
-        'L3': (0x00, 0x04),
-        'R3': (0x00, 0x08),
-        'Power': (0x00, 0x10),
-        'Capture': (0x00, 0x20)
+        "Y": (0x01, 0x00),
+        "B": (0x02, 0x00),
+        "A": (0x04, 0x00),
+        "X": (0x08, 0x00),
+        "L": (0x10, 0x00),
+        "R": (0x20, 0x00),
+        "ZL": (0x40, 0x00),
+        "ZR": (0x80, 0x00),
+        "Minus": (0x00, 0x01),
+        "Plus": (0x00, 0x02),
+        "L3": (0x00, 0x04),
+        "R3": (0x00, 0x08),
+        "Power": (0x00, 0x10),
+        "Capture": (0x00, 0x20)
     }
 
     #DPad Hex Values
     DPAD_HEX = {
-        'center': 0x08,
-        'N': 0x00,
-        'NE': 0x01,
-        'E': 0x02,
-        'SE': 0x03,
-        'S': 0x04,
-        'SW': 0x05,
-        'W': 0x06,
-        'NW': 0x07,
+        "center": 0x08,
+        "N": 0x00,
+        "NE": 0x01,
+        "E": 0x02,
+        "SE": 0x03,
+        "S": 0x04,
+        "SW": 0x05,
+        "W": 0x06,
+        "NW": 0x07
     }
 
     #Stick Axes Map
     AXES_HEX = {
-        'center': (0x80, 0x80),
-        'N': (0x80, 0x00),
-        'NE': (0xFF, 0x00),
-        'E': (0xFF, 0x80),
-        'SE': (0xFF, 0xFF),
-        'S': (0x80, 0xFF),
-        'SW': (0x00, 0xFF),
-        'W': (0x00, 0x80),
-        'NW': (0x00, 0x00),
+        "center": (0x80, 0x80),
+        "N": (0x80, 0x00),
+        "NE": (0xFF, 0x00),
+        "E": (0xFF, 0x80),
+        "SE": (0xFF, 0xFF),
+        "S": (0x80, 0xFF),
+        "SW": (0x00, 0xFF),
+        "W": (0x00, 0x80),
+        "NW": (0x00, 0x00)
     }
 
     DEFAULT_STATE = bytearray([0x00, 0x00, 0x08, 0x80, 0x80, 0x80, 0x80, 0x00])

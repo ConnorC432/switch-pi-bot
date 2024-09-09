@@ -2,14 +2,16 @@ import cv2
 import os
 
 
+REFERENCE_IMAGE_DIR = "images"
+
 def find_capture_cards():
     capture_cards = []
 
-    for device in os.listdir('/dev'):
-        if device.startswith('video'):
+    for device in os.listdir("/dev"):
+        if device.startswith("video"):
             #Test device
             try:
-                test_capture = cv2.VideoCapture('/dev/' + device)
+                test_capture = cv2.VideoCapture("/dev/" + device)
 
                 if not test_capture.isOpened():
                     print(f"Skipping capture card /dev/{device}")
@@ -34,22 +36,23 @@ class VideoCapture:
         if not self.cap.isOpened():
             raise OSError(f"Unable to open video device {self.device}")
 
-    def is_open(self):
-        return self.cap.isOpened()
-
-    def read_frames(self):
-        if not self.cap.isOpened():
-            raise OSError(f"Unable to open video device {self.device}")
-
+    def _read_frames(self):
         ret, frame = self.cap.read()
         if not ret:
             raise OSError(f"Unable to read frame from video device {self.device}")
 
         return frame
 
-    def release(self):
+    def _release(self):
         if self.cap:
             self.cap.release()
 
+    def is_open(self):
+        return self.cap.isOpened()
+
+    def process_frame(self):
+        frame = self._read_frames()
+
+
     def __del__(self):
-        self.release()
+        self._release()
