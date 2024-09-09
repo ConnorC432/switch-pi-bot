@@ -1,0 +1,15 @@
+{
+  "status": "Starting",
+  "currentGame": {
+    "id": "Game1",
+    "name": "Game1"
+  },
+  "currentProgram": {
+    "id": 1,
+    "name": "Program A",
+    "settings": {
+      "setting1": "Value A1",
+      "setting2": "Value A2"
+    }
+  }
+}
