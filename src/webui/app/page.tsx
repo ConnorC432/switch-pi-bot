@@ -103,7 +103,7 @@ export default function Page() {
             if (isMounted) {
                 setCaptureSrc(`http://localhost:5000/video-stream?${Date.now()}`);
             }
-        }, 500);
+        }, 250);
 
         return () => {
             clearInterval(interval)
