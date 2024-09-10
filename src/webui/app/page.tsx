@@ -102,11 +102,17 @@ export default function Page() {
 
     // Update Capture image
     React.useEffect(() => {
+        let isMounted = true;
         const interval = setInterval(() => {
-            setCaptureSrc(`http://localhost:5000/video-stream?${Date.now()}`);
-        }, 100);
+            if (isMounted) {
+                setCaptureSrc(`http://localhost:5000/video-stream?${Date.now()}`);
+            }
+        }, 500);
 
-        return () => clearInterval(interval);
+        return () => {
+            clearInterval(interval)
+            isMounted = false;
+        };
     }, []);
 
     // Handle game change
