@@ -2,14 +2,15 @@ import json
 import os
 import subprocess
 
+
 class ProgramRunner:
     def __init__(self):
         # Define base directory for the scripts (adjust as necessary)
         self.base_dir = os.path.dirname(os.path.abspath(__file__))
         self.scripts_dir = os.path.join(self.base_dir, 'programs')
 
-        self.status_file_path = os.path.join(self.base_dir, 'data', 'status.json')
-        self.programs_file_path = os.path.join(self.base_dir, 'data', 'programs.json')
+        self.status_file_path = os.path.abspath(os.path.join(self.base_dir, '..', 'data', 'status.json'))
+        self.programs_file_path = os.path.abspath(os.path.join(self.base_dir, '..', 'data', 'programs.json'))
 
         print(f"Initialized ProgramRunner with base_dir={self.base_dir}, scripts_dir={self.scripts_dir}, "
               f"status_file_path={self.status_file_path}, programs_file_path={self.programs_file_path}")
@@ -37,13 +38,15 @@ class ProgramRunner:
         print(f"Script path resolved to: {script_path}")
         return script_path
 
-    def _run_script(self, script_path, settings_args):
+    @staticmethod
+    def _run_script(script_path, settings_args):
         print(f"Running script: {script_path} with arguments: {settings_args}")
+
         process = subprocess.Popen(
             ["python", script_path] + settings_args,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            cwd=self.base_dir
+            cwd=(os.path.dirname(script_path))
         )
         stdout, stderr = process.communicate()
         stdout_decoded = stdout.decode()
@@ -57,9 +60,13 @@ class ProgramRunner:
 
     def start_program(self, game, program_id):
         try:
-            print(f"Starting program with game={game} and program_id={program_id}")
             status_data = self._read_file(self.status_file_path)
             programs_data = self._read_file(self.programs_file_path)
+
+            if status_data.get('status') == ' Running':
+                return {'A program is already running.'}, 400
+
+            print(f"Starting program with game={game} and program_id={program_id}")
 
             game_data = programs_data.get(game)
             if not game_data:
@@ -89,6 +96,8 @@ class ProgramRunner:
                 return {'error': error_message}, 404
 
             settings_args = [f'{key}={value}' for key, value in program.get('settings', {}).items()]
+            self._update_status('Running')
+
             return_code, stdout, stderr = self._run_script(script_path, settings_args)
 
             if return_code != 0:

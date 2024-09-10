@@ -24,10 +24,6 @@ interface Program {
     settings: { [key: string]: any };
 }
 
-/*interface ProgramsData {
-    [key: string]: Program[];
-}*/
-
 interface StatusResponse {
     status: 'Starting' | 'Running' | 'Error' | 'Finished' | 'Pending';
     currentGame?: {
@@ -95,7 +91,7 @@ export default function Page() {
         };
 
         fetchStatus(); // Initial fetch
-        const interval = setInterval(fetchStatus, 1000); // Poll every second
+        const interval = setInterval(fetchStatus, 5000); // Poll every second
 
         return () => clearInterval(interval); // Cleanup interval on component unmount
     }, []);
@@ -182,6 +178,9 @@ export default function Page() {
             setLoading(false);
         }
     };
+
+    const isStatusStartingOrRunning = status && (status.status === 'Starting' || status.status === 'Running');
+    const buttonDisabled = loading || isStatusStartingOrRunning;
 
     return (
         <Box
@@ -341,9 +340,9 @@ export default function Page() {
                                     color="secondary"
                                     onClick={startProgram}
                                     sx={{ display: 'flex', alignItems: 'center' }}
-                                    disabled={loading} // Disable the button while loading
+                                    disabled={buttonDisabled} // Disable the button while loading
                                 >
-                                    {loading ? <CircularProgress size={24} /> : 'Start Program'}
+                                    {buttonDisabled ? <CircularProgress size={24} /> : 'Start Program'}
                                 </Button>
                             </Box>
                         </Box>

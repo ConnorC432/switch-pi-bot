@@ -4,22 +4,23 @@
       "id": 1,
       "name": "basicprogram",
       "settings": {
-        "Text": "SUPER MARIO ODYSSEY"
+        "WaitTime": "Text 1",
+        "ExitStatus": "True"
       }
     },
     {
-      "id": 1,
+      "id": 2,
       "name": "capturevideo",
       "settings": {
-        "Device": "/dev/hidg0",
         "Image": "Test1"
       }
     },
     {
-      "id": 1,
+      "id": 3,
       "name": "capturetext",
       "settings": {
-        "Text": "Test1"
+        "Text": "Pokemon",
+        "WaitTime": "30"
       }
     }
   ]

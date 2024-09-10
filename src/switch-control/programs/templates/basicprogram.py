@@ -9,8 +9,6 @@ if os.path.basename(os.getcwd()) == 'switch-control':
 else:
     root_dir = os.path.abspath(os.path.join(base_dir, "../../../switch-control"))
 
-sys.path.insert(0, root_dir)
-
 
 def program(settings):
     # JSON Settings to Variables [Setting name from JSON, Default Value]
