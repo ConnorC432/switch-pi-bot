@@ -1,5 +1,6 @@
 import atexit
-from flask import Flask, request, jsonify
+import os
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 from programrunner import ProgramRunner
 from capturecard import CaptureCard
@@ -36,7 +37,7 @@ def start_program():
 @app.route('/video-stream')
 def video_stream():
     if capture_card:
-        return capture_card.get_stream()
+        return Response(capture_card.get_stream(), mimetype='multipart/x-mixed-replace; boundary=frame')
     else:
         return jsonify({'Error': 'No capture card initialised'}), 503
 

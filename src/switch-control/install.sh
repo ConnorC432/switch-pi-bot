@@ -5,6 +5,9 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 fi
 
+#Install required packages
+apt install -y tesseract-ocr
+
 #load kernel modules
 cat <<EOF >> /etc/modules
 libcomposite

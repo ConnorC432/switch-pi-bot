@@ -1,25 +1,30 @@
 import os
 import sys
 import json
+import importlib.util
 
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
 if os.path.basename(os.getcwd()) == 'switch-control':
     root_dir = os.path.abspath(os.path.join(base_dir, "..", "switch-control"))
 else:
-    root_dir = os.path.abspath(os.path.join(base_dir, "../../../switch-control"))
+    root_dir = os.path.abspath(os.path.join(base_dir, "../../..", "switch-control"))
 
 
 def program(settings):
     # JSON Settings to Variables [Setting name from JSON, Default Value]
-    wait_time = int(settings.get("WaitTime", "1"))
-    exit_status = settings.get("ExitStatus", "True") == "True"
+    reference_text = settings.get("Text", "DefaultText")
+    wait_time = int(settings.get("WaitTime", "10"))
 
-    # Put Script Code Here
-    import time
+    spec = importlib.util.spec_from_file_location("CaptureAnalyser", (os.path.join(root_dir, "capture_analyser.py")))
+    capture_analyser = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(capture_analyser)
 
-    time.sleep(wait_time)
-    return exit_status  # End Script (True = Finished, False = Error)
+    analyser = capture_analyser.CaptureAnalyser()
+    if analyser.wait_for_text(reference_text, wait_time):
+        return True
+    else:
+        return False
 
 
 def parse_args(args):

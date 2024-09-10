@@ -1,42 +1,33 @@
-from io import BytesIO
-import time
 import cv2
 import numpy as np
 import pytesseract
 import requests
-
+import time
 
 class CaptureAnalyser:
-    def __init__(self, url: str = "http://127.0.0.1:5000/video-stream"):
+    def __init__(self):
         """
-        Initializes the CaptureAnalyser with a given API URL.
+        Initializes the CaptureAnalyser with a fixed API URL.
         """
-        self.url = url
+        self.url = "http://127.0.0.1:5000/video-stream"
+        self.capture = cv2.VideoCapture(self.url)
+        if not self.capture.isOpened():
+            raise ValueError(f"Failed to connect to URL: {self.url}")
+        print(f"Initialized CaptureAnalyser with URL: {self.url}")
 
     def read_image(self) -> np.ndarray:
         """
-        Fetches the image from the API and decodes it into a NumPy array.
+        Fetches the image from the API MJPEG stream and decodes it into a NumPy array.
         Returns:
             np.ndarray: The decoded image as a NumPy array.
         """
-        try:
-            response = requests.get(self.url, stream=True)
-            response.raise_for_status()
-
-            image_bytes = BytesIO(response.content)
-            image = np.asarray(bytearray(image_bytes.read()), dtype="uint8")
-            image = cv2.imdecode(image, cv2.IMREAD_COLOR)
-
-            if image is None:
-                print(f"Error decoding image from {self.url}")
-            return image
-
-        except requests.RequestException as e:
-            print(f"Error fetching image from {self.url}: {e}")
+        print(f"Fetching image from {self.url}...")
+        success, frame = self.capture.read()
+        if not success:
+            print("Failed to capture frame from the MJPEG stream.")
             return None
-        except cv2.error as e:
-            print(f"Error decoding image: {e}")
-            return None
+        print("Image fetched and decoded successfully.")
+        return frame
 
     def look_for_image(self, template_path: str, threshold: float = 0.8) -> bool:
         """
@@ -47,6 +38,7 @@ class CaptureAnalyser:
         Returns:
             bool: True if a match is found, otherwise False.
         """
+        print(f"Looking for image match with template: {template_path}...")
         try:
             template = cv2.imread(template_path, cv2.IMREAD_COLOR)
             if template is None:
@@ -63,10 +55,13 @@ class CaptureAnalyser:
             result = cv2.matchTemplate(gray_image, gray_template, cv2.TM_CCOEFF_NORMED)
             _, max_val, _, _ = cv2.minMaxLoc(result)
 
-            return max_val >= threshold
+            match_found = max_val >= threshold
+            print(f"Match value: {max_val}, Threshold: {threshold}, Match found: {match_found}")
+            return match_found
 
         except cv2.error as e:
             print(f"Error during image processing: {e}")
+            return False
 
     def wait_for_image_match(self, template_path, time_value, threshold=0.8):
         """
@@ -78,12 +73,15 @@ class CaptureAnalyser:
         Returns:
             bool: True if a match is found within the time, otherwise False.
         """
+        print(f"Waiting for image match with template: {template_path} for up to {time_value} seconds...")
         start_time = time.time()
         while True:
             if self.look_for_image(template_path, threshold):
+                print(f"Image match found within {time_value} seconds.")
                 return True
             elapsed_time = time.time() - start_time
             if elapsed_time > time_value:
+                print(f"No image match found within {time_value} seconds.")
                 return False
             time.sleep(1)
 
@@ -93,13 +91,16 @@ class CaptureAnalyser:
         Returns:
             str: The extracted text.
         """
+        print("Extracting text from the captured image...")
         captured_image = self.read_image()
 
         if captured_image is None:
+            print("No image captured for text extraction.")
             return ""
 
         gray_image = cv2.cvtColor(captured_image, cv2.COLOR_BGR2GRAY)
         text = pytesseract.image_to_string(gray_image)
+        print(f"Extracted text: {text.strip()}")
         return text
 
     def look_for_text(self, search_text):
@@ -110,8 +111,11 @@ class CaptureAnalyser:
         Returns:
             bool: True if the text is found, otherwise False.
         """
+        print(f"Looking for text: '{search_text}'...")
         recognized_text = self.read_text()
-        return search_text.lower() in recognized_text.lower()
+        found = search_text.lower() in recognized_text.lower()
+        print(f"Text found: {found}")
+        return found
 
     def wait_for_text(self, search_text, time_value):
         """
@@ -122,33 +126,34 @@ class CaptureAnalyser:
         Returns:
             bool: True if the text is found within the time, otherwise False.
         """
+        print(f"Waiting for text: '{search_text}' to appear within {time_value} seconds...")
         start_time = time.time()
         while True:
             if self.look_for_text(search_text):
+                print(f"Text '{search_text}' found within {time_value} seconds.")
                 return True
             elapsed_time = time.time() - start_time
             if elapsed_time >= time_value:
+                print(f"Text '{search_text}' not found within {time_value} seconds.")
                 return False
             time.sleep(1)
 
-
 if __name__ == "__main__":
-    CaptureAnalyser()
+    # Initialize with a fixed URL
+    analyser = CaptureAnalyser()  # No need to pass URL
 
-    """ 
-    Example: Wait for an image match
-    template_path = 'path/to/template.jpg'
-    timeout = 30
-    if analyzer.wait_for_image_match(template_path, timeout):
+    # Example usage
+    template_path = 'path/to/template.jpg'  # Replace with actual template path
+    timeout = 3  # Example timeout
+    if analyser.wait_for_image_match(template_path, timeout):
         print(f"Image match found within {timeout} seconds.")
     else:
         print(f"No image match found within {timeout} seconds.")
 
-    # Example: Wait for specific text
-    search_text = 'Example Text'
-    timeout = 30
-    if analyzer.wait_for_text(search_text, timeout):
+    # Example usage for text search
+    search_text = 'DefaultText'
+    timeout = 3  # Example timeout
+    if analyser.wait_for_text(search_text, timeout):
         print(f"Text '{search_text}' found within {timeout} seconds.")
     else:
         print(f"Text '{search_text}' not found within {timeout} seconds.")
-    """

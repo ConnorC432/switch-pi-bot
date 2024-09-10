@@ -4,24 +4,23 @@
       "id": 1,
       "name": "basicprogram",
       "settings": {
-        "WaitTime": "3",
+        "WaitTime": "Text 1",
         "ExitStatus": "True"
       }
     },
     {
-      "id": 1,
+      "id": 2,
       "name": "capturevideo",
       "settings": {
-        "Device": "/dev/hidg0",
         "Image": "Test1"
       }
     },
     {
-      "id": 1,
+      "id": 3,
       "name": "capturetext",
       "settings": {
-        "Device": "/dev/hidg0",
-        "Text": "Test1"
+        "Text": "Pokemon",
+        "WaitTime": "30"
       }
     }
   ]
