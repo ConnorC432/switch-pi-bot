@@ -1,4 +1,4 @@
-// Page.tsx
+"use client";
 
 import * as React from 'react';
 import {
@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import type { SelectChangeEvent } from '@mui/material';
-import { ProgramService, Program, StatusResponse } from './services/ProgramService';
+import { JSONInterface, Program, StatusResponse } from './json';
 
 export default function Page() {
     const [selectedGame, setSelectedGame] = React.useState<string>('');
@@ -30,7 +30,7 @@ export default function Page() {
     const [captureSrc, setCaptureSrc] = React.useState<string>(`http://localhost:5000/video-stream?${Date.now()}`);
 
     const theme = useTheme();
-    const programService = new ProgramService();
+    const jsonInterface = new JSONInterface();
 
     const formatKey = (key: string) => {
         return key
@@ -42,7 +42,7 @@ export default function Page() {
     React.useEffect(() => {
         async function fetchData() {
             try {
-                const data = await programService.fetchPrograms();
+                const data = await jsonInterface.fetchPrograms();
                 const gameList = Object.keys(data);
                 setGames(gameList);
 
@@ -61,8 +61,14 @@ export default function Page() {
     React.useEffect(() => {
         const fetchStatus = async () => {
             try {
-                const data = await programService.fetchStatus();
+                const data = await jsonInterface.fetchStatus();
                 setStatus(data);
+
+                // Update selectedGame and selectedProgram based on status
+                if (data.status === 'Running') {
+                    setSelectedGame(data.currentGame?.name || '');
+                    setSelectedProgram(data.currentProgram || null);
+                }
             } catch (error) {
                 console.error(error);
             }
@@ -93,8 +99,8 @@ export default function Page() {
     const handleGameChange = (event: SelectChangeEvent<string>) => {
         const game = event.target.value as string;
         setSelectedGame(game);
-        setSelectedProgram(null);
-        setSettings({});
+        setSelectedProgram(null); // Reset selected program when game changes
+        setSettings({}); // Clear settings when game changes
     };
 
     // Handle program change
@@ -114,27 +120,44 @@ export default function Page() {
     // Save program settings
     const saveSettings = async () => {
         if (selectedProgram) {
-            try {
-                await programService.saveSettings(selectedGame, selectedProgram.id, settings);
-                console.log('Settings Saved');
-            } catch (error) {
-                console.log('Settings Not Saved');
+            const confirmSave = window.confirm('Are you sure you want to save the settings?');
+            if (confirmSave) {
+                try {
+                    await jsonInterface.saveSettings(selectedGame, selectedProgram.id, settings);
+                    console.log('Settings Saved');
+                } catch (error) {
+                    console.log('Settings Not Saved');
+                }
             }
         }
     };
 
-    // Start the program
+    // Start program
     const startProgram = async () => {
         if (selectedProgram) {
             setLoading(true);
             try {
-                const data = await programService.startProgram(selectedGame, selectedProgram.id);
-                setStatus(data);
+                const response = await fetch('http://localhost:5000/start-program', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        game: selectedGame,
+                        programId: selectedProgram.id,
+                    }),
+                });
+
+                if (response.ok) {
+                    const data: StatusResponse = await response.json();
+                    setStatus(data);
+                } else {
+                    console.error('Failed to start program');
+                }
             } catch (error) {
-                console.error('Failed to start program');
-            } finally {
-                setLoading(false);
+                console.error('Failed to start program', error);
             }
+            setLoading(false);
         }
     };
 
@@ -165,7 +188,7 @@ export default function Page() {
                     overflow: 'hidden',
                     borderRadius: 1,
                     boxShadow: 3,
-                    backgroundColor: 'theme.palette.background.paper',
+                    backgroundColor: theme.palette.background.paper,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -183,7 +206,131 @@ export default function Page() {
                 }}/>
             </Box>
 
-            {/* Remaining JSX... */}
+            {/* Status Display */}
+            {status && (status.status === 'Starting' || status.status === 'Running' || status.status === 'Error' || status.status === 'Finished') && (
+                <Box sx={{ mt: 2, width: '100%', textAlign: 'center' }}>
+                    <Typography variant="h6" color="textSecondary">
+                        Current Status: {status.status}
+                    </Typography>
+                    {status.currentGame && (
+                        <Typography variant="body1" color="textSecondary">
+                            Game: {status.currentGame.name}
+                        </Typography>
+                    )}
+                    {status.currentProgram && (
+                        <Typography variant="body1" color="textSecondary">
+                            Program: {status.currentProgram.name}
+                        </Typography>
+                    )}
+                </Box>
+            )}
+
+            {/* Game Selection Accordion */}
+            <Accordion sx={{ mt: 2, width: '100%' }}>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="game-selection-content"
+                    id="game-selection-header"
+                >
+                    <Typography>{selectedGame || 'Select Game'}</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <List>
+                        {games.map((game) => (
+                            <ListItem
+                                key={game}
+                                onClick={() => handleGameChange({ target: { value: game } } as SelectChangeEvent<string>)}
+                                sx={{
+                                    cursor: 'pointer',
+                                    '&:hover': {
+                                        backgroundColor: theme.palette.action.hover,
+                                    },
+                                }}
+                            >
+                                <ListItemText primary={game} />
+                            </ListItem>
+                        ))}
+                    </List>
+                </AccordionDetails>
+            </Accordion>
+
+            {/* Program Selection Accordion */}
+            {selectedGame && (
+                <Accordion sx={{ mt: 2, width: '100%' }}>
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="program-selection-content"
+                        id="program-selection-header"
+                    >
+                        <Typography>{selectedProgram ? selectedProgram.name : 'Select Program'}</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <List>
+                            {programs.map((program) => (
+                                <ListItem
+                                    key={program.id}
+                                    onClick={() => handleProgramChange(program)}
+                                    sx={{
+                                        cursor: 'pointer',
+                                        '&:hover': {
+                                            backgroundColor: theme.palette.action.hover,
+                                        },
+                                    }}
+                                >
+                                    <ListItemText primary={program.name} />
+                                </ListItem>
+                            ))}
+                        </List>
+                    </AccordionDetails>
+                </Accordion>
+            )}
+
+            {/* Program Settings Accordion */}
+            {selectedProgram && (
+                <Accordion sx={{ mt: 2, width: '100%' }}>
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="program-settings-content"
+                        id="program-settings-header"
+                    >
+                        <Typography>Program Settings for {selectedProgram.name}</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <Box sx={{ width: '100%' }}>
+                            {Object.keys(selectedProgram.settings).map((key) => (
+                                <TextField
+                                    key={key}
+                                    fullWidth
+                                    label={formatKey(key)}
+                                    value={settings[key] || ''}
+                                    onChange={handleSettingChange(key)}
+                                    sx={{ mb: 2 }}
+                                />
+                            ))}
+
+                            {/* Button Container */}
+                            <Box sx={{ display: 'flex', gap: 2 }}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={saveSettings}
+                                >
+                                    Save Settings
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={startProgram}
+                                    sx={{ display: 'flex', alignItems: 'center' }}
+                                    disabled={buttonDisabled}
+                                >
+                                    {buttonDisabled ? <CircularProgress size={24} /> : 'Start Program'}
+                                </Button>
+                            </Box>
+                        </Box>
+                    </AccordionDetails>
+                </Accordion>
+            )}
         </Box>
     );
 }

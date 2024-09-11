@@ -1,0 +1,25 @@
+{
+  "General": [],
+  "User Preferences": [
+    {
+      "name": "Theme",
+      "type": "combo",
+      "value": "Dark",
+      "options": [
+        "Light",
+        "Dark"
+      ]
+    }
+  ],
+  "Pi Settings": [
+    {
+      "name": "Capture Card Device",
+      "type": "combo",
+      "value": "/dev/video0",
+      "options": [
+        "/dev/video0",
+        "/dev/video1"
+      ]
+    }
+  ]
+}

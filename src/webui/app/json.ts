@@ -1,4 +1,4 @@
-// programs/JSONInterface.ts
+"use client";
 
 export interface Program {
     id: number;
