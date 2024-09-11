@@ -12,13 +12,14 @@ else:
 
 
 def program(settings):
-    # JSON Settings to Variables [Setting name from JSON, Default Value]
-    reference_text = settings.get("Text", "DefaultText")
-    wait_time = int(settings.get("WaitTime", "10"))
-
+    # Import Capture Analyser class
     spec = importlib.util.spec_from_file_location("CaptureAnalyser", (os.path.join(root_dir, "capture_analyser.py")))
     capture_analyser = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(capture_analyser)
+
+    # JSON Settings to Variables [Setting name from JSON, Default Value]
+    reference_text = settings.get("Text", "DefaultText")
+    wait_time = int(settings.get("WaitTime", "10"))
 
     analyser = capture_analyser.CaptureAnalyser()
     if analyser.wait_for_text(reference_text, wait_time):
@@ -46,11 +47,13 @@ def main():
     for key in settings:
         print(f"{key} =  {globals().get(key)}")
 
+
+
     # Run program and determine handle failure/success
     status = program(settings)
     status_message = "Finished" if status else "Error"
 
-    status_file_path = os.path.join(root_dir, "status.json")
+    status_file_path = os.path.abspath(os.path.join(root_dir, "../data/status.json"))
     if os.path.exists(status_file_path):
         print(f"Modifying JSON file: {status_file_path}")
         with open(status_file_path) as status_file:

@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 import pytesseract
-import requests
 import time
 
 class CaptureAnalyser:
@@ -22,6 +21,11 @@ class CaptureAnalyser:
             np.ndarray: The decoded image as a NumPy array.
         """
         print(f"Fetching image from {self.url}...")
+
+        # Close and reopen the capture to avoid stale frames
+        self.capture.release()
+        self.capture = cv2.VideoCapture(self.url)
+
         success, frame = self.capture.read()
         if not success:
             print("Failed to capture frame from the MJPEG stream.")
@@ -63,13 +67,13 @@ class CaptureAnalyser:
             print(f"Error during image processing: {e}")
             return False
 
-    def wait_for_image_match(self, template_path, time_value, threshold=0.8):
+    def wait_for_image_match(self, template_path, time_value, threshold=0.35):
         """
         Waits for an image match within a specified time.
         Args:
             template_path (str): Path to the template image file.
             time_value (int): Time to wait in seconds.
-            threshold (float): Matching threshold, default is 0.8.
+            threshold (float): Matching threshold, default is 0.35.
         Returns:
             bool: True if a match is found within the time, otherwise False.
         """
