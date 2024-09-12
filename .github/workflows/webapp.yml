@@ -1,12 +1,15 @@
 name: Test Next.JS and Gunicorn Web App
 
 on:
+  push:
+    branches:
+      - "**"
   pull_request:
     types:
       - opened
       - reopened
     branches:
-      - '!main'
+      - "**"
 
 
 jobs:
