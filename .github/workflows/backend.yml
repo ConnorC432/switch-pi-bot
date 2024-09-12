@@ -19,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
@@ -34,10 +34,14 @@ jobs:
       - name: Run Gunicorn
         run: |
           source ../../.venv/bin/activate
-          gunicorn -w 1 --bind 127.0.0.1:5000 app:app &
-          sleep 10
+          gunicorn -w 1 --bind 0.0.0.0:5000 app:app &
+          sleep 30
         working-directory: ./src/switch-control
 
       - name: Test Gunicorn API endpoint
         run: |
-          curl --fail http://127.0.0.1:5000 || exit 1
+          curl --fail http://127.0.0.1:5000/ || exit 1
+
+      - name: Check Gunicorn Logs
+        run: |
+          cat ./src/switch-control/gunicorn.log
