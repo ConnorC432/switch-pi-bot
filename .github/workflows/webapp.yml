@@ -34,7 +34,7 @@ jobs:
       - name: Run Gunicorn
         run: |
           source ../../.venv/bin/activate
-          gunicorn -w 1 --bind 0.0.0.0:5000/ app:app &
+          gunicorn -w 1 --bind 0.0.0.0:5000 app:app &
           sleep 30
         working-directory: ./src/switch-control
 
