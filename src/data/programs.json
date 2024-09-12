@@ -12,14 +12,15 @@
       "id": 2,
       "name": "capturevideo",
       "settings": {
-        "Image": "Test1"
+        "Image": "violet.png",
+        "WaitTime": "30"
       }
     },
     {
       "id": 3,
       "name": "capturetext",
       "settings": {
-        "Text": "Pokemon",
+        "Text": "Diamond",
         "WaitTime": "30"
       }
     }

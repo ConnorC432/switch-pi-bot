@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import importlib.util
 
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -11,6 +12,11 @@ else:
 
 
 def program(settings):
+    # Import Capture Analyser class
+    spec = importlib.util.spec_from_file_location("CaptureAnalyser", (os.path.join(root_dir, "capture_analyser.py")))
+    capture_analyser = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(capture_analyser)
+
     # JSON Settings to Variables [Setting name from JSON, Default Value]
     wait_time = int(settings.get("WaitTime", "1"))
     exit_status = settings.get("ExitStatus", "True") == "True"
@@ -45,7 +51,7 @@ def main():
     status = program(settings)
     status_message = "Finished" if status else "Error"
 
-    status_file_path = os.path.join(root_dir, "status.json")
+    status_file_path = os.path.abspath(os.path.join(root_dir, "../data/status.json"))
     if os.path.exists(status_file_path):
         print(f"Modifying JSON file: {status_file_path}")
         with open(status_file_path) as status_file:

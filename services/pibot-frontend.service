@@ -1,0 +1,16 @@
+[Unit]
+Description=Node.js Service for pi bot frontend
+After=network.target
+After=pibot-backend.service
+Requires=pibot-backend.service
+
+[Service]
+User=pibot
+Group=pibot
+WorkingDirectory=/opt/switch-pi-bot/webui/app
+ExecStart=/usr/bin/npm start
+Restart=on-failure
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target

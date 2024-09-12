@@ -17,84 +17,65 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import type { SelectChangeEvent } from '@mui/material';
+import { JSONInterface, Program, StatusResponse } from './json';
 
-interface Program {
-    id: number;
-    name: string;
-    settings: { [key: string]: any };
-}
-
-interface StatusResponse {
-    status: 'Starting' | 'Running' | 'Error' | 'Finished' | 'Pending';
-    currentGame?: {
-        id: string;
-        name: string;
-    };
-    currentProgram?: {
-        id: number;
-        name: string;
-        settings: { [key: string]: any };
-    };
-}
+// Define SettingValue to handle different types of setting values
+type SettingValue = string | number | boolean;
 
 export default function Page() {
     const [selectedGame, setSelectedGame] = React.useState<string>('');
     const [selectedProgram, setSelectedProgram] = React.useState<Program | null>(null);
     const [programs, setPrograms] = React.useState<Program[]>([]);
     const [games, setGames] = React.useState<string[]>([]);
-    const [settings, setSettings] = React.useState<{ [key: string]: any }>({});
+    const [settings, setSettings] = React.useState<{ [key: string]: SettingValue }>({});
     const [status, setStatus] = React.useState<StatusResponse | null>(null);
     const [loading, setLoading] = React.useState(false);
     const [captureSrc, setCaptureSrc] = React.useState<string>(`http://localhost:5000/video-stream?${Date.now()}`);
 
     const theme = useTheme();
+    const jsonInterface = React.useMemo(() => new JSONInterface(), []);
 
     const formatKey = (key: string) => {
         return key
-            .replace(/([a-z])([A-Z])/g, '$1 $2')  // Add space before capital letters
-            .replace(/^./, (str) => str.toUpperCase());  // Capitalize the first letter
-    }
+            .replace(/([a-z])([A-Z])/g, '$1 $2')
+            .replace(/^./, (str) => str.toUpperCase());
+    };
 
-    // Fetch JSON data for games/programs
+    // Fetch programs and games
     React.useEffect(() => {
         async function fetchData() {
-            const response = await fetch('/api/programs/get-programs');
-            if (!response.ok) {
-                console.error('Failed to fetch programs.');
-                return;
-            }
-            const data = await response.json();
+            try {
+                const data = await jsonInterface.fetchPrograms();
+                const gameList = Object.keys(data);
+                setGames(gameList);
 
-            // Extract games from JSON
-            const gameList = Object.keys(data);
-            setGames(gameList);
-
-            // Set programs based on selected game
-            if (selectedGame) {
-                setPrograms(data[selectedGame] || []);
+                if (selectedGame) {
+                    setPrograms(data[selectedGame] || []);
+                }
+            } catch (error) {
+                console.error('Failed to fetch programs and games:', error);
             }
         }
 
         fetchData();
-    }, [selectedGame]);
+    }, [selectedGame, jsonInterface]);
 
-    // Poll the status every second
+    // Poll the status every 5 seconds
     React.useEffect(() => {
         const fetchStatus = async () => {
-            const response = await fetch('/api/programs/get-program-status');
-            if (response.ok) {
-                const data: StatusResponse = await response.json();
+            try {
+                const data = await jsonInterface.fetchStatus();
                 setStatus(data);
-            } else {
-                console.error('Failed to fetch status');
+            } catch (error) {
+                console.error('Failed to fetch status:', error);
             }
         };
 
-        fetchStatus(); // Initial fetch
-        const interval = setInterval(fetchStatus, 5000); // Poll every second
+        fetchStatus();
+        const interval = setInterval(fetchStatus, 5000);
 
-        return () => clearInterval(interval); // Cleanup interval on component unmount
-    }, []);
+        return () => clearInterval(interval);
+    }, [jsonInterface]);
 
     // Update Capture image
     React.useEffect(() => {
@@ -103,17 +84,17 @@ export default function Page() {
             if (isMounted) {
                 setCaptureSrc(`http://localhost:5000/video-stream?${Date.now()}`);
             }
-        }, 500);
+        }, 250);
 
         return () => {
-            clearInterval(interval)
+            clearInterval(interval);
             isMounted = false;
         };
     }, []);
 
     // Handle game change
     const handleGameChange = (event: SelectChangeEvent<string>) => {
-        const game = event.target.value as string;
+        const game = event.target.value;
         setSelectedGame(game);
         setSelectedProgram(null); // Reset selected program when game changes
         setSettings({}); // Clear settings when game changes
@@ -127,60 +108,62 @@ export default function Page() {
 
     // Handle setting change
     const handleSettingChange = (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.type === 'number' ? Number(event.target.value) :
+                      event.target.type === 'checkbox' ? event.target.checked :
+                      event.target.value;
         setSettings({
             ...settings,
-            [key]: event.target.value,
+            [key]: value,
         });
     };
 
+    // Save program settings
     const saveSettings = async () => {
         if (selectedProgram) {
-            const response = await fetch('/api/programs/save-settings', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    game: selectedGame,
-                    programId: selectedProgram.id,
-                    updatedSettings: settings,
-                }),
-            });
-
-            if (response.ok) {
-                console.log('Settings Saved');
-            } else {
-                console.log('Settings Not Saved');
+            const confirmSave = window.confirm('Are you sure you want to save the settings?');
+            if (confirmSave) {
+                try {
+                    await jsonInterface.saveSettings(selectedGame, selectedProgram.id, settings);
+                    console.log('Settings Saved');
+                } catch (error) {
+                    console.log('Settings Not Saved');
+                }
             }
         }
     };
 
+    // Start program
     const startProgram = async () => {
         if (selectedProgram) {
             setLoading(true);
-            const response = await fetch('http://localhost:5000/start-program', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    game: selectedGame,
-                    programId: selectedProgram.id,
-                }),
-            });
+            try {
+                const response = await fetch('http://localhost:5000/start-program', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        game: selectedGame,
+                        programId: selectedProgram.id,
+                    }),
+                });
 
-            if (response.ok) {
-                const data: StatusResponse = await response.json();
-                setStatus(data);
-            } else {
-                console.error('Failed to start program');
+                if (response.ok) {
+                    const data: StatusResponse = await response.json();
+                    setStatus(data);
+                } else {
+                    console.error('Failed to start program');
+                }
+            } catch (error) {
+                console.error('Failed to start program', error);
             }
             setLoading(false);
         }
     };
 
+    // Determine if button should be disabled
     const isStatusStartingOrRunning = status && (status.status === 'Starting' || status.status === 'Running');
-    const buttonDisabled = loading || isStatusStartingOrRunning;
+    const buttonDisabled = loading || isStatusStartingOrRunning || false; // Ensure it's a boolean
 
     return (
         <Box
@@ -206,22 +189,24 @@ export default function Page() {
                     overflow: 'hidden',
                     borderRadius: 1,
                     boxShadow: 3,
-                    backgroundColor: 'theme.palette.background.paper',
+                    backgroundColor: theme.palette.background.paper,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                 }}
             >
-                <img src={captureSrc}
-                     alt="Capture Card Unavailable"
-                     style={{
-                         position: 'absolute',
-                         top: 0,
-                         left: 0,
-                         width: '100%',
-                         height: '100%',
-                         objectFit: 'fill'
-                }}/>
+                <img
+                    src={captureSrc}
+                    alt="Capture Card Unavailable"
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover'
+                    }}
+                />
             </Box>
 
             {/* Status Display */}
@@ -261,7 +246,7 @@ export default function Page() {
                                 sx={{
                                     cursor: 'pointer',
                                     '&:hover': {
-                                        backgroundColor: theme.palette.action.hover, // You can change this to any color you prefer
+                                        backgroundColor: theme.palette.action.hover,
                                     },
                                 }}
                             >
@@ -291,7 +276,7 @@ export default function Page() {
                                     sx={{
                                         cursor: 'pointer',
                                         '&:hover': {
-                                            backgroundColor: theme.palette.action.hover, // You can change this to any color you prefer
+                                            backgroundColor: theme.palette.action.hover,
                                         },
                                     }}
                                 >
@@ -323,6 +308,7 @@ export default function Page() {
                                     value={settings[key] || ''}
                                     onChange={handleSettingChange(key)}
                                     sx={{ mb: 2 }}
+                                    type={typeof settings[key] === 'number' ? 'number' : 'text'}
                                 />
                             ))}
 
@@ -340,7 +326,7 @@ export default function Page() {
                                     color="secondary"
                                     onClick={startProgram}
                                     sx={{ display: 'flex', alignItems: 'center' }}
-                                    disabled={buttonDisabled} // Disable the button while loading
+                                    disabled={buttonDisabled} // Ensure buttonDisabled is a boolean
                                 >
                                     {buttonDisabled ? <CircularProgress size={24} /> : 'Start Program'}
                                 </Button>

@@ -1,0 +1,11 @@
+[Unit]
+Description=Initialise USB Gadget mode
+After=network.target
+Before=pibot-backend.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/switch-pibot/services/usbgadget.sh
+
+[Install]
+WantedBy=multi-user.target

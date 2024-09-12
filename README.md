@@ -1,1 +1,1 @@
-# RPi-Switch-Bot
+# switch-pi-bot
