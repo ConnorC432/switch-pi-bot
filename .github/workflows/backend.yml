@@ -1,0 +1,49 @@
+name: Gunicorn backend Action
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+
+jobs:
+  test-gunicorn:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Create .venv
+        run: python -m venv .venv
+
+      - name: Install requirements
+        run: |
+          source .venv/bin/activate
+          pip install --upgrade pip
+
+      - name: Run Gunicorn
+        run: |
+          source .venv/bin/activate
+          gunicorn -w 1 --bind 127.0.0.1:5000 app:app &
+          sleep 10
+
+      - name: Test Gunicorn Process
+        run: |
+          if pgrep gunicorn > /dev/null
+          then
+            exit 0
+          else
+            exit 1
+          fi
+
+      - name: Test Gunicorn API endpoint
+        run: |
+          curl --fail http://127.0.0.1:5000 || exit 1

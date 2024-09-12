@@ -1,0 +1,36 @@
+name: Next.JS frontend action
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+
+jobs:
+  test-node:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Next.js
+        run: npm run build
+
+      - name: Start Next.js
+        run: npm start
+
+      - name: Test endpoint
+        run: |
+          curl --fail http://127.0.0.1:3000/ || exit 1
