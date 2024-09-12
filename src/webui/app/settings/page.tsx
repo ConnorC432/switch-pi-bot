@@ -113,8 +113,6 @@ export default function Page() {
                 throw new Error('Failed to save settings');
             }
 
-            // Optionally handle state update or show success message instead of reload
-            alert('Settings saved successfully');
         } catch (error) {
             alert('Error saving settings: ' + error.message);
         }

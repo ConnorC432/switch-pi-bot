@@ -35,7 +35,10 @@ python3 -m venv /opt/switch-pi-bot/src/switch-control/.venv
 EOF
 
 #NPM Build
-sudo -u pibot -g pibot npm --prefix /opt/switch-pi-bot/src/webui/app run build
+sudo -u pibot -g pibot bash <<EOF
+npm --prefix /opt/switch-pi-bot/src/webui/app install
+npm --prefix /opt/switch-pi-bot/src/webui/app run build
+EOF
 
 #Systemd service files
 cp /opt/switch-pi-bot/services/*.service /etc/systemd/system
