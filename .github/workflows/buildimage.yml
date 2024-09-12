@@ -41,12 +41,17 @@ jobs:
           wpa-essid: ''
           wpa-password: ''
 
+      - name: Get Release Details
+        run: |
+          TITLE=$(head -n 1 ./switch-pi-bot/changelog.txt)
+          echo "RELEASE_TITLE=$TITLE" >> $GITHUB_ENV
+
       - name: Create Release
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: 'true'
-          title: ${{ github.ref }}
+          title: ${{ env.RELEASE_TITLE }}
           files: |
             ./deploy/*.img.xz
             ./switch-pi-bot/changelog.txt
