@@ -1,12 +1,12 @@
 {
-  "status": "Error",
+  "status": "Finished",
   "currentGame": {
     "id": "templates",
     "name": "templates"
   },
   "currentProgram": {
     "id": 1,
-    "name": "basicprogram",
+    "name": "capturevideo",
     "settings": {
       "WaitTime": "3",
       "ExitStatus": "True"

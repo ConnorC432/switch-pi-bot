@@ -2,7 +2,6 @@ import json
 import os
 import subprocess
 
-
 class ProgramRunner:
     def __init__(self):
         # Define base directory for the scripts (adjust as necessary)
@@ -63,8 +62,8 @@ class ProgramRunner:
             status_data = self._read_file(self.status_file_path)
             programs_data = self._read_file(self.programs_file_path)
 
-            if status_data.get('status') == ' Running':
-                return {'A program is already running.'}, 400
+            if status_data.get('status') == 'Running':
+                return {'error': 'A program is already running.'}, 400
 
             print(f"Starting program with game={game} and program_id={program_id}")
 
@@ -79,6 +78,8 @@ class ProgramRunner:
                 error_message = f"Program not found: {program_id}"
                 print(error_message)
                 return {'error': error_message}, 404
+
+            print(f"Found program: {program}")
 
             status_data['currentGame'] = {'id': game, 'name': game}
             status_data['currentProgram'] = {
@@ -96,6 +97,7 @@ class ProgramRunner:
                 return {'error': error_message}, 404
 
             settings_args = [f'{key}={value}' for key, value in program.get('settings', {}).items()]
+            print(f"Settings arguments: {settings_args}")
             self._update_status('Running')
 
             return_code, stdout, stderr = self._run_script(script_path, settings_args)

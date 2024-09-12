@@ -111,6 +111,8 @@ export default function Page() {
             if (!response.ok) {
                 throw new Error('Failed to save settings');
             }
+
+            window.location.reload()
         } catch (error) {
             alert('Error saving settings: ' + error.message);
         }
@@ -159,9 +161,6 @@ export default function Page() {
                 px: 2
             }}
         >
-            <Typography variant="h4" gutterBottom>
-                Settings
-            </Typography>
 
             {Object.keys(settingsGroups).map((group) => (
                 <Accordion key={group} sx={{ mt: 2, width: '100%' }}>

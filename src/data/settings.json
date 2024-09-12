@@ -14,12 +14,8 @@
   "Pi Settings": [
     {
       "name": "Capture Card Device",
-      "type": "combo",
-      "value": "/dev/video0",
-      "options": [
-        "/dev/video0",
-        "/dev/video1"
-      ]
+      "type": "text",
+      "value": "/dev/video0"
     }
   ]
 }

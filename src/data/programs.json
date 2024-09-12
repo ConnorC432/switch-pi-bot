@@ -13,7 +13,7 @@
       "name": "capturevideo",
       "settings": {
         "Image": "violet.png",
-        "WaitTime": "5"
+        "WaitTime": "30"
       }
     },
     {

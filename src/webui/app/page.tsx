@@ -57,6 +57,36 @@ export default function Page() {
         fetchData();
     }, [selectedGame]);
 
+    /*
+    React.useEffect(() => {
+        async function initAccordion() {
+            try {
+                const initStatus = await jsonInterface.fetchStatus();
+                const currentGameName = initStatus.currentGame?.name || '';
+
+                // Ensure handleGameChange is called with the correct format
+                handleGameChange({ target: { value: currentGameName } } as SelectChangeEvent<string>);
+
+                const currentProgram = initStatus.currentProgram || null;
+                if (currentProgram) {
+                    // Handle program change with the correct object type
+                    handleProgramChange(currentProgram);
+
+                    // Update settings with the current program settings
+                    const currentProgramSettings = currentProgram.settings || {};
+                    setSettings(currentProgramSettings);
+                } else {
+                    // Clear settings if no program
+                    setSettings({});
+                }
+            } catch (error) {
+                console.error('Failed to initialize accordion:', error);
+            }
+        }
+
+        initAccordion();
+    }, []);*/
+
     // Poll the status every 5 seconds
     React.useEffect(() => {
         const fetchStatus = async () => {
@@ -65,10 +95,10 @@ export default function Page() {
                 setStatus(data);
 
                 // Update selectedGame and selectedProgram based on status
-                if (data.status === 'Running') {
+                /*if (data.status === 'Running') {
                     setSelectedGame(data.currentGame?.name || '');
                     setSelectedProgram(data.currentProgram || null);
-                }
+                }*/
             } catch (error) {
                 console.error(error);
             }
