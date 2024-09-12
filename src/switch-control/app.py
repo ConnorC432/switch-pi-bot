@@ -36,9 +36,10 @@ def load_capture_card_device_config(capture_device):
         print(f"Error loading JSON config: {e}")
         return None
 
-use_capture_card = os.getenv('DISABLE_CAPTURE_CARD', 'True') == 'True'
 
-if not use_capture_card:
+use_capture_card = os.getenv('DISABLE_CAPTURE_CARD', 'False').lower() != 'true'
+
+if use_capture_card:
     try:
         # Load the capture card device number from settings.json
         json_file_path = os.path.join(os.getcwd(), '../data/settings.json')
@@ -52,6 +53,8 @@ if not use_capture_card:
             print("Capture Card device not found or invalid in JSON configuration.")
     except (ValueError, FileNotFoundError) as e:
         print(f"Capture Card error: {e} - will not be initialized")
+else:
+    print("Capture Card loading is disabled via environment variable.")
 
 
 @app.route('/start-program', methods=['POST'])
@@ -75,6 +78,11 @@ def video_stream():
         return Response(capture_card.get_stream(), mimetype='multipart/x-mixed-replace; boundary=frame')
     else:
         return jsonify({'Error': 'No capture card initialised'}), 503
+
+
+@app.route('/test-action')
+def test_action():
+    return jsonify({'Success': 'Gunicorn can be accessed'}), 200
 
 
 def cleanup():

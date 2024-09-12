@@ -1,4 +1,4 @@
-name: Gunicorn backend Action
+name: Test Next.JS and Gunicorn Web App
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
   test-gunicorn:
     runs-on: ubuntu-latest
     env:
-      DISABLE_CAPTURE_CARD: "True"
+      DISABLE_CAPTURE_CARD: "true"
 
     steps:
       - name: Checkout
@@ -40,8 +40,34 @@ jobs:
 
       - name: Test Gunicorn API endpoint
         run: |
-          curl --fail http://127.0.0.1:5000/ || exit 1
+          curl --fail http://127.0.0.1:5000/test-action || exit 1
 
-      - name: Check Gunicorn Logs
+  test-node:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./src/webui/
+
+      - name: Build Next.js
+        run: npm run build
+        working-directory: ./src/webui
+
+      - name: Start Next.js
         run: |
-          cat ./src/switch-control/gunicorn.log
+          npm start &
+          sleep 10
+        working-directory: ./src/webui
+
+      - name: Test endpoint
+        run: |
+          curl --fail http://127.0.0.1:3000/ || exit 1
