@@ -1,9 +1,11 @@
-name: Build RPi image
+name: Build New Release
 
 on:
   push:
     branches:
-      - "main"
+      - 'main'
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 
@@ -16,7 +18,7 @@ jobs:
         with:
           path: 'switch-pi-bot'
 
-      - name: Build Image
+      - name: Build Pi Image
         uses: usimd/pi-gen-action@v1
         with:
           verbose-output: 'false'
@@ -38,3 +40,13 @@ jobs:
           wpa-country: ''
           wpa-essid: ''
           wpa-password: ''
+
+      - name: Create Release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: 'true'
+          title: ${{ github.ref }}
+          files: |
+            ./deploy/*.img.xz
+            ./switch-pi-bot/changelog.txt
