@@ -31,7 +31,9 @@ jobs:
         working-directory: ./src/webui
 
       - name: Start Next.js
-        run: npm start
+        run: |
+          npm start &
+          sleep 10
         working-directory: ./src/webui
 
       - name: Test endpoint
