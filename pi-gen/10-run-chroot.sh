@@ -1,20 +1,17 @@
 #!/bin/bash
 
-if [[ $EUID -ne 0 ]]; then
-  echo "This script must be run as root"
-  exit 1
-fi
-
-#Install required packages
-apt update
-apt upgrade -y
-apt install -y python3 nodejs npm tesseract-ocr
+#Clone Repo
+echo "Cloning Git Repository"
+git clone https://github.com/ConnorC432/switch-pi-bot.git /opt/switch-pi-bot
+chmod -vR 750
 
 #Create User/Group
+echo "Creating User and Group for Services"
 groupadd -g 500 pibot
 useradd -u 500 -g 500 -m -s /bin/bash pibot
 
 #load kernel modules
+echo "Enabling USB HID Gadget Mode"
 cat <<EOF >> /etc/modules
 libcomposite
 dwc2
@@ -25,22 +22,25 @@ EOF
 sed -i '/\[cm5\]/,/^$/s/dr_mode=host/dr_mode=peripheral/' /boot/firmware/config.txt
 
 #Set Permissions
-chown -R pibot:pibot /opt/switch-pi-bot
-chmod -R 770 /opt/switch-pi-bot
+chown -vR pibot:pibot /opt/switch-pi-bot
+chmod -vR 770 /opt/switch-pi-bot
 
 #Create .venv for python backend
+echo "Creating Virtual Environment for Python backend"
 sudo -u pibot -g pibot bash <<EOF
 python3 -m venv /opt/switch-pi-bot/src/switch-control/.venv
 /opt/switch-pi-bot/src/switch-control/.venv/bin/pip install -r /opt/switch-pi-bot/requirements.txt
 EOF
 
 #NPM Build
+echo "Building Next.JS frontend"
 sudo -u pibot -g pibot bash <<EOF
 npm --prefix /opt/switch-pi-bot/src/webui/app install
 npm --prefix /opt/switch-pi-bot/src/webui/app run build
 EOF
 
 #Systemd service files
+echo "Importing Systemd service files"
 cp /opt/switch-pi-bot/services/*.service /etc/systemd/system
 systemctl daemon-reload
 systemctl enable usbgadget.service pibot-backend.service pibot-frontend.service

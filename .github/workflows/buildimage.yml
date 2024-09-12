@@ -16,6 +16,12 @@ jobs:
         with:
           path: 'switch-pi-bot'
 
+      - name: Import Custom Build Stage
+        run: |
+          mkdir -P ./pi-gen/post-stage
+          cp -v ./switch-pi-bot/pi-gen/* ./pi-gen/post-stage/
+          chmod +x -vR ./pi-gen/post-stage
+
       - name: Build Image
         uses: usimd/pi-gen-action@v1
         with:
@@ -34,7 +40,7 @@ jobs:
           pi-gen-repository: 'RPi-Distro/pi-gen'
           pi-gen-version: 'arm64'
           release: 'bookworm'
-          stage-list: 'stage0 stage1 stage2'
+          stage-list: 'stage0 stage1 stage2 post-stage'
           wpa-country: ''
           wpa-essid: ''
           wpa-password: ''
