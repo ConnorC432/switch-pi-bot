@@ -1,4 +1,4 @@
-name: Test Next.JS and Gunicorn Web App
+name: Test Web App
 
 on:
   push:
@@ -45,7 +45,7 @@ jobs:
         run: |
           curl --fail http://127.0.0.1:5000/test-action || exit 1
 
-  test-node:
+  test-next-js:
     runs-on: ubuntu-latest
 
     steps:

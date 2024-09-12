@@ -1,0 +1,46 @@
+name: Build RPi image
+
+on:
+  push:
+    branches:
+      - "main"
+  workflow_dispatch:
+
+
+jobs:
+  build-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: 'switch-pi-bot'
+
+      - name: Import Custom Build Stage
+        run: |
+          mkdir ./pi-gen/post-stage
+          cp -v ./switch-pi-bot/pi-gen/* ./pi-gen/post-stage/
+          chmod +x -vR ./pi-gen/post-stage
+
+      - name: Build Image
+        uses: usimd/pi-gen-action@v1
+        with:
+          verbose-output: 'true'
+          compression: 'xz'
+          compression-level: '9'
+          disable-first-boot-user-rename: '0'
+          enable-noobs: 'false'
+          enable-ssh: '0'
+          github-token: '${{ github.token }}'
+          hostname: 'pibot'
+          image-name: 'switch-pibot'
+          username: 'pi'
+          password: ''
+          pi-gen-dir: 'pi-gen'
+          pi-gen-repository: 'RPi-Distro/pi-gen'
+          pi-gen-version: 'arm64'
+          release: 'bookworm'
+          stage-list: 'stage0 stage1 stage2'
+          wpa-country: ''
+          wpa-essid: ''
+          wpa-password: ''
