@@ -1,0 +1,3 @@
+Created Web UI
+Added template automation programs
+Text / Image recognition
