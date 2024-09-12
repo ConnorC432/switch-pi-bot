@@ -1,0 +1,73 @@
+name: Test Next.JS and Gunicorn Web App
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+    branches:
+      - '!main'
+
+
+jobs:
+  test-gunicorn:
+    runs-on: ubuntu-latest
+    env:
+      DISABLE_CAPTURE_CARD: "true"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Create .venv
+        run: python -m venv .venv
+
+      - name: Install requirements
+        run: |
+          source .venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Run Gunicorn
+        run: |
+          source ../../.venv/bin/activate
+          gunicorn -w 1 --bind 0.0.0.0:5000 app:app &
+          sleep 10
+        working-directory: ./src/switch-control
+
+      - name: Test endpoint
+        run: |
+          curl --fail http://127.0.0.1:5000/test-action || exit 1
+
+  test-node:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./src/webui/
+
+      - name: Build Next.js
+        run: npm run build
+        working-directory: ./src/webui
+
+      - name: Start Next.js
+        run: |
+          npm start &
+          sleep 10
+        working-directory: ./src/webui
+
+      - name: Test endpoint
+        run: |
+          curl --fail http://127.0.0.1:3000/ || exit 1
