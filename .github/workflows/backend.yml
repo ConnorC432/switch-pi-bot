@@ -27,13 +27,14 @@ jobs:
       - name: Install requirements
         run: |
           source .venv/bin/activate
-          pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: Run Gunicorn
         run: |
-          source .venv/bin/activate
+          source ../../venv/bin/activate
           gunicorn -w 1 --bind 127.0.0.1:5000 app:app &
           sleep 10
+        working-directory: ./src/switch-control
 
       - name: Test Gunicorn API endpoint
         run: |

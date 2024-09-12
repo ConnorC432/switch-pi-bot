@@ -24,12 +24,15 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+        working-directory: ./src/webui/
 
       - name: Build Next.js
         run: npm run build
+        working-directory: ./src/webui
 
       - name: Start Next.js
         run: npm start
+        working-directory: ./src/webui
 
       - name: Test endpoint
         run: |
