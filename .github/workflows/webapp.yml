@@ -1,12 +1,12 @@
 name: Test Next.JS and Gunicorn Web App
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
+    types:
+      - opened
+      - reopened
     branches:
-      - main
+      - '!main'
 
 
 jobs:
@@ -35,10 +35,10 @@ jobs:
         run: |
           source ../../.venv/bin/activate
           gunicorn -w 1 --bind 0.0.0.0:5000 app:app &
-          sleep 30
+          sleep 10
         working-directory: ./src/switch-control
 
-      - name: Test Gunicorn API endpoint
+      - name: Test endpoint
         run: |
           curl --fail http://127.0.0.1:5000/test-action || exit 1
 
