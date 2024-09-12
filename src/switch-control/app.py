@@ -36,20 +36,22 @@ def load_capture_card_device_config(capture_device):
         print(f"Error loading JSON config: {e}")
         return None
 
+use_capture_card = os.getenv('DISABLE_CAPTURE_CARD', 'True') == 'True'
 
-try:
-    # Load the capture card device number from settings.json
-    json_file_path = os.path.join(os.getcwd(), '../data/settings.json')
-    capture_device_number = load_capture_card_device_config(json_file_path)
+if not use_capture_card:
+    try:
+        # Load the capture card device number from settings.json
+        json_file_path = os.path.join(os.getcwd(), '../data/settings.json')
+        capture_device_number = load_capture_card_device_config(json_file_path)
 
-    if capture_device_number is not None:
-        # Initialize the capture card with the extracted video device number
-        capture_card = CaptureCard(capture_device_number)
-        print(f"Capture Card initialized with /dev/video{capture_device_number}")
-    else:
-        print("Capture Card device not found or invalid in JSON configuration.")
-except (ValueError, FileNotFoundError) as e:
-    print(f"Capture Card error: {e} - will not be initialized")
+        if capture_device_number is not None:
+            # Initialize the capture card with the extracted video device number
+            capture_card = CaptureCard(capture_device_number)
+            print(f"Capture Card initialized with /dev/video{capture_device_number}")
+        else:
+            print("Capture Card device not found or invalid in JSON configuration.")
+    except (ValueError, FileNotFoundError) as e:
+        print(f"Capture Card error: {e} - will not be initialized")
 
 
 @app.route('/start-program', methods=['POST'])

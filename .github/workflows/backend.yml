@@ -12,6 +12,8 @@ on:
 jobs:
   test-gunicorn:
     runs-on: ubuntu-latest
+    env:
+      DISABLE_CAPTURE_CARD: "True"
 
     steps:
       - name: Checkout
