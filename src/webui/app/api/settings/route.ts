@@ -8,7 +8,7 @@ const jsonFilePath = path.join(process.cwd(), '../data/settings.json');
 // Define TypeScript interfaces
 interface Setting {
     name: string;
-    value: any;
+    value: string | number | boolean; // More specific types instead of any
 }
 
 interface SettingsGroup {
@@ -34,10 +34,10 @@ export async function GET(request: NextRequest) {
 }
 
 // POST /api/settings - Update settings
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
     try {
         // Parse request body
-        const updatedSettings: UpdatedSettings = await request.json();
+        const updatedSettings: UpdatedSettings = await _request.json();
 
         // Log received data for debugging
         console.log('Request received:', updatedSettings);

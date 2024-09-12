@@ -2,39 +2,50 @@ import { NextResponse, NextRequest } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
-// Adjust the path if needed
+// Define the path to the programs JSON file
 const jsonFilePath = path.join(process.cwd(), '../data/programs.json');
+
+// Define the structure of a setting
+interface Setting {
+    [key: string]: string;
+}
+
+// Define the structure of a template
+interface Template {
+    id: number;
+    name: string;
+    settings: Setting;
+}
+
+// Define the structure of the JSON data
+interface ProgramData {
+    templates: Template[];
+}
 
 export async function POST(request: NextRequest) {
     try {
         // Parse request body
-        const { game, programId, updatedSettings } = await request.json();
+        const { programId, updatedSettings } = await request.json();
 
         // Log received data for debugging
-        console.log('Request received:', { game, programId, updatedSettings });
+        console.log('Request received:', { programId, updatedSettings });
 
         // Read existing JSON data
-        const jsonData = JSON.parse(fs.readFileSync(jsonFilePath, 'utf8'));
+        const jsonData: ProgramData = JSON.parse(fs.readFileSync(jsonFilePath, 'utf8'));
 
-        // Check if the game exists in the JSON
-        if (jsonData[game]) {
-            // Find the program by id in the game array
-            const programIndex = jsonData[game].findIndex((program: any) => program.id === programId);
+        // Find the program by id in the templates array
+        const templateIndex = jsonData.templates.findIndex((template) => template.id === programId);
 
-            if (programIndex !== -1) {
-                // Update the settings of the found program
-                jsonData[game][programIndex].settings = updatedSettings;
+        if (templateIndex !== -1) {
+            // Update the settings of the found template
+            jsonData.templates[templateIndex].settings = updatedSettings;
 
-                // Write updated data back to JSON file
-                fs.writeFileSync(jsonFilePath, JSON.stringify(jsonData, null, 2), 'utf8');
-                return NextResponse.json({ message: 'Program settings saved successfully.' });
-            } else {
-                console.error('Program not found:', programId);
-                return NextResponse.json({ message: 'Program not found.' }, { status: 404 });
-            }
+            // Write updated data back to JSON file
+            fs.writeFileSync(jsonFilePath, JSON.stringify(jsonData, null, 2), 'utf8');
+            return NextResponse.json({ message: 'Program settings saved successfully.' });
         } else {
-            console.error('Game not found:', game);
-            return NextResponse.json({ message: 'Game not found.' }, { status: 404 });
+            console.error('Program not found:', programId);
+            return NextResponse.json({ message: 'Program not found.' }, { status: 404 });
         }
     } catch (error) {
         console.error('Error saving settings:', error);

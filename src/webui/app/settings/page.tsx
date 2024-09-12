@@ -9,8 +9,10 @@ import {
     AccordionSummary,
     TextField,
     Button,
-    useTheme,
-    CircularProgress
+    CircularProgress,
+    Select,
+    MenuItem,
+    SelectChangeEvent
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
@@ -30,7 +32,6 @@ export default function Page() {
     const [updatedSettings, setUpdatedSettings] = React.useState<{ [key: string]: string }>({});
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState<string | null>(null);
-    const theme = useTheme();
 
     // Fetch settings data from API
     React.useEffect(() => {
@@ -71,7 +72,7 @@ export default function Page() {
     };
 
     // Handle setting change for select fields
-    const handleSelectSettingChange = (group: string, name: string) => (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleSelectSettingChange = (group: string, name: string) => (event: SelectChangeEvent<string>) => {
         setUpdatedSettings(prevSettings => ({
             ...prevSettings,
             [`${group}.${name}`]: event.target.value,
@@ -112,7 +113,8 @@ export default function Page() {
                 throw new Error('Failed to save settings');
             }
 
-            window.location.reload()
+            // Optionally handle state update or show success message instead of reload
+            alert('Settings saved successfully');
         } catch (error) {
             alert('Error saving settings: ' + error.message);
         }
@@ -161,7 +163,6 @@ export default function Page() {
                 px: 2
             }}
         >
-
             {Object.keys(settingsGroups).map((group) => (
                 <Accordion key={group} sx={{ mt: 2, width: '100%' }}>
                     <AccordionSummary
@@ -197,39 +198,18 @@ export default function Page() {
                                         sx={{ flexGrow: 1 }}
                                     />
                                 )}
-                                {setting.type === 'dropdown' && setting.options && (
-                                    <TextField
-                                        select
+                                {(setting.type === 'dropdown' || setting.type === 'combo') && setting.options && (
+                                    <Select
                                         value={updatedSettings[`${group}.${setting.name}`] || ''}
                                         onChange={handleSelectSettingChange(group, setting.name)}
                                         sx={{ flexGrow: 1 }}
-                                        SelectProps={{
-                                            native: true,
-                                        }}
                                     >
                                         {setting.options.map((option) => (
-                                            <option key={option} value={option}>
+                                            <MenuItem key={option} value={option}>
                                                 {option}
-                                            </option>
+                                            </MenuItem>
                                         ))}
-                                    </TextField>
-                                )}
-                                {setting.type === 'combo' && setting.options && (
-                                    <TextField
-                                        select
-                                        value={updatedSettings[`${group}.${setting.name}`] || ''}
-                                        onChange={handleSelectSettingChange(group, setting.name)}
-                                        sx={{ flexGrow: 1 }}
-                                        SelectProps={{
-                                            native: true,
-                                        }}
-                                    >
-                                        {setting.options.map((option) => (
-                                            <option key={option} value={option}>
-                                                {option}
-                                            </option>
-                                        ))}
-                                    </TextField>
+                                    </Select>
                                 )}
                             </Box>
                         ))}

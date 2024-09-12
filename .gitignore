@@ -164,7 +164,6 @@ db.sqlite3-journal
 
 # Flask stuff:
 instance/
-.webassets-cache
 
 # Scrapy stuff:
 .scrapy
@@ -221,7 +220,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
 web/.venv
 env/
 venv/
@@ -260,11 +258,8 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-!/src/usb-gadget/*.sh
-!/src/switch-control/test/.sh### VirtualEnv template
 # Virtualenv
 # http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
-.Python
 [Bb]in
 [Ii]nclude
 [Ll]ib
@@ -275,3 +270,4 @@ pyvenv.cfg
 .venv
 pip-selfcheck.json
 
+!/*.sh

@@ -1,0 +1,17 @@
+[Unit]
+Description=Gunicorn service for pi bot backend
+After=network.target
+After=usbgadget.service
+Requires=usbgadget.service
+
+[Service]
+User=pibot
+Group=pibot
+WorkingDirectory=/opt/switch-pi-bot/switch-control
+ExecStart=/opt/switch-pi-bot/src/switch-control/.venv/bin/gunicorn -w 1 --bind 127.0.0.1:5000 app:app
+Restart=on-failure
+KillMode=process
+TimeoutSec=30
+
+[Install]
+WantedBy=multi-user.target

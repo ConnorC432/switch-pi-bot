@@ -1,9 +1,12 @@
 "use client";
 
+// Define more specific types
+export type SettingValue = string | number | boolean;
+
 export interface Program {
     id: number;
     name: string;
-    settings: { [key: string]: any };
+    settings: { [key: string]: SettingValue };
 }
 
 export interface StatusResponse {
@@ -15,7 +18,7 @@ export interface StatusResponse {
     currentProgram?: {
         id: number;
         name: string;
-        settings: { [key: string]: any };
+        settings: { [key: string]: SettingValue };
     };
 }
 
@@ -49,7 +52,7 @@ export class JSONInterface {
     }
 
     // Save the updated settings for a selected program
-    async saveSettings(game: string, programId: number, updatedSettings: { [key: string]: any }): Promise<void> {
+    async saveSettings(game: string, programId: number, updatedSettings: { [key: string]: SettingValue }): Promise<void> {
         try {
             const response = await fetch('/api/programs/save-settings', {
                 method: 'POST',

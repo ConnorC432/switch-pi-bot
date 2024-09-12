@@ -33,7 +33,6 @@ const menuItems = [
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     const [isDarkMode, setDarkMode] = React.useState(false);
     const [mobileOpen, setMobileOpen] = React.useState(false);
-    const [themeSetting, setThemeSetting] = React.useState<string | null>(null);
     const theme = useTheme(); // Use the theme
 
     // Fetch settings from the API
@@ -44,11 +43,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 if (!response.ok) {
                     throw new Error('Failed to fetch settings');
                 }
-                const settings = await response.json();
+                const settings: { [key: string]: { name: string; value: string }[] } = await response.json();
                 const userPreferences = settings['User Preferences'] || [];
-                const themeSetting = userPreferences.find((setting: any) => setting.name === 'Theme');
+                const themeSetting = userPreferences.find((setting) => setting.name === 'Theme');
                 if (themeSetting) {
-                    setThemeSetting(themeSetting.value);
                     setDarkMode(themeSetting.value === 'Dark');
                 }
             } catch (error) {
@@ -57,7 +55,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         };
 
         fetchSettings();
-    }, []);
+    }, []); // Dependency array is empty, which is correct here
 
     // Toggle theme handler
     const handleThemeToggle = async () => {
