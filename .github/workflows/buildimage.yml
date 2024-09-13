@@ -19,7 +19,7 @@ jobs:
       - name: Build Pi Image
         uses: usimd/pi-gen-action@v1
         with:
-          verbose-output: 'false'
+          verbose-output: 'true'
           compression: 'xz'
           compression-level: '9'
           disable-first-boot-user-rename: '0'
