@@ -55,6 +55,7 @@ jobs:
           mv extra/config.txt config
           TITLE=$(head -n 1 extra/changelog.txt)
           echo "IMG_NAME='switch-pi-bot-${TITLE}'" >> config
+          cat config
           rm -f stage2/EXPORT*
           rm -rf stage3
           rm -rf stage4
