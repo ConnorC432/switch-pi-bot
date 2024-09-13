@@ -18,7 +18,7 @@ jobs:
 
       - name: Create Custom pi-gen Stage
         run: |
-          mkdir -p post-stage &&
+          mkdir -p ${{ github.workspace }}/pi-gen/post-stage &&
           {
           cat > post-stage/00-prerun.sh <<-EOF
           #!/bin/bash
