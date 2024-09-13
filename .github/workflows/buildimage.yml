@@ -48,7 +48,7 @@ jobs:
 
       - name: Get Release Details
         run: |
-          TITLE=$(head -n 1 ./changelog.txt)
+          TITLE=$(head -n 1 changelog.txt)
           echo "RELEASE_TITLE=$TITLE" >> $GITHUB_ENV
 
       - name: Modify pi-gen
@@ -61,7 +61,7 @@ jobs:
 
       - name: Build Image
         run: |
-          CONTINUE=1 ./build-docker.sh
+          CONTINUE=1 build-docker.sh
 
       - name: Create Release
         uses: marvinpinto/action-automatic-releases@latest
@@ -70,5 +70,5 @@ jobs:
           prerelease: 'true'
           title: ${{ env.RELEASE_TITLE }}
           files: |
-            ./deploy/*.img.xz
-            ./changelog.txt
+            deploy/*.img.xz
+            changelog.txt
