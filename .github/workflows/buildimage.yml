@@ -16,6 +16,17 @@ jobs:
         with:
           path: 'switch-pi-bot'
 
+      - name: Create Custom pi-gen Stage
+        run: |
+          mkdir -p post-stage &&
+          {
+          cat > poststage/00-prerun.sh <<-EOF
+          #!/bin/bash
+          cp -r ${{ github.workspace }}/switch-pi-bot/pi-gen/* ${{ github.workspace }}/pi-gen/post-stage/
+          EOF
+          } &&
+          chmod -R +x ${{ github.workspace }}/pi-gen/post-stage
+
       - name: Build Pi Image
         uses: usimd/pi-gen-action@v1
         with:
@@ -30,11 +41,11 @@ jobs:
           image-name: 'switch-pibot'
           username: 'pi'
           password: ''
-          pi-gen-dir: ''
+          pi-gen-dir: 'pi-gen'
           pi-gen-repository: 'RPi-Distro/pi-gen'
           pi-gen-version: 'arm64'
           release: 'bookworm'
-          stage-list: 'stage0 stage1 stage2 switch-pi-bot/pi-gen'
+          stage-list: 'stage0 stage1 stage2 post-stage'
           wpa-country: ''
           wpa-essid: ''
           wpa-password: ''
