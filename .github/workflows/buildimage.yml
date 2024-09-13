@@ -30,14 +30,20 @@ jobs:
           repository: 'RPi-Distro/pi-gen'
           ref: bullseye-arm64
 
+      - name: ls
+        run: ls -alr
+
       - name: Checkout Custom Post-Stage
         uses: actions/checkout@v4
         with:
-          path: 'post-stage'
+          path: 'build/post-stage'
           sparse-checkout: |
             10-packages
             20-run-chroot.sh
             EXPORT_IMAGE
+
+      - name: ls
+        run: ls -alr
 
       - name: Import Extra Files
         uses: actions/checkout@v4
@@ -45,6 +51,9 @@ jobs:
           sparse-checkout: |
             changelog.txt
             config
+
+      - name: ls
+        run: ls -alr
 
       - name: Get Release Details
         run: |
