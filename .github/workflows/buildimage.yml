@@ -33,14 +33,12 @@ jobs:
       - name: ls
         run: ls -alr
 
-      - name: Checkout Custom Post-Stage
+      - name: Clone Custom Post-Stage
         uses: actions/checkout@v4
         with:
-          path: 'build/post-stage'
+          path: 'post-stage'
           sparse-checkout: |
-            10-packages
-            20-run-chroot.sh
-            EXPORT_IMAGE
+            pi-gen
 
       - name: ls
         run: ls -alr
@@ -50,7 +48,7 @@ jobs:
         with:
           sparse-checkout: |
             changelog.txt
-            config
+            config.txt
 
       - name: ls
         run: ls -alr
@@ -62,6 +60,7 @@ jobs:
 
       - name: Modify pi-gen
         run: |
+          mv config.txt config
           echo "IMG_NAME=switch-pi-bot-${{ env.RELEASE_TITLE }}" >> config
           rm -f stage2/EXPORT*
           rm -rf stage3
