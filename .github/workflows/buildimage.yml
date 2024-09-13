@@ -18,6 +18,14 @@ jobs:
 
       - name: Create Custom pi-gen Stage
         run: |
+          mkdir -p pre-stage &&
+          {
+          cat > pre-stage/00-prerun.sh <<-EOF
+          #!/bin/bash
+          rm -f ${{ github.workspace }}/${{ inputs.custom-pi-gen-dir }}/stage2/EXPORT*
+          EOF
+          } &&
+          chmod -R +x pre-stage &&
           mkdir -p post-stage &&
           cp -r ${{ github.workspace }}/switch-pi-bot/pi-gen/* post-stage/ &&
           ls -alr post-stage
@@ -39,9 +47,9 @@ jobs:
           password: ''
           pi-gen-dir: 'pi-gen'
           pi-gen-repository: 'RPi-Distro/pi-gen'
-          pi-gen-version: 'arm64'
+          pi-gen-version: 'bullseye-arm64'
           release: 'bookworm'
-          stage-list: 'stage0 stage1 stage2 post-stage'
+          stage-list: 'pre-stage stage0 stage1 stage2 post-stage'
           wpa-country: ''
           wpa-essid: ''
           wpa-password: ''
