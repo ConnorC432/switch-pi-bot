@@ -49,6 +49,7 @@ jobs:
         run: |
           TITLE=$(head -n 1 extra/changelog.txt)
           echo "RELEASE_TITLE=$TITLE" >> $GITHUB_ENV
+          cat extra/changelog.txt
 
       - name: Modify pi-gen
         run: |
