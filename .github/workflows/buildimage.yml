@@ -17,7 +17,7 @@ jobs:
           sudo apt upgrade -y
           sudo apt install -y coreutils quilt parted qemu-user-static debootstrap zerofree zip \
           dosfstools libarchive-tools libcap2-bin grep rsync xz-utils file git curl bc \
-          qemu-utils kpartx gpg pigz docker.io
+          qemu-utils kpartx gpg pigz
 
       - name: Enable ARM Interpreter
         run: |
@@ -30,34 +30,39 @@ jobs:
           repository: 'RPi-Distro/pi-gen'
           ref: bullseye-arm64
 
-      - name: Checkout Custom Post-Stage
+      - name: Clone Custom Post-Stage
         uses: actions/checkout@v4
         with:
           path: 'post-stage'
           sparse-checkout: |
-            10-packages
-            20-run-chroot.sh
-            EXPORT_IMAGE
+            pi-gen
 
       - name: Import Extra Files
         uses: actions/checkout@v4
         with:
+          path: 'extra'
           sparse-checkout: |
             changelog.txt
-            config
+            config.txt
 
       - name: Get Release Details
         run: |
-          TITLE=$(head -n 1 ./changelog.txt)
+          TITLE=$(head -n 1 extra/changelog.txt)
           echo "RELEASE_TITLE=$TITLE" >> $GITHUB_ENV
+          cat extra/changelog.txt
 
       - name: Modify pi-gen
         run: |
-          echo "IMG_NAME=switch-pi-bot-${{ env.RELEASE_TITLE }} >> config
+          mv extra/config.txt config
+          TITLE=$(head -n 1 extra/changelog.txt)
+          echo "" >> config
+          echo "IMG_NAME='switch-pi-bot-${TITLE}'" >> config
+          cat config
           rm -f stage2/EXPORT*
           rm -rf stage3
           rm -rf stage4
           rm -rf stage5
+          chmod -R +x post-stage
 
       - name: Build Image
         run: |
@@ -70,5 +75,5 @@ jobs:
           prerelease: 'true'
           title: ${{ env.RELEASE_TITLE }}
           files: |
-            ./deploy/*.img.xz
-            ./changelog.txt
+            deploy/*.img.xz
+            extra/changelog.txt
