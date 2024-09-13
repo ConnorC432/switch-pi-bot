@@ -61,6 +61,7 @@ jobs:
 
       - name: Build Image
         run: |
+          ls -alr
           CONTINUE=1 build-docker.sh
 
       - name: Create Release
