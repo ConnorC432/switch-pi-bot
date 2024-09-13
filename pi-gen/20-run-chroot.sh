@@ -80,7 +80,7 @@ dtoverlay=dwc2,dr_mode=peripheral
 EOF
 )
 
-echo "$CONFIG" | tee /etc/modules > /dev/null
+echo "$CONFIG" | tee /boot/firmware/config.txt > /dev/null
 
 #Change usb controller to peripheral mode
 #sed -i '/\[cm5\]/,/^$/s/dr_mode=host/dr_mode=peripheral/' /boot/firmware/config.txt
