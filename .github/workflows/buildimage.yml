@@ -30,18 +30,12 @@ jobs:
           repository: 'RPi-Distro/pi-gen'
           ref: bullseye-arm64
 
-      - name: ls
-        run: ls -alr
-
       - name: Clone Custom Post-Stage
         uses: actions/checkout@v4
         with:
           path: 'post-stage'
           sparse-checkout: |
             pi-gen
-
-      - name: ls
-        run: ls -alr
 
       - name: Import Extra Files
         uses: actions/checkout@v4
@@ -50,9 +44,6 @@ jobs:
           sparse-checkout: |
             changelog.txt
             config.txt
-
-      - name: ls
-        run: ls -alr
 
       - name: Get Release Details
         run: |
@@ -70,8 +61,7 @@ jobs:
 
       - name: Build Image
         run: |
-          ls -alr
-          CONTINUE=1 build-docker.sh
+          CONTINUE=1 ./build-docker.sh
 
       - name: Create Release
         uses: marvinpinto/action-automatic-releases@latest
