@@ -62,6 +62,7 @@ jobs:
           rm -rf stage3
           rm -rf stage4
           rm -rf stage5
+          chmod -R +x post-stage
 
       - name: Build Image
         run: |

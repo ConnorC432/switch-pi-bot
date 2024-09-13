@@ -3,7 +3,6 @@
 #Clone Repo
 echo "Cloning Git Repository"
 git clone https://github.com/ConnorC432/switch-pi-bot.git /opt/switch-pi-bot
-chmod -vR 750
 
 #Create User/Group
 echo "Creating User and Group for Services"
@@ -23,7 +22,7 @@ sed -i '/\[cm5\]/,/^$/s/dr_mode=host/dr_mode=peripheral/' /boot/firmware/config.
 
 #Set Permissions
 chown -vR pibot:pibot /opt/switch-pi-bot
-chmod -vR 770 /opt/switch-pi-bot
+#chmod -vR 770 /opt/switch-pi-bot
 
 #Create .venv for python backend
 echo "Creating Virtual Environment for Python backend"
@@ -32,8 +31,8 @@ python3 -m venv /opt/switch-pi-bot/src/switch-control/.venv
 
 #NPM Build
 echo "Building Next.JS frontend"
-npm --prefix /opt/switch-pi-bot/src/webui/app install
-npm --prefix /opt/switch-pi-bot/src/webui/app run build
+npm --prefix /opt/switch-pi-bot/src/webui install
+npm --prefix /opt/switch-pi-bot/src/webui run build
 
 #Systemd service files
 echo "Importing Systemd service files"
