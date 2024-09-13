@@ -34,7 +34,7 @@ jobs:
           pi-gen-repository: 'RPi-Distro/pi-gen'
           pi-gen-version: 'arm64'
           release: 'bookworm'
-          stage-list: 'stage0 stage1 stage2 ../switch-pi-bot/pi-gen'
+          stage-list: 'stage0 stage1 stage2 switch-pi-bot/pi-gen'
           wpa-country: ''
           wpa-essid: ''
           wpa-password: ''
