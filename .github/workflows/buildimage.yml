@@ -53,7 +53,7 @@ jobs:
       - name: Modify pi-gen
         run: |
           mv extra/config.txt config
-          echo "IMG_NAME=switch-pi-bot-${{ env.RELEASE_TITLE }}" >> config
+          echo "IMG_NAME='switch-pi-bot-${{ env.RELEASE_TITLE }}'" >> config
           rm -f stage2/EXPORT*
           rm -rf stage3
           rm -rf stage4
