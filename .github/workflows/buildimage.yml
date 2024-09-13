@@ -20,7 +20,7 @@ jobs:
         run: |
           mkdir -p post-stage &&
           {
-          cat > poststage/00-prerun.sh <<-EOF
+          cat > post-stage/00-prerun.sh <<-EOF
           #!/bin/bash
           cp -r ${{ github.workspace }}/switch-pi-bot/pi-gen/* ${{ github.workspace }}/pi-gen/post-stage/
           EOF
