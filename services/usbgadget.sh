@@ -11,6 +11,11 @@ set -u
 modprobe libcomposite
 dtoverlay dwc2
 
+#sed -i '/\[cm5\]/,/^$/s/dr_mode=host/dr_mode=peripheral/' /boot/firmware/config.txt
+sed -i '/\[cm5\]/,/^$/ { s/dr_mode=host/dr_mode=peripheral/; }' /boot/firmware/config.txt
+
+
+
 mkdir -p /sys/kernel/config/usb_gadget/
 cd /sys/kernel/config/usb_gadget/ || exit
 
