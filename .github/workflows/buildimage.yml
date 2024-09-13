@@ -32,7 +32,7 @@ jobs:
           image-name: 'switch-pibot'
           username: 'pi'
           password: ''
-          pi-gen-dir: 'pi-gen'
+          pi-gen-dir: ''
           pi-gen-repository: 'RPi-Distro/pi-gen'
           pi-gen-version: 'arm64'
           release: 'bookworm'
