@@ -22,6 +22,7 @@ jobs:
         run: |
           mkdir -p post-stage &&
           cp -r ${{ github.workspace }}/switch-pi-bot/pi-gen/* post-stage/ &&
+          ls -alr post-stage
           chmod -R +x post-stage
 
       - name: Build Pi Image
