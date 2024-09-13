@@ -27,17 +27,13 @@ chmod -vR 770 /opt/switch-pi-bot
 
 #Create .venv for python backend
 echo "Creating Virtual Environment for Python backend"
-sudo -u pibot -g pibot bash <<EOF
 python3 -m venv /opt/switch-pi-bot/src/switch-control/.venv
 /opt/switch-pi-bot/src/switch-control/.venv/bin/pip install -r /opt/switch-pi-bot/requirements.txt
-EOF
 
 #NPM Build
 echo "Building Next.JS frontend"
-sudo -u pibot -g pibot bash <<EOF
 npm --prefix /opt/switch-pi-bot/src/webui/app install
 npm --prefix /opt/switch-pi-bot/src/webui/app run build
-EOF
 
 #Systemd service files
 echo "Importing Systemd service files"
