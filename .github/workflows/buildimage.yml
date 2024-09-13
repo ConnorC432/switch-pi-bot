@@ -21,12 +21,7 @@ jobs:
       - name: Create Custom pi-gen Stage
         run: |
           mkdir -p ${{ github.workspace }}/pi-gen/post-stage &&
-          {
-          cat > post-stage/00-prerun.sh <<-EOF
-          #!/bin/bash
-          cp -r ${{ github.workspace }}/switch-pi-bot/pi-gen/* ${{ github.workspace }}/pi-gen/post-stage/
-          EOF
-          } &&
+          cp -r ${{ github.workspace }}/switch-pi-bot/pi-gen/* ${{ github.workspace }}/pi-gen/post-stage/ &&
           chmod -R +x ${{ github.workspace }}/pi-gen/post-stage
 
       - name: Build Pi Image
