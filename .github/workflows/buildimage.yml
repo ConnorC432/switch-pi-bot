@@ -46,6 +46,7 @@ jobs:
       - name: Import Extra Files
         uses: actions/checkout@v4
         with:
+          path: 'extra'
           sparse-checkout: |
             changelog.txt
             config.txt
@@ -55,12 +56,12 @@ jobs:
 
       - name: Get Release Details
         run: |
-          TITLE=$(head -n 1 changelog.txt)
+          TITLE=$(head -n 1 extra/changelog.txt)
           echo "RELEASE_TITLE=$TITLE" >> $GITHUB_ENV
 
       - name: Modify pi-gen
         run: |
-          mv config.txt config
+          mv extra/config.txt config
           echo "IMG_NAME=switch-pi-bot-${{ env.RELEASE_TITLE }}" >> config
           rm -f stage2/EXPORT*
           rm -rf stage3
@@ -80,4 +81,4 @@ jobs:
           title: ${{ env.RELEASE_TITLE }}
           files: |
             deploy/*.img.xz
-            changelog.txt
+            extra/changelog.txt
