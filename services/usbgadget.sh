@@ -12,8 +12,21 @@ modprobe libcomposite
 dtoverlay dwc2
 
 #sed -i '/\[cm5\]/,/^$/s/dr_mode=host/dr_mode=peripheral/' /boot/firmware/config.txt
-sed -i '/\[cm5\]/,/^$/ { s/dr_mode=host/dr_mode=peripheral/; }' /boot/firmware/config.txt
+#sed -i '/\[cm5\]/,/^$/ { s/dr_mode=host/dr_mode=peripheral/; }' /boot/firmware/config.txt
 
+CONFIG="/boot/firmware/config.txt"
+TEMP_CONFIG=$(mktemp)
+sed '/\[cm5\]/,/^$/ { s/dr_mode=host/dr_mode=peripheral/; }' "$CONFIG" > "$TEMP_CONFIG"
+
+if ! cmp -s "$CONFIG" "$TEMP_CONFIG"; then
+  #Correct firmware option
+  mv "$TEMP_CONFIG" "CONFIG"
+  echo "Rebooting Pi"
+  reboot now
+else
+  rm "$TEMP_CONFIG"
+  echo "Firmware Options Correct"
+fi
 
 
 mkdir -p /sys/kernel/config/usb_gadget/
