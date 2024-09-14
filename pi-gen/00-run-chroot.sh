@@ -12,6 +12,7 @@ mount -o bind /tmp ${ROOTFS_DIR}/tmp
 
 apt update
 apt upgrade -y
+apt install -y python3 python3-venv python3-pip tesseract-ocr git wget curl
 apt purge nodejs npm nodejs-legacy libnode72
 apt autoremove
 curl -fsSL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh
