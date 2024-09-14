@@ -1,5 +1,18 @@
 #!/bin/bash
 
+mkdir -p ${ROOTFS_DIR}/proc
+mkdir -p ${ROOTFS_DIR}/dev
+mkdir -p ${ROOTFS_DIR}/sys
+mkdir -p ${ROOTFS_DIR}/run
+mkdir -p ${ROOTFS_DIR}/tmp
+
+mount -o bind /proc ${ROOTFS_DIR}/proc
+mount -o bind /dev ${ROOTFS_DIR}/dev
+mount -o bind /sys ${ROOTFS_DIR}/sys
+mount -o bind /run ${ROOTFS_DIR}/run
+mount -o bind /tmp ${ROOTFS_DIR}/tmp
+
+
 #Clone Repo
 echo "Cloning Git Repository"
 git clone https://github.com/ConnorC432/switch-pi-bot.git /opt/switch-pi-bot
@@ -40,3 +53,10 @@ echo "Importing Systemd service files"
 cp /opt/switch-pi-bot/services/*.service /etc/systemd/system
 systemctl daemon-reload
 systemctl enable usbgadget.service pibot-backend.service pibot-frontend.service
+
+
+umount ${ROOTFS_DIR}/proc
+umount ${ROOTFS_DIR}/dev
+umount ${ROOTFS_DIR}/sys
+umount ${ROOTFS_DIR}/run
+umount ${ROOTFS_DIR}/tmp
