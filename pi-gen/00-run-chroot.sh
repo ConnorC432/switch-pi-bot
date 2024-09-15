@@ -58,8 +58,11 @@ npm --prefix /opt/switch-pi-bot/src/webui run build
 #Systemd service files
 echo "Importing Systemd service files"
 cp /opt/switch-pi-bot/services/*.service /etc/systemd/system
-/usr/bin/systemctl daemon-reload
-/usr/bin/systemctl enable usbgadget.service pibot-backend.service pibot-frontend.service
+mkdir -p /etc/systemd/system/multi-user.target.wants
+ln -s /etc/systemd/system/usbgadget.service /etc/systemd/system/multi-user.target.wants/usbgadget.service
+ln -s /etc/systemd/system/pibot-backend.service /etc/systemd/system/multi-user.target.wants/pibot-backend.service
+ln -s /etc/systemd/system/pibot-frontend.service /etc/systemd/system/multi-user.target.wants/pibot-backend.service
+
 
 umount ${ROOTFS_DIR}/proc
 umount ${ROOTFS_DIR}/dev
