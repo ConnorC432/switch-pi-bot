@@ -19,25 +19,20 @@ jobs:
           dosfstools libarchive-tools libcap2-bin grep rsync xz-utils file git curl bc \
           qemu-utils kpartx gpg pigz
 
-      - name: Enable ARM Interpreter
-        run: |
-          sudo update-binfmts --enable qemu-arm
-          sudo update-binfmts --enable qemu-aarch64
-
       - name: Checkout pi-gen Repository
         uses: actions/checkout@v4
         with:
           repository: 'RPi-Distro/pi-gen'
           ref: bullseye-arm64
 
-      - name: Clone Custom Post-Stage
+      - name: Checkout Custom Post-Stage
         uses: actions/checkout@v4
         with:
           path: 'post-stage'
           sparse-checkout: |
             pi-gen
 
-      - name: Import Extra Files
+      - name: Checkout Extra Files
         uses: actions/checkout@v4
         with:
           path: 'extra'
@@ -45,16 +40,13 @@ jobs:
             changelog.txt
             config.txt
 
-      - name: Get Release Details
-        run: |
-          TITLE=$(head -n 1 extra/changelog.txt)
-          echo "RELEASE_TITLE=$TITLE" >> $GITHUB_ENV
-          cat extra/changelog.txt
-
       - name: Modify pi-gen
         run: |
           mv extra/config.txt config
           TITLE=$(head -n 1 extra/changelog.txt)
+          echo "RELEASE_TITLE=$TITLE" >> $GITHUB_ENV
+          CHANGELOG=$(cat extra/changelog.txt)
+          echo "$CHANGELOG"
           echo "" >> config
           echo "IMG_NAME='switch-pi-bot-${TITLE}'" >> config
           cat config
@@ -77,3 +69,24 @@ jobs:
           files: |
             deploy/*.img.xz
             extra/changelog.txt
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.RELEASE_TITLE }}
+          release_name: Alpha ${{ env.RELEASE_TITLE }}
+          body: ${{ env.CHANGELOG }}
+          draft: false
+          prerelease: false
+
+      - name: Add Image to Release
+        uses: actions/upload_release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: deploy/*.img.xz
+          asset__name: switch-pibot-${{ env.RELEASE_TITLE }}.img
+          asset_content_type: application/octet-stream
