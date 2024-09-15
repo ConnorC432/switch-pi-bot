@@ -69,7 +69,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.RELEASE_TITLE }}
+          tag_name: Alpha
           release_name: Alpha ${{ env.RELEASE_TITLE }}
           body: ${{ env.CHANGELOG }}
           draft: false
