@@ -75,11 +75,12 @@ jobs:
           prerelease: false
 
       - name: Add Image to Release
+        id: create_release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: deploy/*.img.xz
-          asset__name: switch-pibot-${{ env.RELEASE_TITLE }}.img
+          asset_name: switch-pibot-${{ env.RELEASE_TITLE }}.img
           asset_content_type: application/octet-stream
