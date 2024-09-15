@@ -61,7 +61,7 @@ cp /opt/switch-pi-bot/services/*.service /etc/systemd/system
 mkdir -p /etc/systemd/system/multi-user.target.wants
 ln -s /etc/systemd/system/usbgadget.service /etc/systemd/system/multi-user.target.wants/usbgadget.service
 ln -s /etc/systemd/system/pibot-backend.service /etc/systemd/system/multi-user.target.wants/pibot-backend.service
-ln -s /etc/systemd/system/pibot-frontend.service /etc/systemd/system/multi-user.target.wants/pibot-backend.service
+ln -s /etc/systemd/system/pibot-frontend.service /etc/systemd/system/multi-user.target.wants/pibot-frontend.service
 
 
 umount ${ROOTFS_DIR}/proc
