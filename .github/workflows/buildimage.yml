@@ -64,6 +64,7 @@ jobs:
           CONTINUE=1 ./build-docker.sh
 
       - name: Create Release
+        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -75,7 +76,6 @@ jobs:
           prerelease: false
 
       - name: Add Image to Release
-        id: create_release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
