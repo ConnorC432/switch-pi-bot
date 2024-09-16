@@ -14,6 +14,13 @@ jobs:
       contents: write
       packages: write
     steps:
+      - name: Cleanup Build Folder
+        run: |
+          rm -rf ./*.img
+          rm -rf ./*.img.xz
+          rm -rf ./src
+          rm -rf ./finalsize
+
       - name: Install Required Packages
         run: |
           sudo apt update
