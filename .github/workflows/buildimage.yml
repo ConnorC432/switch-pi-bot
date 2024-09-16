@@ -17,6 +17,7 @@ jobs:
       - name: Install Required Packages
         run: |
           modprobe loop
+          echo $(lsmod | grep loop)
           sudo apt update
           sudo apt upgrade -y
           sudo apt install -y mount \
