@@ -82,10 +82,11 @@ jobs:
       - name: Shrink Image
         run: |
           MIN_SIZE=$(cat finalsize/bytes)
-          PARTED_SIZE=$(($MIN_SIZE / 1024 / 1024))M
-          parted /dev/loop3 --script resizepart 2 $PARTED_SIZE
-          END_SECTOR=$(fdisk -l /dev/loop3 | grep /dev/loop3p2 | awk '{print $3}'
-          IMG_SIZE=$(($END_SECTOR * 512))
+          BLOCK_SIZE=$((MIN_SIZE / 4096))
+          SECTOR_SIZE=$((MIN_SIZE / 512))
+          e2fsck -f /dev/loop3p2
+          resize2fs /dev/loop3p2 $BLOCK_SIZE
+          parted /dev/loop3 --script resizepart 2 ${SECTOR_SIZE}s
           truncate --size=$IMG_SIZE pi-bot.img
 
       - name: Get Release Details
