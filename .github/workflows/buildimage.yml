@@ -81,7 +81,7 @@ jobs:
 
       - name: Get Release Details
         run: |
-          CHANGELOG=$(cat ./src/changelog.txt)
+          CHANGELOG=$(cat ./src/changelog.txt | tr '\n' ' ' | sed 's/\r//g')
           echo "CHANGELOG=$CHANGELOG" >> $GITHUB_ENV
           RELEASE_TITLE=$(head -n 1 ./src/changelog.txt)
           echo "RELEASE_TITLE=$RELEASE_TITLE" >> $GITHUB_ENV
@@ -94,7 +94,7 @@ jobs:
         with:
           tag_name: "Alpha"
           release_name: "Alpha ${{ env.RELEASE_TITLE }}"
-          body: "{{ env.$CHANGELOG }}"
+          body: "${{ env.CHANGELOG }}"
           draft: false
           prerelease: false
 
