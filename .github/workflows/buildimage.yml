@@ -27,6 +27,7 @@ jobs:
           util-linux \
           qemu-user-static \
           docker \
+          docker.io \
           containerd
 
       - name: Checkout Repository
