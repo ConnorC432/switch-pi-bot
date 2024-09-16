@@ -19,7 +19,6 @@ jobs:
           sudo apt update
           sudo apt upgrade -y
           sudo apt install -y mount \
-          kpartx \
           sudo \
           bash \
           e2fsprogs \
@@ -38,20 +37,25 @@ jobs:
 
       - name: Create Loopback Device
         run: |
-          wget -v -O pi-bot.img.xz https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2024-07-04/2024-07-04-raspios-bookworm-arm64-lite.img.xz
-          xz -vd pi-bot.img.xz
+          wget -v -O base.img.xz https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2024-07-04/2024-07-04-raspios-bookworm-arm64-lite.img.xz
+          xz -vd base.img.xz
+          dd if=/dev/zero of=pi-bot.img bs=1M count=3900
           echo "LOOPBACK=$(losetup -f)" >> $GITHUB_ENV
           losetup -v ${{ env.LOOPBACK }} pi-bot.img
-          kpartx -av ${{ env.LOOPBACK }}
-          echo "PI_ROOT=/dev/mapper/$(basename ${{ env.LOOPBACK }})p2" >> $GITHUB_ENV
-
+          echo "OLD_IMG=$(losetup -f)" > $GITHUB_ENV
+          losetup -v ${{ env.OLD_IMG }} base.img
+          dd if=${{ env.OLD_IMG }} of=${{ env.LOOPBACK }}
+          parted ${{ env.LOOPBACK }} --script -- resizepart 2 100%
+          echo "PI_ROOT=${{ env.LOOPBACK }}p2" >> $GITHUB_ENV
+          e2fsck -yf ${{ env.PI_ROOT }}
+          resize2fs ${ env.PI_ROOT }}
 
       - name: Build Pi Image
         run: |
           docker run --rm -it --privileged \
           -e PI_ROOT=${{ env.PI_ROOT }}
           --platform linux/arm/v7 \
-          --device ${{ env.PI_ROOT }}:${{ env.PI_ROOT }} \
+          -v ${{ env.PI_ROOT }}:${{ env.PI_ROOT }} \
           -v src:/src \
           build-img:1.0
 

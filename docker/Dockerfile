@@ -6,7 +6,6 @@ FROM arm32v7/debian:bullseye-slim
 # Install Requirements
 RUN apt update && apt install -y \
     mount \
-    kpartx \
     sudo \
     bash \
     e2fsprogs \

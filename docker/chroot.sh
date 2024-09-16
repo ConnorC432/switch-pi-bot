@@ -12,6 +12,7 @@ mount -v --bind /dev $MOUNT_DIR/dev
 mount -v --bind /dev/pts $MOUNT_DIR/dev/pts
 mount -v --bind /proc $MOUNT_DIR/proc
 mount -v --bind /sys $MOUNT_DIR/sys
+mkdir -vp $MOUNT_DIR/src
 mount -v --bind /src $MOUNT_DIR/src
 
 chroot $MOUNT_DIR /bin/bash -c "bash /usr/local/bin/install.sh"
