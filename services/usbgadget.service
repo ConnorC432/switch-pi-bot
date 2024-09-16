@@ -5,7 +5,7 @@ Before=pibot-backend.service
 
 [Service]
 Type=oneshot
-ExecStart=/opt/switch-pibot/services/usbgadget.sh
+ExecStart=/opt/switch-pi-bot/usbgadget.sh
 
 [Install]
 WantedBy=multi-user.target

@@ -50,9 +50,6 @@ jobs:
           echo "RELEASE_TITLE=$TITLE" >> $GITHUB_ENV
           CHANGELOG=$(cat extra/changelog.txt)
           echo "$CHANGELOG"
-          echo "" >> config
-          echo "IMG_NAME='switch-pi-bot-${TITLE}'" >> config
-          cat config
           rm -f stage2/EXPORT*
           rm -rf stage3
           rm -rf stage4
@@ -81,6 +78,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: deploy/*.img.xz
+          asset_path: deploy/release.img.xz
           asset_name: switch-pibot-${{ env.RELEASE_TITLE }}.img
           asset_content_type: application/octet-stream
