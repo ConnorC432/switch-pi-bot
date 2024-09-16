@@ -37,7 +37,7 @@ dwc2
 g_hid
 EOF
 
-	ln -sf /opt/switch-pi-bot/config.txt /boot/firmware/config.txt
+	ln -sf /opt/switch-pi-bot/firstboot.sh /etc/init.d/firstboot.sh
 	chown -vR pibot:pibot /opt/switch-pi-bot
 
 	# Create .venv for python backend
@@ -51,8 +51,7 @@ EOF
 
 	# NGINX
 	rm /etc/nginx/sites-enabled/default
-	cp /src/nginx /etc/nginx/sites-available/pibot
-	ln -sf /etc/nginx/sites-available/pibot /etc/nginx/sites-enabled/pibot
+	cp /src/nginx /etc/nginx/sites-enabled/pibot
 	systemctl restart nginx
 
 	# Enable Services
