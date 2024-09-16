@@ -16,6 +16,7 @@ jobs:
     steps:
       - name: Cleanup Build Folder
         run: |
+          docker kill $(docker ps -q)
           for LOOPDEV in /dev/loop3 /dev/loop4; do
             if losetup $LOOPDEV >/dev/null 2>&1; then
               echo "Detaching $LOOPDEV"
