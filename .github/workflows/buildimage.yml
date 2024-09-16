@@ -16,6 +16,7 @@ jobs:
     steps:
       - name: Install Required Packages
         run: |
+          losetup -a
           modprobe loop
           echo $(lsmod | grep loop)
           sudo apt update
