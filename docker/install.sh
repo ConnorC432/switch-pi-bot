@@ -10,6 +10,7 @@ rm nodesource_setup.sh
 
 # Move Relevant Source Code
 cp /src/services/*.service /etc/systemd/system/
+mkdir -p /opt/switch-pi-bot
 cp /src/* /opt/switch-pi-bot/
 
 # Enable USB Gadget
