@@ -8,6 +8,7 @@ mkdir -vp /work/chroot
 MOUNT_DIR=/work/chroot
 mount "$PI_ROOT" "$MOUNT_DIR"
 
+mkdir -vp $MOUNT_DIR/opt/switch-pi-bot
 cp -r /src/* $MOUNT_DIR/opt/switch-pi-bot
 
 mount -v --bind /dev $MOUNT_DIR/dev
