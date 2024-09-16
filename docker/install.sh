@@ -5,13 +5,15 @@ apt update
 apt upgrade -y
 curl -fsSL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh
 bash nodesource_setup.sh
+apt-mark hold linux-image-*
+apt-mark hold linux-headers-*
 apt install -y python3 python3-venv python3-pip tesseract-ocr git wget curl nodejs/nodistro nginx
 rm nodesource_setup.sh
+apt-mark unhold linux-image-*
+apt-mark unhold linux-headers-*
 
-# Move Relevant Source Code
-cp /src/services/*.service /etc/systemd/system/
-mkdir -p /opt/switch-pi-bot
-cp /src/* /opt/switch-pi-bot/
+# Link Systemd service files
+ln -s /opt/switch-pi-bot/services/* /etc/systemd/system/
 
 # Enable USB Gadget
 groupadd -g 500 pibot
@@ -23,7 +25,7 @@ dwc2
 g_hid
 EOF
 
-sed -i '/\[cm5\]/,/^$/s/dr_mode=host/dr_mode=peripheral/' /boot/firmware/config.txt
+ln -s /opt/switch-pi-bot/config.txt /boot/firmware/config.txt
 chown -vR pibot:pibot /opt/switch-pi-bot
 
 # Create .venv for python backend

@@ -3,7 +3,7 @@ name: Build New Release
 on:
   push:
     branches:
-      - 'main'
+      - '**'
   workflow_dispatch:
 
 
@@ -33,7 +33,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t build-img:1.0 src/docker/.
+          docker build -t build-img:1.0 ./src/docker/.
 
       - name: Create Loopback Device
         run: |
@@ -49,28 +49,34 @@ jobs:
           echo "PI_ROOT=${{ env.LOOPBACK }}p2" >> $GITHUB_ENV
           e2fsck -yf ${{ env.PI_ROOT }}
           resize2fs ${ env.PI_ROOT }}
+          rm base.img
 
       - name: Build Pi Image
         run: |
+          mkdir -p finalsize
           docker run --rm -it --privileged \
           -e PI_ROOT=${{ env.PI_ROOT }}
           --platform linux/arm/v7 \
           -v ${{ env.PI_ROOT }}:${{ env.PI_ROOT }} \
           -v src:/src \
+          -v finalsize:/finalsize \
           build-img:1.0
+
+      - name: Shrink Image
+        run: |
+          echo "MIN_SIZE=$(cat finalsize/bytes)" >> $GITHUB_ENV
+          echo "PARTED_SIZE=$((${{ env.MIN_SIZE }} / 1024 / 1024))M" >> $GITHUB_ENV
+          parted ${{ env.LOOPBACK }} --script resizepart 2 ${{ env.PARTED_SIZE }}
+          echo "END_SECTOR=$(fdisk -l "${{ env.LOOPBACK }}" | grep "${{ env.PI_ROOT }}" | awk '{print $3}'
+          echo "IMG_SIZE=$((${{ env.END_SECTOR }} * 512))
+          truncate --size=${{ env.IMG_SIZE }} pi-bot.img
 
       - name: Get Release Details
         run: |
-          mv extra/config.txt config
-          TITLE=$(head -n 1 extra/changelog.txt)
+          CHANGE=$(cat src/changelog.txt)
+          echo "CHANGELOG=$CHANGE" >> $GITHUB_ENV
+          TITLE=$(head -n 1 ${{ env.CHANGE }})
           echo "RELEASE_TITLE=$TITLE" >> $GITHUB_ENV
-          CHANGELOG=$(cat extra/changelog.txt)
-          echo "$CHANGELOG"
-          rm -f stage2/EXPORT*
-          rm -rf stage3
-          rm -rf stage4
-          rm -rf stage5
-          chmod -R +x post-stage
 
       - name: Create Release
         id: create_release
@@ -90,6 +96,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: deploy/release.img.xz
+          asset_path: pi-bot.img
           asset_name: switch-pibot-${{ env.RELEASE_TITLE }}.img
           asset_content_type: application/octet-stream

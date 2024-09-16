@@ -11,7 +11,8 @@ RUN apt update && apt install -y \
     e2fsprogs \
     wget \
     xz-utils \
-    util-linux
+    util-linux \
+    awk
 
 ADD chroot.sh /usr/local/bin/chroot.sh
 RUN chmod +x /usr/local/bin/chroot.sh
@@ -21,4 +22,4 @@ RUN chmod +x /usr/local/bin/install.sh
 
 WORKDIR /work
 
-CMD ["/bin/bash"]
+CMD ["/usr/local/bin/chroot.sh"]
