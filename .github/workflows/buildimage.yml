@@ -16,8 +16,14 @@ jobs:
     steps:
       - name: Cleanup Build Folder
         run: |
-          losetup -d /dev/loop3
-          losetup -d /dev/loop4
+          for LOOPDEV in /dev/loop3 /dev/loop4; do
+            if losetup $LOOPDEV >/dev/null 2>&1; then
+              echo "Detaching $LOOPDEV"
+              sudo losetup -d $LOOPDEV
+            else
+              echo "$LOOPDEV does not exist or is not in use"
+            fi
+          done
           rm -rf ./*.img
           rm -rf ./*.img.xz
           rm -rf ./src
