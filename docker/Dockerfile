@@ -17,9 +17,6 @@ RUN apt update && apt install -y \
 ADD chroot.sh /usr/local/bin/chroot.sh
 RUN chmod +x /usr/local/bin/chroot.sh
 
-ADD install.sh /usr/local/bin/install.sh
-RUN chmod +x /usr/local/bin/install.sh
-
 WORKDIR /work
 
 CMD ["/usr/local/bin/chroot.sh"]

@@ -71,13 +71,7 @@ jobs:
       - name: Build Pi Image
         run: |
           mkdir -p finalsize
-          docker run --rm -it --privileged \
-          -e PI_ROOT=/dev/loop3p2
-          --platform linux/arm/v7 \
-          -v /dev/loop3p2:/dev/loop3p2 \
-          -v src:/src \
-          -v finalsize:/finalsize \
-          build-img:1.0
+          docker run --rm -it --privileged -e PI_ROOT=/dev/loop3p2 --platform linux/arm/v7 -v /dev/loop3p2:/dev/loop3p2 -v src:/src -v finalsize:/finalsize build-img:1.0
 
       - name: Shrink Image
         run: |
