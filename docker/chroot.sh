@@ -1,7 +1,7 @@
 #!/bin/bash
 
-wget -o=pi-bot.img https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2024-07-04/2024-07-04-raspios-bookworm-arm64-lite.img.xz
-xz --decompress -v pi-bot.img
+wget -O pi-bot.img https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2024-07-04/2024-07-04-raspios-bookworm-arm64-lite.img.xz
+xz --decompress -v pi-bot.img.xz
 
 IMG_FILE="pi-bot.img"
 MOUNT_DIR="/mnt/chroot"
