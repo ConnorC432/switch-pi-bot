@@ -17,12 +17,12 @@ mount -v --bind /sys $MOUNT_DIR/sys
 
 install() {
 	# Install Requirements
+	apt-mark hold linux-image-*
+	apt-mark hold linux-headers-*
 	apt update
 	apt upgrade -y
 	curl -fsSL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh
 	bash nodesource_setup.sh
-	apt-mark hold linux-image-*
-	apt-mark hold linux-headers-*
 	apt install -y python3 python3-venv python3-pip tesseract-ocr git wget curl nodejs/nodistro nginx
 	rm nodesource_setup.sh
 	apt-mark unhold linux-image-*
