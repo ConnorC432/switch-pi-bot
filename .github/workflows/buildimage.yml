@@ -81,10 +81,10 @@ jobs:
 
       - name: Get Release Details
         run: |
-          CHANGELOG=$(cat src/changelog.txt)
+          CHANGELOG=$(cat ./src/changelog.txt)
           echo "CHANGELOG=$CHANGELOG" >> $GITHUB_ENV
-          TITLE=$(head -n 1 ${{ env.CHANGE }})
-          echo "RELEASE_TITLE=$TITLE" >> $GITHUB_ENV
+          RELEASE_TITLE=$(head -n 1 ./src/changelog.txt)
+          echo "RELEASE_TITLE=$RELEASE_TITLE" >> $GITHUB_ENV
 
       - name: Create Release
         id: create_release
@@ -92,9 +92,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: Alpha
-          release_name: Alpha ${{ env.RELEASE_TITLE }}
-          body: ${{ env.CHANGELOG }}
+          tag_name: "Alpha"
+          release_name: "Alpha ${{ env.RELEASE_TITLE }}"
+          body: "{{ env.$CHANGELOG }}"
           draft: false
           prerelease: false
 
