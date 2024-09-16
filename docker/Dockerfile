@@ -12,7 +12,7 @@ RUN apt update && apt install -y \
     e2fsprogs \
     wget \
     xz-utils \
-    losetup
+    util-linux
 
 ADD chroot.sh /usr/local/bin/chroot.sh
 RUN chmod +x /usr/local/bin/chroot.sh

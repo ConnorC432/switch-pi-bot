@@ -33,7 +33,7 @@ exit_chroot() {
 	umount $MOUNT_DIR/proc
 	umount $MOUNT_DIR/sys
 	umount $MOUNT_DIR/src
-	losetup -d $LOOP_DEVICE
+	losetup -d "$LOOP_DEVICE"
 
 	cp $IMG_FILE /build/$IMG_FILE
 }
