@@ -36,7 +36,7 @@ jobs:
         run: |
           update-binfmts --enable qemu-arm
           update-binfmts --enable qemu-aarch64
-          docker build -t build-img:1.0 ./src/docker/.
+          docker build --platform linux/arm/v7 -t build-img:1.0 ./src/docker/.
 
       - name: Create Loopback Device
         run: |

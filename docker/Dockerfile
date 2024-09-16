@@ -12,7 +12,7 @@ RUN apt update && apt install -y \
     wget \
     xz-utils \
     util-linux \
-    awk
+    gawk
 
 ADD chroot.sh /usr/local/bin/chroot.sh
 RUN chmod +x /usr/local/bin/chroot.sh
