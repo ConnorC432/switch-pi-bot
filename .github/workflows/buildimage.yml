@@ -16,7 +16,8 @@ jobs:
     steps:
       - name: Cleanup Build Folder
         run: |
-          losetup -D
+          losetup -d /dev/loop3
+          losetup -d /dev/loop4
           rm -rf ./*.img
           rm -rf ./*.img.xz
           rm -rf ./src
@@ -54,11 +55,11 @@ jobs:
           wget -O base.img.xz https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2024-07-04/2024-07-04-raspios-bookworm-arm64-lite.img.xz
           xz -vd base.img.xz
           dd if=/dev/zero of=pi-bot.img bs=1M count=3900
-          LOOPBACK=$(losetup -f)
+          LOOPBACK=/dev/loop3
           echo "LOOPBACK=$LOOPBACK" >> $GITHUB_ENV
           echo "${{ env.LOOPBACK }}"
           losetup -v ${{ env.LOOPBACK }} pi-bot.img
-          OLD_IMG=$(losetup -f)
+          OLD_IMG=/dev/loop4
           echo "OLD_IMG=$OLD_IMG" > $GITHUB_ENV
           losetup -v ${{ env.OLD_IMG }} base.img
           dd if=${{ env.OLD_IMG }} of=${{ env.LOOPBACK }}
