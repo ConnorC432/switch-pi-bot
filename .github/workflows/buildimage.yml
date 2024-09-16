@@ -94,3 +94,6 @@ jobs:
           name: "Alpha ${{ env.RELEASE_TITLE }}"
           tag_name: "Alpha"
           token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            ./pi-bot.img
+            ./src/changelog.txt
