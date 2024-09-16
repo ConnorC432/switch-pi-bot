@@ -18,32 +18,44 @@ jobs:
         run: |
           sudo apt update
           sudo apt upgrade -y
-          sudo apt install -y coreutils quilt parted qemu-user-static debootstrap zerofree zip \
-          dosfstools libarchive-tools libcap2-bin grep rsync xz-utils file git curl bc \
-          qemu-utils kpartx gpg pigz
+          sudo apt install -y mount \
+          kpartx \
+          sudo \
+          bash \
+          e2fsprogs \
+          wget \
+          xz-utils \
+          util-linux
 
-      - name: Checkout pi-gen Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          repository: 'RPi-Distro/pi-gen'
-          ref: bullseye-arm64
+          path: 'src'
 
-      - name: Checkout Custom Post-Stage
-        uses: actions/checkout@v4
-        with:
-          path: 'post-stage'
-          sparse-checkout: |
-            pi-gen
+      - name: Build Docker Image
+        run: |
+          docker build -t build-img:1.0 src/docker/.
 
-      - name: Checkout Extra Files
-        uses: actions/checkout@v4
-        with:
-          path: 'extra'
-          sparse-checkout: |
-            changelog.txt
-            config.txt
+      - name: Create Loopback Device
+        run: |
+          wget -v -O pi-bot.img.xz https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2024-07-04/2024-07-04-raspios-bookworm-arm64-lite.img.xz
+          xz -vd pi-bot.img.xz
+          echo "LOOPBACK=$(losetup -f)" >> $GITHUB_ENV
+          losetup -v ${{ env.LOOPBACK }} pi-bot.img
+          kpartx -av ${{ env.LOOPBACK }}
+          echo "PI_ROOT=/dev/mapper/$(basename ${{ env.LOOPBACK }})p2" >> $GITHUB_ENV
 
-      - name: Modify pi-gen
+
+      - name: Build Pi Image
+        run: |
+          docker run --rm -it --privileged \
+          -e PI_ROOT=${{ env.PI_ROOT }}
+          --platform linux/arm/v7 \
+          --device ${{ env.PI_ROOT }}:${{ env.PI_ROOT }} \
+          -v src:/src \
+          build-img:1.0
+
+      - name: Get Release Details
         run: |
           mv extra/config.txt config
           TITLE=$(head -n 1 extra/changelog.txt)
@@ -55,10 +67,6 @@ jobs:
           rm -rf stage4
           rm -rf stage5
           chmod -R +x post-stage
-
-      - name: Build Image
-        run: |
-          CONTINUE=1 ./build-docker.sh
 
       - name: Create Release
         id: create_release
