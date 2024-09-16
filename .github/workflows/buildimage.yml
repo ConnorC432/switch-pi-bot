@@ -24,7 +24,8 @@ jobs:
           e2fsprogs \
           wget \
           xz-utils \
-          util-linux
+          util-linux \
+          qemu-user-static
 
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -33,6 +34,8 @@ jobs:
 
       - name: Build Docker Image
         run: |
+          update-binfmts --enable qemu-arm
+          update-binfmts --enable qemu-aarch64
           docker build -t build-img:1.0 ./src/docker/.
 
       - name: Create Loopback Device
