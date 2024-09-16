@@ -66,7 +66,7 @@ jobs:
         run: |
           wget -O base.img.xz https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2024-07-04/2024-07-04-raspios-bookworm-arm64-lite.img.xz
           xz -vd base.img.xz
-          dd if=/dev/zero of=pi-bot.img bs=1M count=3900
+          dd if=/dev/zero of=pi-bot.img bs=1M count=4000
           losetup -v /dev/loop3 pi-bot.img
           losetup -v /dev/loop4 base.img
           dd if=/dev/loop4 of=/dev/loop3
@@ -76,18 +76,8 @@ jobs:
 
       - name: Build Pi Image
         run: |
-          mkdir -p finalsize
-          docker run --rm --privileged -e PI_ROOT=/dev/loop3p2 --platform linux/arm/v7 -v /dev/loop3p2:/dev/loop3p2 -v ./src:/src -v ./finalsize:/finalsize build-img:1.0
-
-      - name: Resize Built Image
-        run: |
-          MIN_SIZE=$(cat finalsize/bytes)
-          BLOCK_SIZE=$((MIN_SIZE / 4096))
-          SECTOR_SIZE=$((MIN_SIZE / 512))
+          docker run --rm --privileged -e PI_ROOT=/dev/loop3p2 --platform linux/arm/v7 -v /dev/loop3p2:/dev/loop3p2 -v ./src:/src -v build-img:1.0
           e2fsck -yf /dev/loop3p2
-          resize2fs /dev/loop3p2 $BLOCK_SIZE
-          parted /dev/loop3 --script resizepart 2 ${SECTOR_SIZE}s
-          truncate --size=$IMG_SIZE pi-bot.img
 
       - name: Get Release Details
         run: |

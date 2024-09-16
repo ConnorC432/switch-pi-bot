@@ -67,10 +67,6 @@ exit_chroot() {
 	umount $MOUNT_DIR/dev/pts
 	umount $MOUNT_DIR/proc
 	umount $MOUNT_DIR/sys
-
-	USED_SPACE=$(df --block-size=1 "$MOUNT_DIR" | awk 'NR==2 {print $3}')
-	MIN_SIZE=$((USED_SPACE + (1024 * 1024 * 612)))
-	echo "$MIN_SIZE" >/finalsize/bytes
 }
 
 trap exit_chroot EXIT INT
