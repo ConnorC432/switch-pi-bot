@@ -12,7 +12,6 @@ jobs:
     runs-on: self-hosted
     permissions:
       contents: write
-      packages: write
     steps:
       - name: Cleanup Build Folder
         run: |
@@ -87,23 +86,11 @@ jobs:
           echo "RELEASE_TITLE=$RELEASE_TITLE" >> $GITHUB_ENV
 
       - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          body_path: ${{ github.workspace }}/src/changelog.txt
+          name: "Alpha ${{ env.RELEASE_TITLE }}"
           tag_name: "Alpha"
-          release_name: "Alpha ${{ env.RELEASE_TITLE }}"
-          body: "${{ env.CHANGELOG }}"
-          draft: false
-          prerelease: false
-
-      - name: Add Image to Release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: pi-bot.img
-          asset_name: switch-pibot-${{ env.RELEASE_TITLE }}.img
-          asset_content_type: application/octet-stream
+          token: ${{ secrets.GITHUB_TOKEN }}
