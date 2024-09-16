@@ -53,16 +53,18 @@ jobs:
           wget -O base.img.xz https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2024-07-04/2024-07-04-raspios-bookworm-arm64-lite.img.xz
           xz -vd base.img.xz
           dd if=/dev/zero of=pi-bot.img bs=1M count=3900
-          echo "LOOPBACK=$(losetup -f)" >> $GITHUB_ENV
+          LOOPBACK=$(losetup -f)
+          echo "LOOPBACK=$LOOPBACK" >> $GITHUB_ENV
           echo "${{ env.LOOPBACK }}"
           losetup -v ${{ env.LOOPBACK }} pi-bot.img
-          echo "OLD_IMG=$(losetup -f)" > $GITHUB_ENV
+          OLD_IMG=$(losetup -f)
+          echo "OLD_IMG=$OLD_IMG" > $GITHUB_ENV
           losetup -v ${{ env.OLD_IMG }} base.img
           dd if=${{ env.OLD_IMG }} of=${{ env.LOOPBACK }}
           parted ${{ env.LOOPBACK }} --script -- resizepart 2 100%
           echo "PI_ROOT=${{ env.LOOPBACK }}p2" >> $GITHUB_ENV
           e2fsck -yf ${{ env.PI_ROOT }}
-          resize2fs ${ env.PI_ROOT }}
+          resize2fs ${{ env.PI_ROOT }}
           rm base.img
 
       - name: Build Pi Image
@@ -78,17 +80,17 @@ jobs:
 
       - name: Shrink Image
         run: |
-          echo "MIN_SIZE=$(cat finalsize/bytes)" >> $GITHUB_ENV
-          echo "PARTED_SIZE=$((${{ env.MIN_SIZE }} / 1024 / 1024))M" >> $GITHUB_ENV
-          parted ${{ env.LOOPBACK }} --script resizepart 2 ${{ env.PARTED_SIZE }}
-          echo "END_SECTOR=$(fdisk -l "${{ env.LOOPBACK }}" | grep "${{ env.PI_ROOT }}" | awk '{print $3}'
-          echo "IMG_SIZE=$((${{ env.END_SECTOR }} * 512))
-          truncate --size=${{ env.IMG_SIZE }} pi-bot.img
+          MIN_SIZE=$(cat finalsize/bytes)
+          PARTED_SIZE=$(($MIN_SIZE / 1024 / 1024))M
+          parted ${{ env.LOOPBACK }} --script resizepart 2 $PARTED_SIZE
+          END_SECTOR=$(fdisk -l "${{ env.LOOPBACK }}" | grep "${{ env.PI_ROOT }}" | awk '{print $3}'
+          IMG_SIZE=$(($END_SECTOR * 512))
+          truncate --size=$IMG_SIZE pi-bot.img
 
       - name: Get Release Details
         run: |
-          CHANGE=$(cat src/changelog.txt)
-          echo "CHANGELOG=$CHANGE" >> $GITHUB_ENV
+          CHANGELOG=$(cat src/changelog.txt)
+          echo "CHANGELOG=$CHANGELOG" >> $GITHUB_ENV
           TITLE=$(head -n 1 ${{ env.CHANGE }})
           echo "RELEASE_TITLE=$TITLE" >> $GITHUB_ENV
 
