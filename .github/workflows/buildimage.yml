@@ -16,9 +16,6 @@ jobs:
     steps:
       - name: Install Required Packages
         run: |
-          losetup -a
-          modprobe loop
-          echo $(lsmod | grep loop)
           sudo apt update
           sudo apt upgrade -y
           sudo apt install -y mount \
@@ -28,7 +25,9 @@ jobs:
           wget \
           xz-utils \
           util-linux \
-          qemu-user-static
+          qemu-user-static \
+          docker \
+          containerd
 
       - name: Checkout Repository
         uses: actions/checkout@v4
