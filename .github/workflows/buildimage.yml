@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-image:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     permissions:
       contents: write
       packages: write
