@@ -79,12 +79,12 @@ jobs:
           mkdir -p finalsize
           docker run --rm --privileged -e PI_ROOT=/dev/loop3p2 --platform linux/arm/v7 -v /dev/loop3p2:/dev/loop3p2 -v ./src:/src -v ./finalsize:/finalsize build-img:1.0
 
-      - name: Shrink Image
+      - name: Resize Built Image
         run: |
           MIN_SIZE=$(cat finalsize/bytes)
           BLOCK_SIZE=$((MIN_SIZE / 4096))
           SECTOR_SIZE=$((MIN_SIZE / 512))
-          e2fsck -f /dev/loop3p2
+          e2fsck -yf /dev/loop3p2
           resize2fs /dev/loop3p2 $BLOCK_SIZE
           parted /dev/loop3 --script resizepart 2 ${SECTOR_SIZE}s
           truncate --size=$IMG_SIZE pi-bot.img
