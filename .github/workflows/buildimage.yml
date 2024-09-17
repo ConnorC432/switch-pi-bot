@@ -90,6 +90,8 @@ jobs:
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           body_path: ${{ github.workspace }}/src/changelog.txt
           name: "${{ env.RELEASE_TITLE }}-Alpha"
@@ -99,4 +101,3 @@ jobs:
           files: |
             ./pi-bot.img.xz
             ./src/changelog.txt
-        timeout-minutes: 60
