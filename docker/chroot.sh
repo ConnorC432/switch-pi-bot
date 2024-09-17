@@ -40,10 +40,10 @@ EOF
 	ln -sf /opt/switch-pi-bot/firstboot.sh /etc/init.d/firstboot.sh
 	chown -vR pibot:pibot /opt/switch-pi-bot
 
-	# Create .venv for python backend
-	python3 -m venv /opt/switch-pi-bot/src/switch-control/.venv
-	/opt/switch-pi-bot/src/switch-control/.venv/bin/pip install --upgrade pip
-	/opt/switch-pi-bot/src/switch-control/.venv/bin/pip install -r /opt/switch-pi-bot/requirements.txt
+	# Create venv for python backend
+	python3 -m venv /opt/switch-pi-bot/src/switch-control/venv
+	/opt/switch-pi-bot/src/switch-control/venv/bin/pip install --upgrade pip
+	/opt/switch-pi-bot/src/switch-control/venv/bin/pip install -r /opt/switch-pi-bot/requirements.txt
 
 	# NPM Build
 	npm --prefix /opt/switch-pi-bot/src/webui install
