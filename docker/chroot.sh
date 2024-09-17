@@ -46,8 +46,8 @@ EOF
 	sudo -u pibot /opt/switch-pi-bot/src/switch-control/venv/bin/pip install -r /opt/switch-pi-bot/requirements.txt
 
 	# NPM Build
-	npm --prefix /opt/switch-pi-bot/src/webui install
-	npm --prefix /opt/switch-pi-bot/src/webui run build
+	npm install --prefix /opt/switch-pi-bot/src/webui
+	npm run build --prefix /opt/switch-pi-bot/src/webui
 
 	# Enable Services
 	systemctl daemon-reload
