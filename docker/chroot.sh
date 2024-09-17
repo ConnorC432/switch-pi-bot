@@ -40,23 +40,18 @@ EOF
 	ln -sf /opt/switch-pi-bot/firstboot.sh /etc/init.d/firstboot.sh
 	chown -vR pibot:pibot /opt/switch-pi-bot
 
-	# Create .venv for python backend
-	python3 -m venv /opt/switch-pi-bot/src/switch-control/.venv
-	/opt/switch-pi-bot/src/switch-control/.venv/bin/pip install --upgrade pip
-	/opt/switch-pi-bot/src/switch-control/.venv/bin/pip install -r /opt/switch-pi-bot/requirements.txt
+	# Create venv for python backend
+	sudo -u pibot python3 -m venv /opt/switch-pi-bot/src/switch-control/venv
+	sudo -u pibot /opt/switch-pi-bot/src/switch-control/venv/bin/pip install --upgrade pip
+	sudo -u pibot /opt/switch-pi-bot/src/switch-control/venv/bin/pip install -r /opt/switch-pi-bot/requirements.txt
 
 	# NPM Build
 	npm --prefix /opt/switch-pi-bot/src/webui install
 	npm --prefix /opt/switch-pi-bot/src/webui run build
 
-	# NGINX
-	rm /etc/nginx/sites-enabled/default
-	cp /src/nginx /etc/nginx/sites-enabled/pibot
-	systemctl restart nginx
-
 	# Enable Services
 	systemctl daemon-reload
-	systemctl enable usbgadget pibot-backend pibot-frontend
+	systemctl enable firstboot usbgadget pibot-backend pibot-frontend
 }
 
 chroot $MOUNT_DIR /bin/bash -c "$(declare -f install); install"

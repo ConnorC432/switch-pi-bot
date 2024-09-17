@@ -1,0 +1,11 @@
+[Unit]
+Description=First Boot Script
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/switch-pi-bot/firstboot.sh
+ExecStartPost=/bin/systemctl disable %n
+
+[Install]
+WantedBy=multi-user.target
