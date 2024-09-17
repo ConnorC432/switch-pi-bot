@@ -6,6 +6,8 @@ Before=pibot-backend.service
 [Service]
 Type=oneshot
 ExecStart=/opt/switch-pi-bot/usbgadget.sh
+RemainAfterExit=yes
+Restart=no
 
 [Install]
 WantedBy=multi-user.target
