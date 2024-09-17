@@ -1,5 +1,6 @@
 #!/bin/bash
 
+rm /etc/nginx/default
 ln -sf /opt/switch-pi-bot/nginx /etc/nginx/sites-enabled/pibot
 systemctl restart nginx
 

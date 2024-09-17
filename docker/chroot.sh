@@ -49,14 +49,9 @@ EOF
 	npm --prefix /opt/switch-pi-bot/src/webui install
 	npm --prefix /opt/switch-pi-bot/src/webui run build
 
-	# NGINX
-	rm /etc/nginx/sites-enabled/default
-	cp /src/nginx /etc/nginx/sites-enabled/pibot
-	systemctl restart nginx
-
 	# Enable Services
 	systemctl daemon-reload
-	systemctl enable usbgadget pibot-backend pibot-frontend
+	systemctl enable firstboot usbgadget pibot-backend pibot-frontend
 }
 
 chroot $MOUNT_DIR /bin/bash -c "$(declare -f install); install"
