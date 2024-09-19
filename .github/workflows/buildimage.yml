@@ -83,9 +83,7 @@ jobs:
 
       - name: Get Release Details
         run: |
-          CHANGELOG=$(cat ./src/changelog.txt | tr '\n' ' ' | sed 's/\r//g')
-          echo "CHANGELOG=$CHANGELOG" >> $GITHUB_ENV
-          RELEASE_TITLE=$(head -n 1 ./src/changelog.txt)
+          RELEASE_TITLE=$(head -n 1 ./src/changelog.md)
           echo "RELEASE_TITLE=$RELEASE_TITLE" >> $GITHUB_ENV
 
       - name: Publish Build
