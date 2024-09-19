@@ -88,16 +88,16 @@ jobs:
           RELEASE_TITLE=$(head -n 1 ./src/changelog.txt)
           echo "RELEASE_TITLE=$RELEASE_TITLE" >> $GITHUB_ENV
 
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
+      - name: Publish Build
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          body_path: ${{ github.workspace }}/src/changelog.txt
-          name: "${{ env.RELEASE_TITLE }}-Alpha"
-          tag_name: "Alpha"
-          token: ${{ secrets.GITHUB_TOKEN }}
-          draft: True
-          files: |
-            ./pi-bot.img.xz
-            ./src/changelog.txt
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+          RELEASE_TITLE: ${{ env.RELEASE_TITLE }}
+        run: |
+          gh release create "Alpha" -d \
+          --title "$(RELEASE_TITLE)-Alpha" \
+          --notes-file src/changelog.md \
+          --repo $GITHUB_REPOSITORY \
+          ./pi-bot.img.xz ./src/changelog.md
+
