@@ -10,7 +10,6 @@ RUN apt update && apt install -y \
     bash \
     e2fsprogs \
     wget \
-    xz-utils \
     util-linux \
     gawk
 
