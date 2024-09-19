@@ -13,6 +13,22 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Install Required Packages
+        run: |
+          sudo apt update
+          sudo apt upgrade -y
+          sudo apt install -y mount \
+          sudo \
+          bash \
+          e2fsprogs \
+          wget \
+          xz-utils \
+          util-linux \
+          qemu-user-static \
+          docker \
+          docker.io \
+          containerd
+
       - name: Cleanup Build Folder
         run: |
           CONTAINERS=$(docker ps -q)
@@ -33,22 +49,6 @@ jobs:
           rm -rf ./*.img.xz
           rm -rf ./src
           rm -rf ./finalsize
-
-      - name: Install Required Packages
-        run: |
-          sudo apt update
-          sudo apt upgrade -y
-          sudo apt install -y mount \
-          sudo \
-          bash \
-          e2fsprogs \
-          wget \
-          xz-utils \
-          util-linux \
-          qemu-user-static \
-          docker \
-          docker.io \
-          containerd
 
       - name: Checkout Repository
         uses: actions/checkout@v4
