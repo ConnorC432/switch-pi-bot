@@ -36,7 +36,9 @@ dwc2
 g_hid
 EOF
 
-	chown -vR pibot:pibot /opt/switch-pi-bot
+	chown -vR pibot:pibot /opt/switch-control
+	chown -vR pibot:pibot /opt/data
+	chown -vR pibot:pibot /opt/webui
 
 	# Create venv for python backend
 	sudo -u pibot python3 -m venv /opt/switch-control/venv
