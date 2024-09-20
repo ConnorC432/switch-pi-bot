@@ -93,7 +93,7 @@ jobs:
           RELEASE_TITLE: ${{ env.RELEASE_TITLE }}
         run: |
           gh release create "Alpha" -d \
-          --title "$({ env.RELEASE_TITLE })-Alpha" \
+          --title "${{ env.RELEASE_TITLE }}-Alpha" \
           --notes-file src/changelog.md \
           --repo $GITHUB_REPOSITORY \
           ./pi-bot.img.xz
