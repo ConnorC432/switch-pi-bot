@@ -5,7 +5,7 @@ Before=pibot-backend.service
 
 [Service]
 Type=oneshot
-ExecStart=/opt/switch-pi-bot/usbgadget.sh
+ExecStart=/usr/bin/usbgadget.sh
 RemainAfterExit=yes
 Restart=no
 

@@ -7,8 +7,8 @@ Requires=usbgadget.service
 [Service]
 User=pibot
 Group=pibot
-WorkingDirectory=/opt/switch-pi-bot/switch-control
-ExecStart=/opt/switch-pi-bot/src/switch-control/venv/bin/gunicorn -w 1 --bind 127.0.0.1:5000 app:app
+WorkingDirectory=/opt/switch-control
+ExecStart=/opt/switch-control/venv/bin/gunicorn -w 1 --bind 127.0.0.1:5000 app:app
 Restart=on-failure
 KillMode=process
 TimeoutSec=30

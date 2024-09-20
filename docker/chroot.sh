@@ -8,8 +8,9 @@ mkdir -vp /work/chroot
 MOUNT_DIR=/work/chroot
 mount "$PI_ROOT" "$MOUNT_DIR"
 
-mkdir -vp $MOUNT_DIR/opt/switch-pi-bot
-cp -r /src/* $MOUNT_DIR/opt/switch-pi-bot
+cp -vr /src/src/* $MOUNT_DIR/opt/
+cp -v /src/services/*.service $MOUNT_DIR/etc/systemd/system/
+cp -v /src/services/*.sh /usr/bin/
 
 mount -v --bind /dev $MOUNT_DIR/dev
 mount -v --bind /dev/pts $MOUNT_DIR/dev/pts
@@ -24,9 +25,6 @@ install() {
 	apt install -y python3 python3-venv python3-pip tesseract-ocr git wget curl nodejs/nodistro nginx
 	rm nodesource_setup.sh
 
-	# Link Systemd service files
-	ln -sf /opt/switch-pi-bot/services/* /etc/systemd/system/
-
 	# Enable USB Gadget
 	groupadd -g 500 pibot
 	useradd -u 500 -g 500 -m -s /bin/bash pibot
@@ -37,17 +35,16 @@ dwc2
 g_hid
 EOF
 
-	ln -sf /opt/switch-pi-bot/firstboot.sh /etc/init.d/firstboot.sh
 	chown -vR pibot:pibot /opt/switch-pi-bot
 
 	# Create venv for python backend
-	sudo -u pibot python3 -m venv /opt/switch-pi-bot/src/switch-control/venv
-	sudo -u pibot /opt/switch-pi-bot/src/switch-control/venv/bin/pip install --upgrade pip
-	sudo -u pibot /opt/switch-pi-bot/src/switch-control/venv/bin/pip install -r /opt/switch-pi-bot/requirements.txt
+	sudo -u pibot python3 -m venv /opt/switch-control/venv
+	sudo -u pibot /opt/switch-control/venv/bin/pip install --upgrade pip
+	sudo -u pibot /opt/switch-control/venv/bin/pip install -r /opt/switch-control/requirements.txt
 
 	# NPM Build
-	npm --prefix /opt/switch-pi-bot/src/webui install
-	npm --prefix /opt/switch-pi-bot/src/webui run build
+	npm install --prefix /opt/webui
+	npm run build --prefix /opt/webui
 
 	# Enable Services
 	systemctl daemon-reload
