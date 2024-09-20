@@ -11,6 +11,7 @@ mount "$PI_ROOT" "$MOUNT_DIR"
 cp -vr /src/src/* $MOUNT_DIR/opt/
 cp -v /src/services/*.service $MOUNT_DIR/etc/systemd/system/
 cp -v /src/services/*.sh $MOUNT_DIR/usr/bin/
+cp -v /src/nginx /opt/nginx
 
 mount -v --bind /dev $MOUNT_DIR/dev
 mount -v --bind /dev/pts $MOUNT_DIR/dev/pts
