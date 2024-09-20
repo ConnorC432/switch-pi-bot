@@ -1,8 +1,6 @@
 #!/bin/bash
 
-rm /etc/nginx/default
-ln -sf /opt/nginx /etc/nginx/sites-enabled/pibot
-systemctl restart nginx
+sudo setcap 'cap_net_bind_service=+ep' /usr/bin/node
 
 sed -i 's/^dtoverlay=dwc2,dr_mode=host/dtoverlay=dwc2,dr_mode=peripheral/' /boot/firmware/config.txt
 
