@@ -8,7 +8,7 @@ from capturecard import CaptureCard
 
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+CORS(app, origin="*")
 
 program_runner = ProgramRunner()
 
