@@ -2,11 +2,6 @@ server {
     listen 80;
     server_name _;
 
-    # Route to Next.js frontend for all paths except specified ones
-    location / {
-        try_files $uri $uri/ @nextjs;
-    }
-
     # Proxy requests to /start-program and /video-stream to Gunicorn
     location /start-program {
         proxy_pass http://localhost:5000;
@@ -24,8 +19,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 
-    # Default fallback to Next.js application
-    location @nextjs {
+    location / {
         proxy_pass http://localhost:3000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
