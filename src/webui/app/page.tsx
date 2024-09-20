@@ -47,7 +47,7 @@ export default function Page() {
 		if (typeof window !== "undefined") {
 			const host = window.location.hostname;
 			setHostUrl(host);
-			setCaptureSrc("http://${host}:5000/video-stream?${Date.now()}");
+			setCaptureSrc(`http://${hostUrl}:5000/video-stream?${Date.now()}`);
 		}
 	}, []);
 
@@ -94,7 +94,7 @@ export default function Page() {
 		let isMounted = true;
 		const interval = setInterval(() => {
 			if (isMounted && hostUrl) {
-				setCaptureSrc("http://${hostUrl}:5000/video-stream?${Date.now()}");
+				setCaptureSrc(`http://${hostUrl}:5000/video-stream?${Date.now()}`);
 			}
 		}, 250);
 
@@ -153,7 +153,7 @@ export default function Page() {
 		if (selectedProgram) {
 			setLoading(true);
 			try {
-				const response = await fetch("http://${hostUrl}:5000/start-program", {
+				const response = await fetch(`http://${hostUrl}:5000/start-program`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",

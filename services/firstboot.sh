@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo setcap 'cap_net_bind_service=+ep' /usr/bin/node
+setcap 'cap_net_bind_service=+ep' /usr/bin/node
 
 sed -i 's/^dtoverlay=dwc2,dr_mode=host/dtoverlay=dwc2,dr_mode=peripheral/' /boot/firmware/config.txt
 
