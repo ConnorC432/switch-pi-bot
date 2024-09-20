@@ -23,7 +23,7 @@ import {JSONInterface, Program, StatusResponse} from "./json";
 type SettingValue = string | number | boolean;
 
 export default function Page() {
-	const hostUrl = window.location.hostname;
+	const [hostUrl, setHostUrl] = React.useState<string>("");
 	const [selectedGame, setSelectedGame] = React.useState<string>("");
 	const [selectedProgram, setSelectedProgram] = React.useState<Program | null>(null);
 	const [programs, setPrograms] = React.useState<Program[]>([]);
@@ -31,7 +31,7 @@ export default function Page() {
 	const [settings, setSettings] = React.useState<{ [key: string]: SettingValue }>({});
 	const [status, setStatus] = React.useState<StatusResponse | null>(null);
 	const [loading, setLoading] = React.useState(false);
-	const [captureSrc, setCaptureSrc] = React.useState<string>(`${hostUrl}:5000/video-stream?${Date.now()}`);
+	const [captureSrc, setCaptureSrc] = React.useState<string>("");
 
 	const theme = useTheme();
 	const jsonInterface = React.useMemo(() => new JSONInterface(), []);
@@ -41,6 +41,15 @@ export default function Page() {
 			.replace(/([a-z])([A-Z])/g, "$1 $2")
 			.replace(/^./, (str) => str.toUpperCase());
 	};
+
+	// Access window only after the component has mounted
+	React.useEffect(() => {
+		if (typeof window !== "undefined") {
+			const host = window.location.hostname;
+			setHostUrl(host);
+			setCaptureSrc(`${host}:5000/video-stream?${Date.now()}`);
+		}
+	}, []);
 
 	// Fetch programs and games
 	React.useEffect(() => {
@@ -84,7 +93,7 @@ export default function Page() {
 	React.useEffect(() => {
 		let isMounted = true;
 		const interval = setInterval(() => {
-			if (isMounted) {
+			if (isMounted && hostUrl) {
 				setCaptureSrc(`${hostUrl}:5000/video-stream?${Date.now()}`);
 			}
 		}, 250);
@@ -93,7 +102,7 @@ export default function Page() {
 			clearInterval(interval);
 			isMounted = false;
 		};
-	}, []);
+	}, [hostUrl]);
 
 	// Handle game change
 	const handleGameChange = (event: SelectChangeEvent<string>) => {
@@ -111,9 +120,12 @@ export default function Page() {
 
 	// Handle setting change
 	const handleSettingChange = (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-		const value = event.target.type === "number" ? Number(event.target.value) :
-			event.target.type === "checkbox" ? event.target.checked :
-				event.target.value;
+		const value =
+			event.target.type === "number"
+				? Number(event.target.value)
+				: event.target.type === "checkbox"
+					? event.target.checked
+					: event.target.value;
 		setSettings({
 			...settings,
 			[key]: value,
@@ -141,7 +153,7 @@ export default function Page() {
 		if (selectedProgram) {
 			setLoading(true);
 			try {
-				const response = await fetch("${hostUrl}:5000/start-program", {
+				const response = await fetch(`${hostUrl}:5000/start-program`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
@@ -182,7 +194,7 @@ export default function Page() {
 				width: "100%",
 				maxWidth: 1200,
 				mx: "auto",
-				px: 2
+				px: 2,
 			}}
 		>
 			{/* Video Stream */}
@@ -210,7 +222,7 @@ export default function Page() {
 						left: 0,
 						width: "100%",
 						height: "100%",
-						objectFit: "cover"
+						objectFit: "cover",
 					}}
 				/>
 			</Box>
@@ -320,11 +332,7 @@ export default function Page() {
 
 							{/* Button Container */}
 							<Box sx={{display: "flex", gap: 2}}>
-								<Button
-									variant="contained"
-									color="primary"
-									onClick={saveSettings}
-								>
+								<Button variant="contained" color="primary" onClick={saveSettings}>
 									Save Settings
 								</Button>
 								<Button
