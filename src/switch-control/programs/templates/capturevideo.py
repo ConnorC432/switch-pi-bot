@@ -4,27 +4,26 @@ import json
 import importlib.util
 
 
-# TODO match root_dir to new directory location
 base_dir = os.path.dirname(os.path.abspath(__file__))
 if os.path.basename(os.getcwd()) == 'switch-control':
 	root_dir = os.path.abspath(os.path.join(base_dir, "..", "switch-control"))
 else:
 	root_dir = os.path.abspath(os.path.join(base_dir, "../../../switch-control"))
 
+sys.path.append(root_dir)
+
 
 def program(settings):
 	# Import Capture Analyser class
-	spec = importlib.util.spec_from_file_location("CaptureAnalyser", (os.path.join(root_dir, "capture_analyser.py")))
-	capture_analyser = importlib.util.module_from_spec(spec)
-	spec.loader.exec_module(capture_analyser)
+	from capture_analyser import CaptureAnalyser
 
 	# JSON Settings to Variables [Setting name from JSON, Default Value]
 	wait_time = int(settings.get("WaitTime", "1"))
-	image_name = os.path.join(root_dir, "assets", settings.get("Image"))
+	image_name = os.path.join(root_dir, "assets", settings.get("Image", "violet.png"))
 
 	# Put Script Code Here
 
-	analyser = capture_analyser.CaptureAnalyser()
+	analyser = CaptureAnalyser()
 	if analyser.wait_for_image_match(image_name, wait_time, 0.35):
 		return True
 	else:
