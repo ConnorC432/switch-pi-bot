@@ -1,22 +1,20 @@
 import os
 import sys
 import json
-import importlib.util
 
 
-# TODO match root_dir to new directory location
 base_dir = os.path.dirname(os.path.abspath(__file__))
 if os.path.basename(os.getcwd()) == 'switch-control':
 	root_dir = os.path.abspath(os.path.join(base_dir, "..", "switch-control"))
 else:
 	root_dir = os.path.abspath(os.path.join(base_dir, "../../../switch-control"))
 
+sys.path.append(root_dir)
+
 
 def program(settings):
 	# Import Capture Analyser class
-	spec = importlib.util.spec_from_file_location("CaptureAnalyser", (os.path.join(root_dir, "capture_analyser.py")))
-	capture_analyser = importlib.util.module_from_spec(spec)
-	spec.loader.exec_module(capture_analyser)
+	from capture_analyser import CaptureAnalyser
 
 	# JSON Settings to Variables [Setting name from JSON, Default Value]
 	wait_time = int(settings.get("WaitTime", "1"))

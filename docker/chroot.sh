@@ -29,6 +29,7 @@ install() {
 	# Enable USB Gadget
 	groupadd -g 500 pibot
 	useradd -u 500 -g 500 -m -s /bin/bash pibot
+	usermod -aG video pibot
 
 	cat <<EOF >>/etc/modules
 libcomposite
