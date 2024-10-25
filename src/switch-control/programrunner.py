@@ -1,6 +1,7 @@
 import json
 import os
 import subprocess
+import sys
 
 
 class ProgramRunner:
@@ -44,8 +45,10 @@ class ProgramRunner:
 	def _run_script(script_path, settings_args):
 		print(f"Running script: {script_path} with arguments: {settings_args}")
 
+		venv_python = sys.executable
+
 		process = subprocess.Popen(
-			["python", script_path] + settings_args,
+			[venv_python, script_path] + settings_args,
 			stdout=subprocess.PIPE,
 			stderr=subprocess.PIPE,
 			cwd=(os.path.dirname(script_path))
