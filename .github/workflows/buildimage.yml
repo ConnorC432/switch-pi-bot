@@ -10,8 +10,9 @@ on:
 jobs:
   build-image:
     runs-on: self-hosted
-    permissions:
-      contents: write
+    concurrency:
+      group: ${{ github.workflow }}
+      cancel-in-progress: false
     steps:
       - name: Install Required Packages
         run: |
