@@ -23,6 +23,20 @@
         "Text": "Diamond",
         "WaitTime": "30"
       }
+    },
+    {
+      "id": 4,
+      "name": "testdpad",
+      "settings": {
+        "HoldTime": "1"
+      }
+    },
+    {
+      "id": 4,
+      "name": "testlstick",
+      "settings": {
+        "HoldTime": "1"
+      }
     }
   ]
 }
