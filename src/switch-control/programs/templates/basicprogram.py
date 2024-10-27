@@ -22,8 +22,8 @@ def program(settings):
 
 	# Put Script Code Here
 	import time
-
 	time.sleep(wait_time)
+
 	return exit_status  # End Script (True = Finished, False = Error)
 
 
