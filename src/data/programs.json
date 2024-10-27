@@ -38,5 +38,23 @@
         "HoldTime": "1"
       }
     }
+  ],
+  "BDSP": [
+    {
+      "id": 1,
+      "name": "Egg Hatcher",
+      "settings": {
+        "HP": "Best!",
+        "Attack": "Best!",
+        "Defense": "Best!",
+        "Sp. Atk": "Best!",
+        "Sp. Def": "Best!",
+        "Speed": "Best!",
+        "Nature": "Careful",
+        "Ability": "Blaze",
+        "Gender": "Male",
+        "Shiny": "Yes"
+      }
+    }
   ]
 }

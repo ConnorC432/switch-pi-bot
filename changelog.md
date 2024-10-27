@@ -1,5 +1,5 @@
-v0.0.1
+v0.0.2
 
-Created Web UI
-Added template automation programs
-Text / Image recognition
+Programs can use bounding boxes for image/text recognition
+Added Auto Hatching Program for BDSP
+Added more template Programs
