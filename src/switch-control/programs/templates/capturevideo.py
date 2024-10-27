@@ -3,8 +3,6 @@ import sys
 import json
 import time
 import asyncio
-from capture_analyser import CaptureAnalyser
-from gamepad import Gamepad
 
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -20,6 +18,8 @@ assets = os.path.join(root_dir, "assets", "templates", "capturevideo")
 
 
 def program(settings):
+	from capture_analyser import CaptureAnalyser
+	from gamepad import Gamepad
 	# JSON Settings to Variables [Setting name from JSON, Default Value]
 	wait_time = int(settings.get("WaitTime", "1"))
 	image_name = os.path.join(assets, "violet.png")
@@ -27,7 +27,7 @@ def program(settings):
 	# Put Script Code Here
 
 	analyser = CaptureAnalyser()
-	if analyser.wait_for_image_match(image_name, wait_time, 0.35):
+	if analyser.wait_for_image_match(image_name, wait_time, 0.8):
 		return True
 	else:
 		return False

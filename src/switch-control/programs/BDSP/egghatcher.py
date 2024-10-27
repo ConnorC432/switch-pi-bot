@@ -4,9 +4,6 @@ import json
 import time
 import asyncio
 
-from capture_analyser import CaptureAnalyser
-from Gamepad import Gamepad
-
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
 if os.path.basename(os.getcwd()) == 'switch-control':
@@ -35,32 +32,32 @@ shiny_bounds = (1851, 157, 50, 51)
 
 
 async def check():
-	CaptureAnalyser.wait_for_text("Oh?", 1800, text_bounds)
+	CAPTURE.wait_for_text("Oh?", 1800, text_bounds)
 
 
 async def walk():
 	while True:
-		Gamepad.press_dpad(12.5, "S")
-		Gamepad.press_dpad(12.5, "N")
+		GAMEPAD.press_dpad(12.5, "S")
+		GAMEPAD.press_dpad(12.5, "N")
 
 
 def check_stats(mon_stats):
-	if CaptureAnalyser.look_for_image(os.path.join(assets, "stats.jpg"), 0.8, stat_bounds):
+	if CAPTURE.look_for_image(os.path.join(assets, "stats.jpg"), 0.8, stat_bounds):
 		# Check IVs
 		for i, stat in stat_value_bounds:
-			mon_stats[i] = CaptureAnalyser.read_text(stat)
+			mon_stats[i] = CAPTURE.read_text(stat)
 
 		# Check Gender
-		if CaptureAnalyser.look_for_image(os.path.join(assets, "male.jpg"), 0.8, gender_bounds):
+		if CAPTURE.look_for_image(os.path.join(assets, "male.jpg"), 0.8, gender_bounds):
 			mon_stats[8] = "Male"
-		elif CaptureAnalyser.look_for_image(os.path.join(assets, "female.jpg"), 0.8, gender_bounds):
+		elif CAPTURE.look_for_image(os.path.join(assets, "female.jpg"), 0.8, gender_bounds):
 			mon_stats[8] = "Female"
 		else:
 			print("Gender can't be determined")
 			return False
 
 		# Check Shiny
-		if CaptureAnalyser.look_for_image(os.path.join(assets, "shiny.jpg"), 0.8, stat_bounds):
+		if CAPTURE.look_for_image(os.path.join(assets, "shiny.jpg"), 0.8, stat_bounds):
 			mon_stats[9] = "Yes"
 		else:
 			mon_stats[9] = "None"
@@ -86,6 +83,8 @@ def compare_stats(mon_stats, desired_stats):
 
 
 def program(settings):
+	from capture_analyser import CaptureAnalyser
+	from gamepad import Gamepad
 	# JSON Settings to Variables [Setting name from JSON, Default Value]
 	desired_stats = [
 		settings.get("HP", "None"),
@@ -100,18 +99,21 @@ def program(settings):
 		settings.get("Shiny", "None"),
 	]
 
+	CAPTURE = CaptureAnalyser()
+	GAMEPAD = Gamepad()
+
 	# Put Script Code Here
 	hatch_counter = 0
 
 	# Position Player
-	Gamepad.move_left_stick(5, "SW")
+	GAMEPAD.move_left_stick(5, "SW")
 	for i in range(11):
-		Gamepad.press_dpad(0.1, "E")
+		GAMEPAD.press_dpad(0.1, "E")
 		time.sleep(0.2)
 
 	# Equip Bike
-	Gamepad.press_button(0.1, "Plus")
-	Gamepad.press_dpad(0.1, "S")
+	GAMEPAD.press_button(0.1, "Plus")
+	GAMEPAD.press_dpad(0.1, "S")
 
 	# Walk and wait for eggs to hatch
 	while hatch_counter <= 5:
@@ -122,15 +124,15 @@ def program(settings):
 			print("Egg Hatched")
 			walking.cancel()
 			for i in range(3):
-				Gamepad.press_button(0.1, "A")
+				GAMEPAD.press_button(0.1, "A")
 				time.sleep(0.2)
 			hatch_counter += 1
 
-	Gamepad.press_button(0.1, "X")
-	Gamepad.press_button(0.1, "A")
-	Gamepad.press_button(0.1, "R")
-	Gamepad.press_dpad(0.1, "W")
-	Gamepad.press_dpad(0.1, "S")
+	GAMEPAD.press_button(0.1, "X")
+	GAMEPAD.press_button(0.1, "A")
+	GAMEPAD.press_button(0.1, "R")
+	GAMEPAD.press_dpad(0.1, "W")
+	GAMEPAD.press_dpad(0.1, "S")
 
 	for i in range(5):
 		# Determine Mon Stats
@@ -140,16 +142,16 @@ def program(settings):
 		if compare_stats(mon_stats, desired_stats):
 			return True
 		else:
-			Gamepad.press_button(0.1, "A")
+			GAMEPAD.press_button(0.1, "A")
 			time.sleep(0.25)
-			Gamepad.press_dpad(0.1, "N")
-			Gamepad.press_dpad(0.1, "N")
-			Gamepad.press_dpad(0.1, "A")
+			GAMEPAD.press_dpad(0.1, "N")
+			GAMEPAD.press_dpad(0.1, "N")
+			GAMEPAD.press_dpad(0.1, "A")
 			time.sleep(0.25)
-			Gamepad.press_dpad(0.1, "N")
-			Gamepad.press_button(0.1, "A")
+			GAMEPAD.press_dpad(0.1, "N")
+			GAMEPAD.press_button(0.1, "A")
 			time.sleep(0.25)
-			Gamepad.press_button(0.1, "A")
+			GAMEPAD.press_button(0.1, "A")
 
 	return False  # End Script (True = Finished, False = Error)
 
