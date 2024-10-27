@@ -52,7 +52,7 @@ EOF
 
 	# Enable Services
 	systemctl daemon-reload
-	systemctl enable firstboot usbgadget pibot-backend pibot-frontend
+	systemctl enable firstboot usbgadget pibot-backend pibot-frontend npmbuild
 }
 
 chroot $MOUNT_DIR /bin/bash -c "$(declare -f install); install"
