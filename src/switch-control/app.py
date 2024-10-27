@@ -81,11 +81,6 @@ def video_stream():
 		return jsonify({'Error': 'No capture card initialised'}), 503
 
 
-@app.route('/test-action')
-def test_action():
-	return jsonify({'Success': 'Gunicorn can be accessed'}), 200
-
-
 def cleanup():
 	global capture_card
 	if capture_card:
