@@ -1,6 +1,10 @@
 import os
 import sys
 import json
+import time
+import asyncio
+from capture_analyser import CaptureAnalyser
+from gamepad import Gamepad
 
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -11,17 +15,16 @@ else:
 
 sys.path.append(root_dir)
 
+# Script Variables
+assets = os.path.join(root_dir, "assets", "templates", "basicprogram")
+
 
 def program(settings):
-	# Import Capture Analyser class
-	from capture_analyser import CaptureAnalyser
-
 	# JSON Settings to Variables [Setting name from JSON, Default Value]
 	wait_time = int(settings.get("WaitTime", "1"))
 	exit_status = settings.get("ExitStatus", "True") == "True"
 
 	# Put Script Code Here
-	import time
 	time.sleep(wait_time)
 
 	return exit_status  # End Script (True = Finished, False = Error)
