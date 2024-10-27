@@ -16,3 +16,4 @@ urllib3>=2.2.3
 Werkzeug>=3.0.6
 
 pip~=24.2
+argparse>=1.4.0
