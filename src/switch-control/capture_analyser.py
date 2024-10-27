@@ -139,7 +139,7 @@ class CaptureAnalyser:
 		Waits for the specified text to appear within a specified time.
 		Args:
 			search_text (str): The text to search for.
-			time_value (int): Time to wait in seconds.
+			time_value (int): Time to wait in seconds. (None = infinite)
 		    bounding_box (tuple): Bounding box coordinates (x,y,width,height), default is None.
 		Returns:
 			bool: True if the text is found within the time, otherwise False.
@@ -150,8 +150,7 @@ class CaptureAnalyser:
 			if self.look_for_text(search_text):
 				print(f"Text '{search_text}' found within {time_value} seconds.")
 				return True
-			elapsed_time = time.time() - start_time
-			if elapsed_time >= time_value:
+			if time_value is not None and (time.time() - start_time) >= time_value:
 				print(f"Text '{search_text}' not found within {time_value} seconds.")
 				return False
 			time.sleep(1)
