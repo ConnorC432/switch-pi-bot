@@ -15,7 +15,6 @@
   <component name="PackageRequirementsSettings">
     <option name="requirementsPath" value="$MODULE_DIR$/src/switch-control/requirements.txt" />
     <option name="versionSpecifier" value="Greater or equal (&gt;=x.y.z)" />
-    <option name="removeUnused" value="true" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Jinja2" />
