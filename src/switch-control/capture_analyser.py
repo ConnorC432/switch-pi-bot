@@ -157,21 +157,4 @@ class CaptureAnalyser:
 
 
 if __name__ == "__main__":
-	# Initialize with a fixed URL
-	analyser = CaptureAnalyser()  # No need to pass URL
-
-	# Example usage
-	template_path = 'path/to/template.jpg'  # Replace with actual template path
-	timeout = 3  # Example timeout
-	if analyser.wait_for_image_match(template_path, timeout):
-		print(f"Image match found within {timeout} seconds.")
-	else:
-		print(f"No image match found within {timeout} seconds.")
-
-	# Example usage for text search
-	search_text = 'DefaultText'
-	timeout = 3  # Example timeout
-	if analyser.wait_for_text(search_text, timeout):
-		print(f"Text '{search_text}' found within {timeout} seconds.")
-	else:
-		print(f"Text '{search_text}' not found within {timeout} seconds.")
+	analyser = CaptureAnalyser()

@@ -1,6 +1,6 @@
 import atexit
 import os
-import json  # Added for loading JSON files
+import json
 from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 from programrunner import ProgramRunner
@@ -15,7 +15,7 @@ program_runner = ProgramRunner()
 capture_card = None
 
 
-# Function to read the Capture Card Device from settings.json
+# Read the Capture Card Device from settings.json
 def load_capture_card_device_config(capture_device):
 	try:
 		with open(capture_device, 'r') as file:

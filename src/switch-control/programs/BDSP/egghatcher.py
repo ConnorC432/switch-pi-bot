@@ -102,7 +102,6 @@ def program(settings):
 	CAPTURE = CaptureAnalyser()
 	GAMEPAD = Gamepad()
 
-	# Put Script Code Here
 	hatch_counter = 0
 
 	# Position Player
@@ -153,7 +152,7 @@ def program(settings):
 			time.sleep(0.25)
 			GAMEPAD.press_button(0.1, "A")
 
-	return False  # End Script (True = Finished, False = Error)
+	return False
 
 
 def parse_args(args):

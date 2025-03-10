@@ -6,7 +6,6 @@ import sys
 
 class ProgramRunner:
 	def __init__(self):
-		# Define base directory for the scripts (adjust as necessary)
 		self.base_dir = os.path.dirname(os.path.abspath(__file__))
 		self.scripts_dir = os.path.join(self.base_dir, 'programs')
 

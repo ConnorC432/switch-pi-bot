@@ -7,12 +7,13 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/src/switch-control/.venv" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.12 (.venv)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.13 (switch-pi-bot)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PackageRequirementsSettings">
-    <option name="requirementsPath" value="$USER_HOME$/Git/switch-pi-bot/src/switch-control/requirements.txt" />
+    <option name="requirementsPath" value="$MODULE_DIR$/src/switch-control/requirements.txt" />
     <option name="versionSpecifier" value="Greater or equal (&gt;=x.y.z)" />
     <option name="removeUnused" value="true" />
   </component>
