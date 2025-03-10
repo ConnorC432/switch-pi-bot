@@ -15,7 +15,7 @@
     {
       "name": "Capture Card Device",
       "type": "text",
-      "value": "/dev/video0"
+      "value": "/dev/video1"
     }
   ]
 }

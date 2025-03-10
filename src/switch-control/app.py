@@ -15,6 +15,7 @@ program_runner = ProgramRunner()
 capture_card = None
 
 
+## TODO auto determine capture card
 # Read the Capture Card Device from settings.json
 def load_capture_card_device_config(capture_device):
 	try:
