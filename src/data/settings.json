@@ -11,11 +11,5 @@
       ]
     }
   ],
-  "Pi Settings": [
-    {
-      "name": "Capture Card Device",
-      "type": "text",
-      "value": "/dev/video1"
-    }
-  ]
+  "Pi Settings": []
 }

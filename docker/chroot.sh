@@ -23,7 +23,7 @@ install() {
 	apt update
 	curl -fsSL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh
 	bash nodesource_setup.sh
-	apt install -y python3 python3-venv python3-pip tesseract-ocr git wget curl nodejs/nodistro
+	apt install -y python3 python3-venv python3-pip tesseract-ocr git wget curl nodejs/nodistro ustreamer
 	rm nodesource_setup.sh
 
 	# Enable USB Gadget
@@ -52,7 +52,7 @@ EOF
 
 	# Enable Services
 	systemctl daemon-reload
-	systemctl enable firstboot usbgadget pibot-backend pibot-frontend npmbuild
+	systemctl enable firstboot usbgadget pibot-backend pibot-frontend npmbuild ustreamer
 }
 
 chroot $MOUNT_DIR /bin/bash -c "$(declare -f install); install"

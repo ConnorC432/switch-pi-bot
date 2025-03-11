@@ -1,5 +1,3 @@
-v0.0.2
+v0.0.3
 
-Programs can use bounding boxes for image/text recognition
-Added Auto Hatching Program for BDSP
-Added more template Programs
+Capture card backend improved

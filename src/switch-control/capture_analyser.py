@@ -9,7 +9,7 @@ class CaptureAnalyser:
 		"""
 		Initializes the CaptureAnalyser with a fixed API URL.
 		"""
-		self.url = "http://127.0.0.1:5000/video-stream"
+		self.url = "http://127.0.0.1:8080/stream"
 		self.capture = cv2.VideoCapture(self.url)
 		if not self.capture.isOpened():
 			raise ValueError(f"Failed to connect to URL: {self.url}")

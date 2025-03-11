@@ -47,7 +47,7 @@ export default function Page() {
 		if (typeof window !== "undefined") {
 			const host = window.location.hostname;
 			setHostUrl(host);
-			setCaptureSrc(`http://${hostUrl}:5000/video-stream?${Date.now()}`);
+			setCaptureSrc(`http://${hostUrl}:8080/stream`);
 		}
 	}, []);
 
@@ -84,7 +84,7 @@ export default function Page() {
 		};
 
 		fetchStatus();
-		const interval = setInterval(fetchStatus, 5000);
+		const interval = setInterval(fetchStatus, 1000);
 
 		return () => clearInterval(interval);
 	}, [jsonInterface]);
@@ -94,7 +94,7 @@ export default function Page() {
 		let isMounted = true;
 		const interval = setInterval(() => {
 			if (isMounted && hostUrl) {
-				setCaptureSrc(`http://${hostUrl}:5000/video-stream?${Date.now()}`);
+				setCaptureSrc(`http://${hostUrl}:8080/stream`);
 			}
 		}, 250);
 
