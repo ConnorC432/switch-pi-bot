@@ -18,6 +18,7 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import type {SelectChangeEvent} from "@mui/material";
 import {JSONInterface, Program, StatusResponse} from "./json";
+import Image from "next/image";
 
 // Define SettingValue to handle different types of setting values
 type SettingValue = string | number | boolean;
@@ -47,9 +48,14 @@ export default function Page() {
 		if (typeof window !== "undefined") {
 			const host = window.location.hostname;
 			setHostUrl(host);
-			setCaptureSrc(`http://${hostUrl}:8080/stream`);
 		}
 	}, []);
+
+	React.useEffect(() => {
+		if (hostUrl) {
+			setCaptureSrc('http://$hostUrl:8080/stream');
+		}
+	}, [hostUrl]);
 
 	// Fetch programs and games
 	React.useEffect(() => {
@@ -142,7 +148,7 @@ export default function Page() {
 					console.log("Settings Saved");
 				}
 				catch (error) {
-					console.log("Settings Not Saved");
+					console.log("Settings Not Saved:", error);
 				}
 			}
 		}
@@ -213,17 +219,11 @@ export default function Page() {
 					justifyContent: "center",
 				}}
 			>
-				<img
+				<Image
 					src={captureSrc}
 					alt="Capture Card Unavailable"
-					style={{
-						position: "absolute",
-						top: 0,
-						left: 0,
-						width: "100%",
-						height: "100%",
-						objectFit: "cover",
-					}}
+					layout="fill"
+					objectFit="cover"
 				/>
 			</Box>
 
