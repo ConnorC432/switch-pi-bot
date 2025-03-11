@@ -18,9 +18,12 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import type {SelectChangeEvent} from "@mui/material";
 import {JSONInterface, Program, StatusResponse} from "./json";
+import { useEffect } from "react";
+import { io } from "socket.io-client";
 
 // Define SettingValue to handle different types of setting values
 type SettingValue = string | number | boolean;
+
 
 export default function Page() {
 	const [hostUrl, setHostUrl] = React.useState<string>("");
@@ -31,7 +34,7 @@ export default function Page() {
 	const [settings, setSettings] = React.useState<{ [key: string]: SettingValue }>({});
 	const [status, setStatus] = React.useState<StatusResponse | null>(null);
 	const [loading, setLoading] = React.useState(false);
-	const [captureSrc, setCaptureSrc] = React.useState<string>("");
+	const [frame, setFrame] = React.useState<string>("");
 
 	const theme = useTheme();
 	const jsonInterface = React.useMemo(() => new JSONInterface(), []);
@@ -47,7 +50,6 @@ export default function Page() {
 		if (typeof window !== "undefined") {
 			const host = window.location.hostname;
 			setHostUrl(host);
-			setCaptureSrc(`http://${hostUrl}:5000/video-stream?${Date.now()}`);
 		}
 	}, []);
 
@@ -89,18 +91,28 @@ export default function Page() {
 		return () => clearInterval(interval);
 	}, [jsonInterface]);
 
-	// Update Capture image
-	React.useEffect(() => {
-		let isMounted = true;
-		const interval = setInterval(() => {
-			if (isMounted && hostUrl) {
-				setCaptureSrc(`http://${hostUrl}:5000/video-stream?${Date.now()}`);
-			}
-		}, 250);
+	// Capture Card Image WebSocket
+	useEffect(() => {
+		const socket = io(`http://${hostUrl}:5000`);
+
+		// On connect to the WebSocket server
+		socket.on("connect", () => {
+			console.log("Connected to WebSocket server");
+		});
+
+		// Listen for video frames from the server
+		socket.on("video_frame", (data) => {
+			// Set the frame received from the WebSocket server
+			setFrame(data.frame);
+		});
+
+		// Cleanup on disconnect
+		socket.on("disconnect", () => {
+			console.log("Disconnected from WebSocket server");
+		});
 
 		return () => {
-			clearInterval(interval);
-			isMounted = false;
+			socket.disconnect();
 		};
 	}, [hostUrl]);
 
@@ -214,7 +226,7 @@ export default function Page() {
 				}}
 			>
 				<img
-					src={captureSrc}
+					src={`data:image/jpeg;base64,${frame}`}
 					alt="Capture Card Unavailable"
 					style={{
 						position: "absolute",
