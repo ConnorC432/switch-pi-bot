@@ -37,7 +37,7 @@ jobs:
       - name: Run Gunicorn
         run: |
           source ../../.venv/bin/activate
-          python app.py
+          python app.py &
           sleep 10
         working-directory: ./src/switch-control
 
