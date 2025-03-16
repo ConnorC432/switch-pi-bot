@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import {Box, Typography, Divider, Card, CircularProgress} from "@mui/material";
-import { red, green, grey } from '@mui/material/colors';
+import {red, green, blue} from "@mui/material/colors";
 
 
 interface Status {
@@ -56,7 +56,7 @@ const StatusDisplay: React.FC = () => {
     return null;
   }
 
-  let background = grey[900];
+  let background = blue[500];
   if (status.status === 'Finished') {
     background = green[500];
   } else if (status.status === 'Error') {
@@ -66,12 +66,12 @@ const StatusDisplay: React.FC = () => {
   return (
     <Card variant="outlined" sx={{ mt: 2, width: '100%', maxWidth: 480, borderRadius: 2 }}>
       <Box sx={{ p: 2, textAlign: 'center', backgroundColor: background  }}>
-        <Typography variant="body1">
+        <Typography variant="h6">
           Current Status: {status.status}
         </Typography>
       </Box>
-      <Divider />
-      <Box sx={{ p: 2, backgroundColor: grey[900] }}>
+      {/*<Divider />
+      <Box sx={{ p: 2, backgroundColor: background.paper }}>
         {status.currentGame && (
           <Typography variant="body2">
             Game: {status.currentGame.name}
@@ -83,7 +83,7 @@ const StatusDisplay: React.FC = () => {
             Program: {status.currentProgram.name}
           </Typography>
         )}
-      </Box>
+      </Box>*/}
     </Card>
   );
 };

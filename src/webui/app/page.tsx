@@ -3,20 +3,18 @@
 import * as React from "react";
 import {
 	Box,
-	Typography,
-	Accordion,
-	AccordionDetails,
-	AccordionSummary,
-	List,
-	ListItem,
-	ListItemText,
 	TextField,
 	Button,
 	useTheme,
 	CircularProgress,
+	FormControl,
+	InputLabel,
+	Select,
+	MenuItem,
+	List,
+	ListItem,
+	ListItemText,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import type {SelectChangeEvent} from "@mui/material";
 import {JSONInterface, Program, StatusResponse} from "./json";
 import StatusDisplay from "@/app/components/StatusDisplay";
 
@@ -35,18 +33,12 @@ export default function Page() {
 	const [captureSrc, setCaptureSrc] = React.useState<string>("");
 	const theme = useTheme();
 	const jsonInterface = React.useMemo(() => new JSONInterface(), []);
-
 	const formatKey = (key: string) => {
 		return key
 			.replace(/([a-z])([A-Z])/g, "$1 $2")
 			.replace(/^./, (str) => str.toUpperCase());
 	};
 
-	// Determine if button should be disabled
-	const isStatusStartingOrRunning = status && (status.status === "Starting" || status.status === "Running");
-	const buttonDisabled = loading || isStatusStartingOrRunning || false;
-
-	// Access window only after the component has mounted
 	React.useEffect(() => {
 		if (typeof window !== "undefined") {
 			const host = window.location.hostname;
@@ -68,8 +60,11 @@ export default function Page() {
 				const gameList = Object.keys(data);
 				setGames(gameList);
 
-				if (selectedGame) {
+				// Check if the selected game is available in the fetched data
+				if (selectedGame && gameList.includes(selectedGame)) {
 					setPrograms(data[selectedGame] || []);
+					setSelectedProgram(null); // Reset selected program when game changes
+					setSettings({}); // Clear settings when game changes
 				}
 			}
 			catch (error) {
@@ -81,15 +76,13 @@ export default function Page() {
 	}, [selectedGame, jsonInterface]);
 
 	// Handle game change
-	const handleGameChange = (event: SelectChangeEvent<string>) => {
-		const game = event.target.value;
+	const handleGameChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+		const game = event.target.value as string;
 		setSelectedGame(game);
-		setSelectedProgram(null); // Reset selected program when game changes
-		setSettings({}); // Clear settings when game changes
 	};
 
-	// Handle program change
-	const handleProgramChange = (program: Program) => {
+	// Handle program selection
+	const handleProgramSelect = (program: Program) => {
 		setSelectedProgram(program);
 		setSettings(program.settings || {});
 	};
@@ -155,7 +148,6 @@ export default function Page() {
 		}
 	};
 
-
 	return (
 		<Box
 			sx={{
@@ -163,150 +155,136 @@ export default function Page() {
 				justifyContent: "center",
 				flexDirection: "column",
 				alignItems: "center",
-				mt: "64px",
+				mt: "16px",
 				width: "100%",
 				maxWidth: 1200,
 				mx: "auto",
 				px: 2,
 			}}
 		>
-			{/* Video Stream */}
-			<Box
-				sx={{
-					position: "relative",
-					width: "100%",
-					height: 0,
-					paddingBottom: "56.25%",
-					overflow: "hidden",
-					borderRadius: 1,
-					boxShadow: 3,
-					backgroundColor: theme.palette.background.paper,
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "center",
-				}}
-			>
-				<img
-					src={captureSrc}
-					alt="Capture Card Unavailable"
-					style={{
-						position: "absolute",
-						top: 0,
-						left: 0,
+			<Box sx={{ width: "100%", mb: 3 }}>
+				{/* Video Stream */}
+				<Box
+					sx={{
+						position: "relative",
 						width: "100%",
-						height: "100%",
-						objectFit: "cover",
+						height: 0,
+						paddingBottom: "56.25%",
+						overflow: "hidden",
+						borderRadius: 1,
+						boxShadow: 3,
+						backgroundColor: theme.palette.background.paper,
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center",
 					}}
-					loading="eager"
-				/>
+				>
+					<img
+						src={captureSrc}
+						alt="Capture Card Unavailable"
+						style={{
+							position: "absolute",
+							top: 0,
+							left: 0,
+							width: "100%",
+							height: "100%",
+							objectFit: "cover",
+						}}
+						loading="eager"
+					/>
+				</Box>
+
+				{/* Status Display */}
+				<Box
+					sx={{
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+						mt: 2,
+						width: "100%",
+					}}
+				>
+					<StatusDisplay />
+				</Box>
+
+				{/* Buttons */}
+				<Box sx={{ display: "flex", gap: 2, justifyContent: "center", mt: 2 }}>
+					<Button variant="contained" color="primary" onClick={saveSettings}>
+						Save Settings
+					</Button>
+					<Button
+						variant="contained"
+						color="secondary"
+						onClick={startProgram}
+						sx={{ display: "flex", alignItems: "center" }}
+						disabled={!selectedGame || !selectedProgram || loading || (status && (status.status === "Starting" || status.status === "Running"))}
+					>
+						{loading || (status && (status.status === "Starting" || status.status === "Running")) ? <CircularProgress size={24} /> : "Start Program"}
+					</Button>
+				</Box>
 			</Box>
 
-			{/* Status Display */}
-			<StatusDisplay />
-
-			{/* Start Program / Save Settings */}
-			<Box sx={{display: "flex", gap: 2, mt: 2}}>
-				<Button variant="contained" color="primary" onClick={saveSettings}>
-					Save Settings
-				</Button>
-				<Button
-					variant="contained"
-					color="secondary"
-					onClick={startProgram}
-					sx={{display: "flex", alignItems: "center"}}
-					disabled={!selectedGame || !selectedProgram || loading || (status && (status.status === "Starting" || status.status === "Running"))}
-				>
-					{loading || (status && (status.status === "Starting" || status.status === "Running")) ? <CircularProgress size={24}/> : "Start Program"}
-				</Button>
-			</Box>
-
-			{/* Game Selection Accordion */}
-			<Accordion sx={{mt: 2, width: "100%"}}>
-				<AccordionSummary
-					expandIcon={<ExpandMoreIcon/>}
-					aria-controls="game-selection-content"
-					id="game-selection-header"
-				>
-					<Typography>{selectedGame || "Select Game"}</Typography>
-				</AccordionSummary>
-				<AccordionDetails>
-					<List>
-						{games.map((game) => (
-							<ListItem
-								key={game}
-								onClick={() => handleGameChange({target: {value: game}} as SelectChangeEvent<string>)}
-								sx={{
-									cursor: "pointer",
-									"&:hover": {
-										backgroundColor: theme.palette.action.hover,
-									},
-								}}
-							>
-								<ListItemText primary={game}/>
-							</ListItem>
-						))}
-					</List>
-				</AccordionDetails>
-			</Accordion>
-
-			{/* Program Selection Accordion */}
-			{selectedGame && (
-				<Accordion sx={{mt: 2, width: "100%"}}>
-					<AccordionSummary
-						expandIcon={<ExpandMoreIcon/>}
-						aria-controls="program-selection-content"
-						id="program-selection-header"
-					>
-						<Typography>{selectedProgram ? selectedProgram.name : "Select Program"}</Typography>
-					</AccordionSummary>
-					<AccordionDetails>
-						<List>
-							{programs.map((program) => (
-								<ListItem
-									key={program.id}
-									onClick={() => handleProgramChange(program)}
-									sx={{
-										cursor: "pointer",
-										"&:hover": {
-											backgroundColor: theme.palette.action.hover,
-										},
-									}}
-								>
-									<ListItemText primary={program.name}/>
-								</ListItem>
+			<Box sx={{ display: "flex", width: "100%" }}>
+				{/* Game Selection & Program Selection */}
+				<Box sx={{ flex: 1, pr: 4 }}>
+					{/* Game Selection Dropdown */}
+					<FormControl fullWidth sx={{ mt: 2 }}>
+						<InputLabel id="game-selection-label">Select Game</InputLabel>
+						<Select
+							labelId="game-selection-label"
+							value={selectedGame}
+							onChange={handleGameChange}
+							label="Select Game"
+						>
+							{games.map((game) => (
+								<MenuItem key={game} value={game}>
+									{game}
+								</MenuItem>
 							))}
-						</List>
-					</AccordionDetails>
-				</Accordion>
-			)}
+						</Select>
+					</FormControl>
 
-			{/* Program Settings Accordion */}
-			{selectedProgram && (
-				<Accordion sx={{mt: 2, width: "100%"}}>
-					<AccordionSummary
-						expandIcon={<ExpandMoreIcon/>}
-						aria-controls="program-settings-content"
-						id="program-settings-header"
-					>
-						<Typography>Program Settings for {selectedProgram.name}</Typography>
-					</AccordionSummary>
-					<AccordionDetails>
-						<Box sx={{width: "100%"}}>
-							{Object.keys(selectedProgram.settings).map((key) => (
-								<TextField
-									key={key}
-									fullWidth
-									label={formatKey(key)}
-									value={settings[key] || ""}
-									onChange={handleSettingChange(key)}
-									sx={{mb: 2}}
-									type={typeof settings[key] === "number" ? "number" : "text"}
-								/>
-							))}
+					{/* Program Selection List */}
+					{selectedGame && programs.length > 0 && (
+						<Box sx={{ width: "100%", mt: 3 }}>
+							<List>
+								{programs.map((program) => (
+									<ListItem
+										button
+										key={program.id}
+										onClick={() => handleProgramSelect(program)}
+										selected={selectedProgram?.id === program.id}
+									>
+										<ListItemText primary={program.name} />
+									</ListItem>
+								))}
+							</List>
 						</Box>
-					</AccordionDetails>
-				</Accordion>
-			)}
+					)}
+				</Box>
+
+				{/*Program Settings */}
+				<Box sx={{ flex: 1 }}>
+					{selectedProgram && (
+						<Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}>
+							<Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+								{Object.keys(selectedProgram.settings).map((key) => (
+									<TextField
+										color="secondary"
+										key={key}
+										fullWidth
+										label={formatKey(key)}
+										value={settings[key] || ""}
+										onChange={handleSettingChange(key)}
+										sx={{ mb: 2 }}
+										type={typeof settings[key] === "number" ? "number" : "text"}
+									/>
+								))}
+							</Box>
+						</Box>
+					)}
+				</Box>
+			</Box>
 		</Box>
 	);
 }

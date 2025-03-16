@@ -21,7 +21,7 @@
       "name": "capturetext",
       "settings": {
         "Text": "Diamond",
-        "WaitTime": "30"
+        "WaitTime": "5"
       }
     },
     {

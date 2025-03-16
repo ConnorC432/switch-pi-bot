@@ -51,9 +51,6 @@ export async function POST(request: NextRequest) {
         const selectedProgram = programsData.templates.find(template => template.id === programId);
 
         if (selectedProgram) {
-            // Here you would add your logic to start the program
-            // For example, you might update the status file to reflect the current program
-
             // Update status data
             const updatedStatus: StatusData = {
                 ...statusData,
