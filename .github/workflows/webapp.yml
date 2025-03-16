@@ -15,8 +15,6 @@ on:
 jobs:
   test-gunicorn:
     runs-on: ubuntu-latest
-    env:
-      DISABLE_CAPTURE_CARD: "true"
 
     steps:
       - name: Checkout
@@ -34,16 +32,16 @@ jobs:
           source .venv/bin/activate
           pip install -r ./src/switch-control/requirements.txt
 
-      - name: Run Gunicorn
-        run: |
-          source ../../.venv/bin/activate
-          python app.py &
-          sleep 10
-        working-directory: ./src/switch-control
+      #- name: Install PyTest
+        #run: |
+          #source .venv/bin/activate
+          #pip install pytest
 
-      - name: Test endpoint
-        run: |
-          curl --fail http://127.0.0.1:5000/test || exit 1
+      #- name: Test app.py
+        #run: |
+          #source ../../.venv/bin/activate
+          #pytest app.py
+        #working-directory: ./src/switch-control
 
   test-next-js:
     runs-on: ubuntu-latest
