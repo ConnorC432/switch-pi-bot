@@ -43,7 +43,7 @@ jobs:
 
       - name: Test endpoint
         run: |
-          curl --fail http://127.0.0.1:5000/ || exit 1
+          curl --fail http://127.0.0.1:5000/test || exit 1
 
   test-next-js:
     runs-on: ubuntu-latest

@@ -22,6 +22,10 @@ def start_program():
 		print(f"Error: {e}")
 		return jsonify({'Error': 'Internal Server Error'}), 500
 
+@app.route('/test', methods=['POST'])
+def test():
+	return jsonify({'Success': True}), 200
+
 
 if __name__ == '__main__':
 	app.run(debug=False, use_reloader=False)
