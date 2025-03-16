@@ -14,23 +14,25 @@ else:
 sys.path.append(root_dir)
 
 # Script Variables
-assets = os.path.join(root_dir, "assets", "templates", "capturevideo")
+assets = os.path.join(root_dir, "assets", "templates", "testdpad")
 
 
 def program(settings):
 	from capture_analyser import CaptureAnalyser
 	from gamepad import Gamepad
 	# JSON Settings to Variables [Setting name from JSON, Default Value]
-	wait_time = int(settings.get("WaitTime", "1"))
-	image_name = os.path.join(assets, "violet.png")
+	hold_time = int(settings.get("HoldTime", "1"))
 
 	# Put Script Code Here
+	import time
+	from gamepad import Gamepad
+	GAMEPAD = Gamepad()
+	GAMEPAD.press_dpad(hold_time, "N")
+	GAMEPAD.press_dpad(hold_time, "E")
+	GAMEPAD.press_dpad(hold_time, "S")
+	GAMEPAD.press_dpad(hold_time, "W")
 
-	analyser = CaptureAnalyser()
-	if analyser.wait_for_image_match(image_name, wait_time, 0.8):
-		return True
-	else:
-		return False
+	return True  # End Script (True = Finished, False = Error)
 
 
 def parse_args(args):

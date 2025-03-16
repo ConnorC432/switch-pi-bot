@@ -1,5 +1,6 @@
-v0.0.1
+v0.1.0
 
-Created Web UI
-Added template automation programs
-Text / Image recognition
+Capture card backend improved
+Updated front end dependencies
+Front end Web UI improved
+Added Fullscreen Capture View

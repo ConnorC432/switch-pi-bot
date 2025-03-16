@@ -2,7 +2,9 @@
 Description=Node.js Service for pi bot frontend
 After=network.target
 After=pibot-backend.service
+After=npmbuild.service
 Requires=pibot-backend.service
+Requires=npmbuild.service
 
 [Service]
 User=pibot
@@ -11,6 +13,8 @@ WorkingDirectory=/opt/webui
 ExecStart=/usr/bin/npm start --prefix /opt/webui
 Restart=on-failure
 Environment=NODE_ENV=production
+Environment=HOST=0.0.0.0
+Environment=PORT=80
 
 [Install]
 WantedBy=multi-user.target

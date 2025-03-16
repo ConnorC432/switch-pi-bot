@@ -4,6 +4,7 @@ After=network.target
 
 [Service]
 Type=oneshot
+User=root
 ExecStart=/usr/bin/firstboot.sh
 ExecStartPost=/bin/systemctl disable %n
 

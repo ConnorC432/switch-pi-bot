@@ -11,11 +11,28 @@
       ]
     }
   ],
-  "Pi Settings": [
+  "Pi Settings": [],
+  "Example Settings": [
     {
-      "name": "Capture Card Device",
+      "name": "Text",
       "type": "text",
-      "value": "/dev/video0"
+      "value": "text"
+    },
+    {
+      "name": "Combo",
+      "type": "combo",
+      "value": "combo1",
+      "options": [
+        "combo1",
+        "combo2"
+      ]
+    },
+    {
+      "name": "Slider",
+      "type": "slider",
+      "value": "50",
+      "min": 0,
+      "max": 100
     }
   ]
 }
