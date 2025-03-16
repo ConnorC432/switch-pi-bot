@@ -13,12 +13,12 @@ import {
 	TextField,
 	Button,
 	useTheme,
-	CircularProgress
+	CircularProgress,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import type {SelectChangeEvent} from "@mui/material";
 import {JSONInterface, Program, StatusResponse} from "./json";
-import Image from "next/image";
+import StatusDisplay from "@/app/components/StatusDisplay";
 
 // Define SettingValue to handle different types of setting values
 type SettingValue = string | number | boolean;
@@ -33,7 +33,6 @@ export default function Page() {
 	const [status, setStatus] = React.useState<StatusResponse | null>(null);
 	const [loading, setLoading] = React.useState(false);
 	const [captureSrc, setCaptureSrc] = React.useState<string>("");
-
 	const theme = useTheme();
 	const jsonInterface = React.useMemo(() => new JSONInterface(), []);
 
@@ -42,6 +41,10 @@ export default function Page() {
 			.replace(/([a-z])([A-Z])/g, "$1 $2")
 			.replace(/^./, (str) => str.toUpperCase());
 	};
+
+	// Determine if button should be disabled
+	const isStatusStartingOrRunning = status && (status.status === "Starting" || status.status === "Running");
+	const buttonDisabled = loading || isStatusStartingOrRunning || false;
 
 	// Access window only after the component has mounted
 	React.useEffect(() => {
@@ -53,7 +56,7 @@ export default function Page() {
 
 	React.useEffect(() => {
 		if (hostUrl) {
-			setCaptureSrc('http://$hostUrl:8080/stream');
+			setCaptureSrc(`http://${hostUrl}:8080/stream`);
 		}
 	}, [hostUrl]);
 
@@ -76,39 +79,6 @@ export default function Page() {
 
 		fetchData();
 	}, [selectedGame, jsonInterface]);
-
-	// Poll the status every 5 seconds
-	React.useEffect(() => {
-		const fetchStatus = async () => {
-			try {
-				const data = await jsonInterface.fetchStatus();
-				setStatus(data);
-			}
-			catch (error) {
-				console.error("Failed to fetch status:", error);
-			}
-		};
-
-		fetchStatus();
-		const interval = setInterval(fetchStatus, 1000);
-
-		return () => clearInterval(interval);
-	}, [jsonInterface]);
-
-	// Update Capture image
-	React.useEffect(() => {
-		let isMounted = true;
-		const interval = setInterval(() => {
-			if (isMounted && hostUrl) {
-				setCaptureSrc(`http://${hostUrl}:8080/stream`);
-			}
-		}, 250);
-
-		return () => {
-			clearInterval(interval);
-			isMounted = false;
-		};
-	}, [hostUrl]);
 
 	// Handle game change
 	const handleGameChange = (event: SelectChangeEvent<string>) => {
@@ -185,9 +155,6 @@ export default function Page() {
 		}
 	};
 
-	// Determine if button should be disabled
-	const isStatusStartingOrRunning = status && (status.status === "Starting" || status.status === "Running");
-	const buttonDisabled = loading || isStatusStartingOrRunning || false; // Ensure it's a boolean
 
 	return (
 		<Box
@@ -219,32 +186,39 @@ export default function Page() {
 					justifyContent: "center",
 				}}
 			>
-				<Image
+				<img
 					src={captureSrc}
 					alt="Capture Card Unavailable"
-					layout="fill"
-					objectFit="cover"
+					style={{
+						position: "absolute",
+						top: 0,
+						left: 0,
+						width: "100%",
+						height: "100%",
+						objectFit: "cover",
+					}}
+					loading="eager"
 				/>
 			</Box>
 
 			{/* Status Display */}
-			{status && (status.status === "Starting" || status.status === "Running" || status.status === "Error" || status.status === "Finished") && (
-				<Box sx={{mt: 2, width: "100%", textAlign: "center"}}>
-					<Typography variant="h6" color="textSecondary">
-						Current Status: {status.status}
-					</Typography>
-					{status.currentGame && (
-						<Typography variant="body1" color="textSecondary">
-							Game: {status.currentGame.name}
-						</Typography>
-					)}
-					{status.currentProgram && (
-						<Typography variant="body1" color="textSecondary">
-							Program: {status.currentProgram.name}
-						</Typography>
-					)}
-				</Box>
-			)}
+			<StatusDisplay />
+
+			{/* Start Program / Save Settings */}
+			<Box sx={{display: "flex", gap: 2, mt: 2}}>
+				<Button variant="contained" color="primary" onClick={saveSettings}>
+					Save Settings
+				</Button>
+				<Button
+					variant="contained"
+					color="secondary"
+					onClick={startProgram}
+					sx={{display: "flex", alignItems: "center"}}
+					disabled={!selectedGame || !selectedProgram || loading || (status && (status.status === "Starting" || status.status === "Running"))}
+				>
+					{loading || (status && (status.status === "Starting" || status.status === "Running")) ? <CircularProgress size={24}/> : "Start Program"}
+				</Button>
+			</Box>
 
 			{/* Game Selection Accordion */}
 			<Accordion sx={{mt: 2, width: "100%"}}>
@@ -329,22 +303,6 @@ export default function Page() {
 									type={typeof settings[key] === "number" ? "number" : "text"}
 								/>
 							))}
-
-							{/* Button Container */}
-							<Box sx={{display: "flex", gap: 2}}>
-								<Button variant="contained" color="primary" onClick={saveSettings}>
-									Save Settings
-								</Button>
-								<Button
-									variant="contained"
-									color="secondary"
-									onClick={startProgram}
-									sx={{display: "flex", alignItems: "center"}}
-									disabled={buttonDisabled} // Ensure buttonDisabled is a boolean
-								>
-									{buttonDisabled ? <CircularProgress size={24}/> : "Start Program"}
-								</Button>
-							</Box>
 						</Box>
 					</AccordionDetails>
 				</Accordion>

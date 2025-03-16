@@ -8,7 +8,6 @@ const lightTheme = createTheme({
             light: '#3eaccc',
         },
         secondary: {
-            //main: '#b9431c',
             main: '#ff3c28',
             light: '#fa632e'
         },

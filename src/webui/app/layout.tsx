@@ -106,7 +106,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     return (
         <html lang="en">
             <head>
-                <title>Nintendo Switch Automation UI</title>
+                <title>Pi Bot</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
             </head>
             <body>
