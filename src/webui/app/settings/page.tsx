@@ -16,7 +16,6 @@ import {
     SelectChangeEvent
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import {grey} from "@mui/material/colors";
 
 interface Setting {
     name: string;

@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import {Box, Typography, Divider, Card, CircularProgress} from "@mui/material";
-import {red, green, blue} from "@mui/material/colors";
+import {Box, Typography, Card, CircularProgress} from "@mui/material";
 
 
 interface Status {
@@ -56,16 +55,16 @@ const StatusDisplay: React.FC = () => {
     return null;
   }
 
-  let background = blue[500];
+  let backColor = '#0ab9e6';
   if (status.status === 'Finished') {
-    background = green[500];
+    backColor = '#00e676';
   } else if (status.status === 'Error') {
-    background = red[500];
+    backColor = '#ff3c28';
   }
 
   return (
     <Card variant="outlined" sx={{ mt: 2, width: '100%', maxWidth: 480, borderRadius: 2 }}>
-      <Box sx={{ p: 2, textAlign: 'center', backgroundColor: background  }}>
+      <Box sx={{ p: 2, textAlign: 'center', backgroundColor: backColor  }}>
         <Typography variant="h6">
           Current Status: {status.status}
         </Typography>

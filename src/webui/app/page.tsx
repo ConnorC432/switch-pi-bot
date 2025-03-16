@@ -14,6 +14,7 @@ import {
 	List,
 	ListItem,
 	ListItemText,
+	SelectChangeEvent,
 } from "@mui/material";
 import {JSONInterface, Program, StatusResponse} from "./json";
 import StatusDisplay from "@/app/components/StatusDisplay";
@@ -76,9 +77,11 @@ export default function Page() {
 	}, [selectedGame, jsonInterface]);
 
 	// Handle game change
-	const handleGameChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-		const game = event.target.value as string;
+	const handleGameChange = (event: SelectChangeEvent<string>) => {
+		const game = event.target.value;
 		setSelectedGame(game);
+		setSelectedProgram(null); // Reset selected program when game changes
+		setSettings({}); // Clear settings when game changes
 	};
 
 	// Handle program selection
@@ -217,7 +220,7 @@ export default function Page() {
 						color="secondary"
 						onClick={startProgram}
 						sx={{ display: "flex", alignItems: "center" }}
-						disabled={!selectedGame || !selectedProgram || loading || (status && (status.status === "Starting" || status.status === "Running"))}
+						disabled={ !selectedGame || !selectedProgram || loading || (status?.status === "Starting" || status?.status === "Running") }
 					>
 						{loading || (status && (status.status === "Starting" || status.status === "Running")) ? <CircularProgress size={24} /> : "Start Program"}
 					</Button>
@@ -250,12 +253,32 @@ export default function Page() {
 							<List>
 								{programs.map((program) => (
 									<ListItem
-										button
+										component="button"
 										key={program.id}
 										onClick={() => handleProgramSelect(program)}
-										selected={selectedProgram?.id === program.id}
+										sx={{
+											backgroundColor: theme.palette.background.paper,
+											borderRadius: 1,
+											border: `1px solid ${theme.palette.divider}`,
+											boxShadow: 3,
+											'&:hover': {
+												backgroundColor: theme.palette.primary.dark,
+											},
+											padding: "8px 16px",
+											marginBottom: 1,
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "center",
+										}}
+										//selected={selectedProgram?.id === program.id}
 									>
-										<ListItemText primary={program.name} />
+										<ListItemText
+											primary={program.name}
+											sx={{
+											  color: theme.palette.text.primary, // Use the primary text color from the theme
+											}}
+										/>
+
 									</ListItem>
 								))}
 							</List>
