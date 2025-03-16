@@ -26,7 +26,8 @@ import { lightTheme, darkTheme } from './theme';
 const drawerWidth = 240;
 
 const menuItems = [
-    { label: 'Switch', href: '/' },
+    { label: 'Programs', href: '/' },
+    { label: 'Fullscreen', href: '/fullscreen' },
     { label: 'Settings', href: '/settings' },
 ];
 
