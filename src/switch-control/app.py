@@ -4,7 +4,7 @@ from programrunner import ProgramRunner
 
 
 app = Flask(__name__)
-CORS(app, origins="*")
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
 program_runner = ProgramRunner()
 
 
@@ -22,7 +22,7 @@ def start_program():
 		print(f"Error: {e}")
 		return jsonify({'Error': 'Internal Server Error'}), 500
 
-@app.route('/test', methods=['POST'])
+@app.route('/test', methods=['GET', 'POST'])
 def test():
 	return jsonify({'Success': True}), 200
 
