@@ -6,7 +6,7 @@ After=network.target
 Type=oneshot
 User=root
 WorkingDirectory=/opt/webui
-ExecStartPre==/usr/bin/npm install
+ExecStartPre=/usr/bin/npm install
 ExecStart=/usr/bin/npm run build
 ExecStartPost=/usr/bin/chown -vR pibot:pibot /opt/webui /opt/data /opt/switch-control
 
