@@ -95,7 +95,7 @@ jobs:
           REPO: ${{ github.event.repository.name }}
           RELEASE_TITLE: ${{ env.RELEASE_TITLE }}
         run: |
-          gh release create "Alpha $RELEASE_TITLE" -d \
+          gh release create "Alpha-$RELEASE_TITLE" -d \
           --title $RELEASE_TITLE \
           --notes-file src/changelog.md \
           --repo $GITHUB_REPOSITORY \
