@@ -1,13 +1,13 @@
 [Unit]
-Description=First Boot Script
+Description=NPM Build
 After=network.target
 
 [Service]
 Type=simple
-User=root
+User=pibot
+Group=pibot
 WorkingDirectory=/opt/webui
-ExecStartPre=/usr/bin/npm install
-ExecStart=/usr/bin/npm run build
+ExecStart=/bin/bash -c "/usr/bin/npm install && /usr/bin/npm run build"
 ExecStartPost=/usr/bin/chown -vR pibot:pibot /opt/webui /opt/data /opt/switch-control
 Restart=on-failure
 RestartSec=5s
