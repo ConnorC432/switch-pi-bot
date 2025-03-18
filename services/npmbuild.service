@@ -8,7 +8,6 @@ User=pibot
 Group=pibot
 WorkingDirectory=/opt/webui
 ExecStart=/bin/bash -c "/usr/bin/npm install && /usr/bin/npm run build"
-ExecStartPost=/usr/bin/chown -vR pibot:pibot /opt/webui /opt/data /opt/switch-control
 Restart=on-failure
 RestartSec=5s
 
