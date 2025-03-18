@@ -1,6 +1,8 @@
 [Unit]
 Description=NPM Build
 After=network.target
+After=firstboot.service
+FailureAction=reboot
 
 [Service]
 Type=simple

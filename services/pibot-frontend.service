@@ -5,6 +5,7 @@ After=pibot-backend.service
 After=npmbuild.service
 Requires=pibot-backend.service
 Requires=npmbuild.service
+FailureAction=reboot
 
 [Service]
 User=pibot
