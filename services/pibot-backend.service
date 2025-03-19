@@ -3,7 +3,7 @@ Description=Gunicorn service for pi bot backend
 After=network.target
 After=usbgadget.service
 Requires=usbgadget.service
-FailureAction=reboot
+#FailureAction=reboot
 
 [Service]
 User=pibot
