@@ -1,8 +1,8 @@
 [Unit]
 Description=NPM Build
 After=network.target
+Wants=network.target
 After=firstboot.service
-#FailureAction=reboot
 
 [Service]
 Type=simple
@@ -11,7 +11,7 @@ Group=pibot
 WorkingDirectory=/opt/webui
 ExecStart=/bin/bash -c "/usr/bin/npm install && /usr/bin/npm run build"
 Restart=on-failure
-RestartSec=5s
+
 
 [Install]
 WantedBy=multi-user.target
