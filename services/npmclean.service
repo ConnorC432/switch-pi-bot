@@ -1,16 +1,16 @@
 [Unit]
-Description=NPM Build
+Description=NPM Clean Build on failure
 After=network.target
 Wants=network.target
 After=firstboot.service
-OnFailure=npmclean.service
 
 [Service]
 Type=simple
 User=pibot
 Group=pibot
 WorkingDirectory=/opt/webui
-ExecStart=/bin/bash -c "/usr/bin/npm install && /usr/bin/npm run build"
+ExecStart=/usr/bin/rm -rf /opt/webui/node_modules /opt/webui/.next
+ExecStartPost=/usr/bin/npm cache clean --force
 Restart=on-failure
 
 
