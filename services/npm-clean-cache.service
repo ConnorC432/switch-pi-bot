@@ -1,0 +1,17 @@
+[Unit]
+Description=NPM Clean Cache on failure
+After=network.target
+Wants=network.target
+After=firstboot.service
+
+[Service]
+Type=simple
+User=pibot
+Group=pibot
+WorkingDirectory=/opt/webui
+ExecStart=/usr/bin/npm cache clean --force
+Restart=on-failure
+
+
+[Install]
+WantedBy=multi-user.target
