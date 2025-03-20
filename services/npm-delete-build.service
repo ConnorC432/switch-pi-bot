@@ -1,5 +1,5 @@
 [Unit]
-Description=NPM Clean Build on failure
+Description=NPM Delete Build on failure
 After=network.target
 Wants=network.target
 After=firstboot.service
@@ -10,7 +10,6 @@ User=pibot
 Group=pibot
 WorkingDirectory=/opt/webui
 ExecStart=/usr/bin/rm -rf /opt/webui/node_modules /opt/webui/.next
-ExecStartPost=/usr/bin/npm cache clean --force
 Restart=on-failure
 
 

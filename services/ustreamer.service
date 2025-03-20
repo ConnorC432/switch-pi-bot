@@ -6,7 +6,7 @@ After=firstboot.service
 [Service]
 User=pibot
 Group=pibot
-ExecStart=/usr/bin/ustreamer --log-level 3 -q 100 -r 1920x1080 -m mjpeg -f 30 --host=0.0.0.0 --port=8080 --persistent --dv-timings
+ExecStart=/usr/bin/ustreamer --log-level 3 -q 100 -r 1920x1080 -m mjpeg -f 30 --host=0.0.0.0 --port=8080
 Restart=on-failure
 
 [Install]
