@@ -18,13 +18,13 @@ assets = os.path.join(root_dir, "assets", "templates", "capturetext")
 
 
 def program(settings):
-	from capture_analyser import CaptureAnalyser
+	from capture import Capture
 	from gamepad import Gamepad
 	# JSON Settings to Variables [Setting name from JSON, Default Value]
 	reference_text = settings.get("Text", "DefaultText")
 	wait_time = int(settings.get("WaitTime", "10"))
 
-	analyser = CaptureAnalyser()
+	analyser = Capture()
 	if analyser.wait_for_text(reference_text, wait_time):
 		return True
 	else:
