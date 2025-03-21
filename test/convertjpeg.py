@@ -2,8 +2,8 @@ import cv2
 import sys
 
 
-def capture_frame(url, output_path):
-	cap = cv2.VideoCapture(url)
+def capture_frame(image, output_path):
+	cap = cv2.VideoCapture(image)
 
 	if not cap.isOpened():
 		print("Error opening video stream")
