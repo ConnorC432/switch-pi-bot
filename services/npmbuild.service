@@ -14,7 +14,7 @@ Group=pibot
 WorkingDirectory=/opt/webui
 ExecStart=/bin/bash -c "/usr/bin/npm install && /usr/bin/npm run build"
 ExecStartPost=/bin/bash -c "if [ \$? -ne 0 ]; then systemctl start --wait npm-clean-cache.service npm-delete-build.service; fi"
-Restart=always
+Restart=on-failure
 RestartSec=5s
 
 
