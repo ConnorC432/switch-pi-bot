@@ -29,22 +29,71 @@ stat_value_bounds = [
 ]
 gender_bounds = (1400, 21, 445, 59)
 shiny_bounds = (1851, 157, 50, 51)
+egg_bounds = [
+	(192, 258, 163, 135),
+	(192, 405, 163, 135),
+	(192, 552, 163, 135),
+	(192, 699, 163, 135),
+	(192, 846, 163, 135)
+]
 
 
-async def check():
+async def check_hatch():
 	CAPTURE.wait_for_text("Oh?", 1800, text_bounds)
 
+async def toggle_bike():
+	await GAMEPAD.press_button(0.1, "Plus")
+	await GAMEPAD.press_dpad(0.1, "S")
 
-async def walk():
-	while True:
-		GAMEPAD.press_dpad(12.5, "S")
-		GAMEPAD.press_dpad(12.5, "N")
+async def position_player():
+	await GAMEPAD.move_left_stick(5, "SW")
+	for _ in range(8):
+		await GAMEPAD.press_dpad(0.1, "E")
+		await asyncio.sleep(0.2)
+	await toggle_bike()
+	await GAMEPAD.press_dpad(5, "N")
 
+async def hatch_spin(stop):
+	while not stop.is_set():
+		await GAMEPAD.move_left_stick(0.1, "N")
+		await GAMEPAD.move_left_stick(0.1, "NE")
+		await GAMEPAD.move_left_stick(0.1, "E")
+		await GAMEPAD.move_left_stick(0.1, "SE")
+		await GAMEPAD.move_left_stick(0.1, "S")
+		await GAMEPAD.move_left_stick(0.1, "SW")
+		await GAMEPAD.move_left_stick(0.1, "W")
+		await GAMEPAD.move_left_stick(0.1, "NW")
+
+async def collect_egg():
+	await GAMEPAD.move_left_stick(5, "NW")
+	await toggle_bike()
+	for _ in range(4):
+		await GAMEPAD.press_dpad(0.1, "E")
+	for _ in range(18):
+		await GAMEPAD.press_dpad(0.1, "S")
+	for _ in range(4):
+		await GAMEPAD.press_dpad(0.1, "W")
+	await GAMEPAD.press_dpad(5, "N")
+
+	await GAMEPAD.press_button(0.1, "A")
+	if CAPTURE.wait_for_text("Ah, it's you! We were taking care of your Pokémon, and my goodness, were we surprised!", 10):
+		for _ in range(9):
+			await GAMEPAD.press_button(0.1, "A")
+			await asyncio.sleep(0.2)
+			egg_counter += 1
+			return True
+	else:
+		for _ in range(3):
+			await GAMEPAD.press_button(0.1, "A")
+			await asyncio.sleep(0.2)
+			return False
+
+	await position_player()
 
 def check_stats(mon_stats):
 	if CAPTURE.look_for_image(os.path.join(assets, "stats.jpg"), 0.8, stat_bounds):
 		# Check IVs
-		for i, stat in stat_value_bounds:
+		for i, stat in enumerate(stat_value_bounds):
 			mon_stats[i] = CAPTURE.read_text(stat)
 
 		# Check Gender
@@ -68,7 +117,6 @@ def check_stats(mon_stats):
 
 	return mon_stats
 
-
 def compare_stats(mon_stats, desired_stats):
 	if len(mon_stats) != len(desired_stats):
 		print("Error Processing Stats")
@@ -81,9 +129,35 @@ def compare_stats(mon_stats, desired_stats):
 
 	return True
 
+async def hatch():
+	stop = asyncio.Event()
 
-def program(settings):
-	from capture_analyser import CaptureAnalyser
+	while True:
+		if egg_counter < 5:
+			stop.set()
+			stop = asyncio.Event()
+
+			hatch_task = asyncio.create_task(hatch_spin(stop))
+			try:
+				await asyncio.wait_for(hatch_task, timeout=20)
+			except asyncio.TimeoutError:
+				hatch_task.cancel()
+				await hatch_task
+			await collect_egg()
+
+		else:
+			stop.clear()
+			hatch_task = asyncio.create_task(hatch_spin(stop))
+
+			while egg_counter >= 5:
+				await asyncio.sleep(1)
+
+			stop.set()
+			await hatch_task
+
+
+async def program(settings):
+	from capture import Capture
 	from gamepad import Gamepad
 	# JSON Settings to Variables [Setting name from JSON, Default Value]
 	desired_stats = [
@@ -99,58 +173,69 @@ def program(settings):
 		settings.get("Shiny", "None"),
 	]
 
-	CAPTURE = CaptureAnalyser()
+	CAPTURE = Capture()
 	GAMEPAD = Gamepad()
 
-	hatch_counter = 0
+	egg_counter = 0
+	hatched_counter = 0
 
-	# Position Player
-	GAMEPAD.move_left_stick(5, "SW")
-	for i in range(11):
-		GAMEPAD.press_dpad(0.1, "E")
-		time.sleep(0.2)
 
-	# Equip Bike
-	GAMEPAD.press_button(0.1, "Plus")
-	GAMEPAD.press_dpad(0.1, "S")
+	# Count eggs already in party
+	await GAMEPAD.press_button(0.1, "X")
+	await GAMEPAD.press_button(0.1, "A")
+	for egg in egg_bounds:
+		if CAPTURE.wait_for_text("Egg", 10, egg):
+			egg_counter += 1
+	for i in range(2):
+		await GAMEPAD.press_button(0.1, "B")
 
+
+	position_player()
+
+	hatch_check = asyncio.create_task(check_hatch())
+	walking = asyncio.create_task(hatch())
 	# Walk and wait for eggs to hatch
-	while hatch_counter <= 5:
-		hatch_check = asyncio.create_task(check())
-		walking = asyncio.create_task(walk())
-
-		if hatch_check:
+	while True:
+		if hatch_check.done():
 			print("Egg Hatched")
 			walking.cancel()
-			for i in range(3):
+			await walking
+
+			for _ in range(3):
 				GAMEPAD.press_button(0.1, "A")
-				time.sleep(0.2)
-			hatch_counter += 1
+				await asyncio.sleep(0.2)
 
-	GAMEPAD.press_button(0.1, "X")
-	GAMEPAD.press_button(0.1, "A")
-	GAMEPAD.press_button(0.1, "R")
-	GAMEPAD.press_dpad(0.1, "W")
-	GAMEPAD.press_dpad(0.1, "S")
+			hatched_counter += 1
+			hatch_check = asyncio.create_task(check_hatch())
+			if hatched_counter >= 5:
+				await GAMEPAD.press_button(0.1, "X")
+				await GAMEPAD.press_button(0.1, "A")
+				await GAMEPAD.press_button(0.1, "R")
+				await GAMEPAD.press_dpad(0.1, "W")
+				await GAMEPAD.press_dpad(0.1, "S")
 
-	for i in range(5):
-		# Determine Mon Stats
-		mon_stats = []
-		mon_stats = check_stats(mon_stats)
-		# Keep or Release Mon
-		if compare_stats(mon_stats, desired_stats):
-			return True
-		else:
-			GAMEPAD.press_button(0.1, "A")
-			time.sleep(0.25)
-			GAMEPAD.press_dpad(0.1, "N")
-			GAMEPAD.press_dpad(0.1, "N")
-			GAMEPAD.press_dpad(0.1, "A")
-			time.sleep(0.25)
-			GAMEPAD.press_dpad(0.1, "N")
-			GAMEPAD.press_button(0.1, "A")
-			time.sleep(0.25)
-			GAMEPAD.press_button(0.1, "A")
+				for _ in range(5):
+					# Determine Mon Stats
+					mon_stats = check_stats([])
+					# Keep or Release Mon
+					if compare_stats(mon_stats, desired_stats):
+						return True
+					else:
+						await GAMEPAD.press_button(0.1, "A")
+						await asyncio.sleep(0.25)
+						await GAMEPAD.press_dpad(0.1, "N")
+						await GAMEPAD.press_dpad(0.1, "N")
+						await GAMEPAD.press_dpad(0.1, "A")
+						await asyncio.sleep(0.25)
+						await GAMEPAD.press_dpad(0.1, "N")
+						await GAMEPAD.press_button(0.1, "A")
+						await asyncio.sleep(0.25)
+						await GAMEPAD.press_button(0.1, "A")
+
+				hatched_counter = 0
+
+			walking = asyncio.create_task(hatch())
+
 
 	return False
 

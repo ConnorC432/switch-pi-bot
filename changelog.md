@@ -1,5 +1,3 @@
-v0.1.0
+v0.1.1
 
-Front end Web UI improved
-Added Fullscreen Capture View
-Pi Systemd service files are more reliable
+Updated Egg Hatcher Program

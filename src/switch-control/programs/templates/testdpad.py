@@ -18,7 +18,7 @@ assets = os.path.join(root_dir, "assets", "templates", "testdpad")
 
 
 def program(settings):
-	from capture_analyser import CaptureAnalyser
+	from capture import Capture
 	from gamepad import Gamepad
 	# JSON Settings to Variables [Setting name from JSON, Default Value]
 	hold_time = int(settings.get("HoldTime", "1"))

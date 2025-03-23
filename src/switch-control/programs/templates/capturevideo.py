@@ -18,7 +18,7 @@ assets = os.path.join(root_dir, "assets", "templates", "capturevideo")
 
 
 def program(settings):
-	from capture_analyser import CaptureAnalyser
+	from capture import Capture
 	from gamepad import Gamepad
 	# JSON Settings to Variables [Setting name from JSON, Default Value]
 	wait_time = int(settings.get("WaitTime", "1"))
@@ -26,7 +26,7 @@ def program(settings):
 
 	# Put Script Code Here
 
-	analyser = CaptureAnalyser()
+	analyser = Capture()
 	if analyser.wait_for_image_match(image_name, wait_time, 0.8):
 		return True
 	else:

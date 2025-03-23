@@ -4,7 +4,7 @@ import pytesseract
 import time
 
 
-class CaptureAnalyser:
+class Capture:
 	def __init__(self):
 		"""
 		Initializes the CaptureAnalyser with a fixed API URL.
@@ -157,4 +157,4 @@ class CaptureAnalyser:
 
 
 if __name__ == "__main__":
-	analyser = CaptureAnalyser()
+	analyser = Capture()

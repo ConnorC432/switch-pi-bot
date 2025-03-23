@@ -96,6 +96,8 @@ jobs:
           RELEASE_TITLE: ${{ env.RELEASE_TITLE }}
         run: |
           gh release create "Alpha-$RELEASE_TITLE" -d \
+          --prerelease \
+          --generate-notes \
           --title $RELEASE_TITLE \
           --notes-file src/changelog.md \
           --repo $GITHUB_REPOSITORY \
