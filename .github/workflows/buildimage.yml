@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - 'main'
-      - 'develop'
   workflow_dispatch:
 
 
@@ -96,22 +95,11 @@ jobs:
           REPO: ${{ github.event.repository.name }}
           RELEASE_TITLE: ${{ env.RELEASE_TITLE }}
         run: |
-          if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
-            gh release create "Alpha-$RELEASE_TITLE" -d \
-              --prerelease
-              --generate-notes
-              --title $RELEASE_TITLE \
-              --notes-file src/changelog.md \
-              --repo $GITHUB_REPOSITORY \
-              ./pi-bot.img.xz
-          else
-            gh release create "Alpha-$RELEASE_TITLE" -d \
-              --draft \
-              --prerelease
-              --generate-notes
-              --title $RELEASE_TITLE \
-              --notes-file src/changelog.md \
-              --repo $GITHUB_REPOSITORY \
-              ./pi-bot.img.xz
-          fi
+          gh release create "Alpha-$RELEASE_TITLE" -d \
+          --prerelease \
+          --generate-notes \
+          --title $RELEASE_TITLE \
+          --notes-file src/changelog.md \
+          --repo $GITHUB_REPOSITORY \
+          ./pi-bot.img.xz
 
