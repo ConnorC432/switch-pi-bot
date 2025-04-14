@@ -3,7 +3,7 @@ Description=NPM Build
 After=network.target
 Wants=network.target
 After=firstboot.service
-OnFailure=npmclean.service
+OnFailure=npm-clean-cache.service
 StartLimitIntervalSec=300
 StartLimitBurst=5
 
@@ -13,10 +13,10 @@ User=pibot
 Group=pibot
 WorkingDirectory=/opt/webui
 ExecStart=/bin/bash -c "/usr/bin/npm install && /usr/bin/npm run build"
-ExecStartPost=/bin/bash -c "if [ \$? -ne 0 ]; then systemctl start --wait npm-clean-cache.service npm-delete-build.service; fi"
+ExecStartPost=/bin/bash -c "if [ \${PIPESTATUS[1]} -ne 0 ]; then systemctl start --wait npm-clean-cache.service npm-delete-build.service; fi"
 Restart=on-failure
 RestartSec=5s
-
+SuccessExitStatus=0
 
 [Install]
 WantedBy=multi-user.target
