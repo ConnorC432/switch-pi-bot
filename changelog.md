@@ -1,3 +1,3 @@
-v0.1.1
+v0.1.2
 
-Updated Egg Hatcher Program
+Updated Pi Installation to include git repo
