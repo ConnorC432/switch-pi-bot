@@ -10,4 +10,4 @@
 - Use the Raspberry Pi Imager to flash the image to the SD Card
     - You need to edit the OS customisation settings
 - Wait a while after starting the Pi for it to initialise
-- Open the Web UI using the hostname, default: http://raspberrypi.locaL
+- Open the Web UI using the hostname, default: http://raspberrypi.local
