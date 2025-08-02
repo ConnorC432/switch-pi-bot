@@ -1,5 +1,3 @@
-v0.0.1
+v0.1.1
 
-Created Web UI
-Added template automation programs
-Text / Image recognition
+Updated Egg Hatcher Program

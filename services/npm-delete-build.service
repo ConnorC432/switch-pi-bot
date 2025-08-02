@@ -1,0 +1,17 @@
+[Unit]
+Description=NPM Delete Build on failure
+After=network.target
+Wants=network.target
+After=firstboot.service
+
+[Service]
+Type=simple
+User=pibot
+Group=pibot
+WorkingDirectory=/opt/webui
+ExecStart=/usr/bin/rm -rf /opt/webui/node_modules /opt/webui/.next
+Restart=on-failure
+
+
+[Install]
+WantedBy=multi-user.target

@@ -10,7 +10,8 @@ mount "$PI_ROOT" "$MOUNT_DIR"
 
 cp -vr /src/src/* $MOUNT_DIR/opt/
 cp -v /src/services/*.service $MOUNT_DIR/etc/systemd/system/
-cp -v /src/services/*.sh /usr/bin/
+cp -v /src/services/*.sh $MOUNT_DIR/usr/bin/
+cp -v /src/nginx /opt/nginx
 
 mount -v --bind /dev $MOUNT_DIR/dev
 mount -v --bind /dev/pts $MOUNT_DIR/dev/pts
@@ -22,12 +23,13 @@ install() {
 	apt update
 	curl -fsSL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh
 	bash nodesource_setup.sh
-	apt install -y python3 python3-venv python3-pip tesseract-ocr git wget curl nodejs/nodistro nginx
+	apt install -y python3 python3-venv python3-pip tesseract-ocr git wget curl nodejs/nodistro ustreamer libgl1
 	rm nodesource_setup.sh
 
 	# Enable USB Gadget
 	groupadd -g 500 pibot
 	useradd -u 500 -g 500 -m -s /bin/bash pibot
+	usermod -aG video pibot
 
 	cat <<EOF >>/etc/modules
 libcomposite
@@ -35,7 +37,9 @@ dwc2
 g_hid
 EOF
 
-	chown -vR pibot:pibot /opt/switch-pi-bot
+	chown -vR pibot:pibot /opt/switch-control
+	chown -vR pibot:pibot /opt/data
+	chown -vR pibot:pibot /opt/webui
 
 	# Create venv for python backend
 	sudo -u pibot python3 -m venv /opt/switch-control/venv
@@ -48,7 +52,7 @@ EOF
 
 	# Enable Services
 	systemctl daemon-reload
-	systemctl enable firstboot usbgadget pibot-backend pibot-frontend
+	systemctl enable firstboot usbgadget pibot-backend pibot-frontend npmbuild ustreamer
 }
 
 chroot $MOUNT_DIR /bin/bash -c "$(declare -f install); install"

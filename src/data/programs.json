@@ -4,7 +4,7 @@
       "id": 1,
       "name": "basicprogram",
       "settings": {
-        "WaitTime": "Text 1",
+        "WaitTime": "1",
         "ExitStatus": "True"
       }
     },
@@ -21,7 +21,39 @@
       "name": "capturetext",
       "settings": {
         "Text": "Diamond",
-        "WaitTime": "30"
+        "WaitTime": "5"
+      }
+    },
+    {
+      "id": 4,
+      "name": "testdpad",
+      "settings": {
+        "HoldTime": "1"
+      }
+    },
+    {
+      "id": 4,
+      "name": "testlstick",
+      "settings": {
+        "HoldTime": "1"
+      }
+    }
+  ],
+  "BDSP": [
+    {
+      "id": 1,
+      "name": "Egg Hatcher",
+      "settings": {
+        "HP": "Best!",
+        "Attack": "Best!",
+        "Defense": "Best!",
+        "Sp. Atk": "Best!",
+        "Sp. Def": "Best!",
+        "Speed": "Best!",
+        "Nature": "Careful",
+        "Ability": "Blaze",
+        "Gender": "Male",
+        "Shiny": "Yes"
       }
     }
   ]

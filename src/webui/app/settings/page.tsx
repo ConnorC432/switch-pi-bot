@@ -10,6 +10,7 @@ import {
     TextField,
     Button,
     CircularProgress,
+    Slider,
     Select,
     MenuItem,
     SelectChangeEvent
@@ -18,8 +19,10 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 interface Setting {
     name: string;
-    type: 'text' | 'dropdown' | 'combo';
+    type: 'text' | 'slider' | 'combo';
     value: string;
+    min?: number;
+    max?: number;
     options?: string[];
 }
 
@@ -71,11 +74,19 @@ export default function Page() {
         }));
     };
 
-    // Handle setting change for select fields
+    // Handle setting change for select fields (combo dropdowns)
     const handleSelectSettingChange = (group: string, name: string) => (event: SelectChangeEvent<string>) => {
         setUpdatedSettings(prevSettings => ({
             ...prevSettings,
             [`${group}.${name}`]: event.target.value,
+        }));
+    };
+
+    // Handle setting change for slider fields
+    const handleSliderSettingChange = (group: string, name: string) => (event: Event, newValue: number | number[]) => {
+        setUpdatedSettings(prevSettings => ({
+            ...prevSettings,
+            [`${group}.${name}`]: newValue.toString(),
         }));
     };
 
@@ -151,18 +162,19 @@ export default function Page() {
     return (
         <Box
             sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                mt: 4,
-                width: '100%',
-                maxWidth: 1200,
-                mx: 'auto',
-                px: 2
+                display: "flex",
+				justifyContent: "center",
+				flexDirection: "column",
+				alignItems: "center",
+				mt: "16px",
+				width: "100%",
+				maxWidth: 1200,
+				mx: "auto",
+				px: 2,
             }}
         >
             {Object.keys(settingsGroups).map((group) => (
-                <Accordion key={group} sx={{ mt: 2, width: '100%' }}>
+                <Accordion key={group} sx={{ mt: 1, width: '100%' }}>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls={`${group}-content`}
@@ -178,8 +190,7 @@ export default function Page() {
                                     display: 'flex',
                                     alignItems: 'center',
                                     width: '100%',
-                                    gap: 2,
-                                    mb: 2
+                                    p: 1,
                                 }}
                             >
                                 <Typography
@@ -188,27 +199,38 @@ export default function Page() {
                                 >
                                     {setting.name}
                                 </Typography>
-                                {setting.type === 'text' && (
-                                    <TextField
-                                        fullWidth
-                                        value={updatedSettings[`${group}.${setting.name}`] || ''}
-                                        onChange={handleTextSettingChange(group, setting.name)}
-                                        sx={{ flexGrow: 1 }}
-                                    />
-                                )}
-                                {(setting.type === 'dropdown' || setting.type === 'combo') && setting.options && (
-                                    <Select
-                                        value={updatedSettings[`${group}.${setting.name}`] || ''}
-                                        onChange={handleSelectSettingChange(group, setting.name)}
-                                        sx={{ flexGrow: 1 }}
-                                    >
-                                        {setting.options.map((option) => (
-                                            <MenuItem key={option} value={option}>
-                                                {option}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                )}
+                                <Box sx={{ flexGrow: 1 }}>
+                                    {setting.type === 'text' && (
+                                        <TextField
+                                            fullWidth
+                                            value={updatedSettings[`${group}.${setting.name}`] || ''}
+                                            onChange={handleTextSettingChange(group, setting.name)}
+                                        />
+                                    )}
+                                    {setting.type === 'slider' && setting.min !== undefined && setting.max !== undefined && (
+                                        <Slider
+                                            value={Number(updatedSettings[`${group}.${setting.name}`] || setting.min)}
+                                            onChange={handleSliderSettingChange(group, setting.name)}
+                                            min={setting.min}
+                                            max={setting.max}
+                                            valueLabelDisplay="auto"
+                                            valueLabelFormat={(value) => `${value}`}
+                                        />
+                                    )}
+                                    {setting.type === 'combo' && setting.options && (
+                                        <Select
+                                            value={updatedSettings[`${group}.${setting.name}`] || ''}
+                                            onChange={handleSelectSettingChange(group, setting.name)}
+                                            sx={{ width: '100%' }} // Ensure the select takes full width
+                                        >
+                                            {setting.options.map((option) => (
+                                                <MenuItem key={option} value={option}>
+                                                    {option}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    )}
+                                </Box>
                             </Box>
                         ))}
                     </AccordionDetails>

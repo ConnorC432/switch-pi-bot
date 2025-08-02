@@ -271,3 +271,7 @@ pyvenv.cfg
 pip-selfcheck.json
 
 !/*.sh
+
+*.jpg
+*.jpeg
+*.png

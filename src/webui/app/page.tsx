@@ -3,27 +3,27 @@
 import * as React from "react";
 import {
 	Box,
-	Typography,
-	Accordion,
-	AccordionDetails,
-	AccordionSummary,
-	List,
-	ListItem,
-	ListItemText,
 	TextField,
 	Button,
 	useTheme,
-	CircularProgress
+	CircularProgress,
+	FormControl,
+	InputLabel,
+	Select,
+	MenuItem,
+	List,
+	ListItem,
+	ListItemText,
+	SelectChangeEvent,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import type {SelectChangeEvent} from "@mui/material";
 import {JSONInterface, Program, StatusResponse} from "./json";
+import StatusDisplay from "@/app/components/StatusDisplay";
 
 // Define SettingValue to handle different types of setting values
 type SettingValue = string | number | boolean;
 
 export default function Page() {
-	const hostUrl = window.location.hostname;
+	const [hostUrl, setHostUrl] = React.useState<string>("");
 	const [selectedGame, setSelectedGame] = React.useState<string>("");
 	const [selectedProgram, setSelectedProgram] = React.useState<Program | null>(null);
 	const [programs, setPrograms] = React.useState<Program[]>([]);
@@ -31,16 +31,27 @@ export default function Page() {
 	const [settings, setSettings] = React.useState<{ [key: string]: SettingValue }>({});
 	const [status, setStatus] = React.useState<StatusResponse | null>(null);
 	const [loading, setLoading] = React.useState(false);
-	const [captureSrc, setCaptureSrc] = React.useState<string>(`${hostUrl}:5000/video-stream?${Date.now()}`);
-
+	const [captureSrc, setCaptureSrc] = React.useState<string>("");
 	const theme = useTheme();
 	const jsonInterface = React.useMemo(() => new JSONInterface(), []);
-
 	const formatKey = (key: string) => {
 		return key
 			.replace(/([a-z])([A-Z])/g, "$1 $2")
 			.replace(/^./, (str) => str.toUpperCase());
 	};
+
+	React.useEffect(() => {
+		if (typeof window !== "undefined") {
+			const host = window.location.hostname;
+			setHostUrl(host);
+		}
+	}, []);
+
+	React.useEffect(() => {
+		if (hostUrl) {
+			setCaptureSrc(`http://${hostUrl}:8080/stream`);
+		}
+	}, [hostUrl]);
 
 	// Fetch programs and games
 	React.useEffect(() => {
@@ -50,8 +61,11 @@ export default function Page() {
 				const gameList = Object.keys(data);
 				setGames(gameList);
 
-				if (selectedGame) {
+				// Check if the selected game is available in the fetched data
+				if (selectedGame && gameList.includes(selectedGame)) {
 					setPrograms(data[selectedGame] || []);
+					setSelectedProgram(null); // Reset selected program when game changes
+					setSettings({}); // Clear settings when game changes
 				}
 			}
 			catch (error) {
@@ -62,39 +76,6 @@ export default function Page() {
 		fetchData();
 	}, [selectedGame, jsonInterface]);
 
-	// Poll the status every 5 seconds
-	React.useEffect(() => {
-		const fetchStatus = async () => {
-			try {
-				const data = await jsonInterface.fetchStatus();
-				setStatus(data);
-			}
-			catch (error) {
-				console.error("Failed to fetch status:", error);
-			}
-		};
-
-		fetchStatus();
-		const interval = setInterval(fetchStatus, 5000);
-
-		return () => clearInterval(interval);
-	}, [jsonInterface]);
-
-	// Update Capture image
-	React.useEffect(() => {
-		let isMounted = true;
-		const interval = setInterval(() => {
-			if (isMounted) {
-				setCaptureSrc(`${hostUrl}:5000/video-stream?${Date.now()}`);
-			}
-		}, 250);
-
-		return () => {
-			clearInterval(interval);
-			isMounted = false;
-		};
-	}, []);
-
 	// Handle game change
 	const handleGameChange = (event: SelectChangeEvent<string>) => {
 		const game = event.target.value;
@@ -103,17 +84,20 @@ export default function Page() {
 		setSettings({}); // Clear settings when game changes
 	};
 
-	// Handle program change
-	const handleProgramChange = (program: Program) => {
+	// Handle program selection
+	const handleProgramSelect = (program: Program) => {
 		setSelectedProgram(program);
 		setSettings(program.settings || {});
 	};
 
 	// Handle setting change
 	const handleSettingChange = (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-		const value = event.target.type === "number" ? Number(event.target.value) :
-			event.target.type === "checkbox" ? event.target.checked :
-				event.target.value;
+		const value =
+			event.target.type === "number"
+				? Number(event.target.value)
+				: event.target.type === "checkbox"
+					? event.target.checked
+					: event.target.value;
 		setSettings({
 			...settings,
 			[key]: value,
@@ -130,7 +114,7 @@ export default function Page() {
 					console.log("Settings Saved");
 				}
 				catch (error) {
-					console.log("Settings Not Saved");
+					console.log("Settings Not Saved:", error);
 				}
 			}
 		}
@@ -141,7 +125,7 @@ export default function Page() {
 		if (selectedProgram) {
 			setLoading(true);
 			try {
-				const response = await fetch("${hostUrl}:5000/start-program", {
+				const response = await fetch(`http://${hostUrl}:5000/start-program`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
@@ -167,10 +151,6 @@ export default function Page() {
 		}
 	};
 
-	// Determine if button should be disabled
-	const isStatusStartingOrRunning = status && (status.status === "Starting" || status.status === "Running");
-	const buttonDisabled = loading || isStatusStartingOrRunning || false; // Ensure it's a boolean
-
 	return (
 		<Box
 			sx={{
@@ -178,169 +158,156 @@ export default function Page() {
 				justifyContent: "center",
 				flexDirection: "column",
 				alignItems: "center",
-				mt: "64px",
+				mt: "16px",
 				width: "100%",
 				maxWidth: 1200,
 				mx: "auto",
-				px: 2
+				px: 2,
 			}}
 		>
-			{/* Video Stream */}
-			<Box
-				sx={{
-					position: "relative",
-					width: "100%",
-					height: 0,
-					paddingBottom: "56.25%",
-					overflow: "hidden",
-					borderRadius: 1,
-					boxShadow: 3,
-					backgroundColor: theme.palette.background.paper,
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "center",
-				}}
-			>
-				<img
-					src={captureSrc}
-					alt="Capture Card Unavailable"
-					style={{
-						position: "absolute",
-						top: 0,
-						left: 0,
+			<Box sx={{ width: "100%", mb: 3 }}>
+				{/* Video Stream */}
+				<Box
+					sx={{
+						position: "relative",
 						width: "100%",
-						height: "100%",
-						objectFit: "cover"
+						height: 0,
+						paddingBottom: "56.25%",
+						overflow: "hidden",
+						borderRadius: 1,
+						boxShadow: 3,
+						backgroundColor: theme.palette.background.paper,
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center",
 					}}
-				/>
+				>
+					<img
+						src={captureSrc}
+						alt="Capture Card Unavailable"
+						style={{
+							position: "absolute",
+							top: 0,
+							left: 0,
+							width: "100%",
+							height: "100%",
+							objectFit: "cover",
+						}}
+						loading="eager"
+					/>
+				</Box>
+
+				{/* Status Display */}
+				<Box
+					sx={{
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+						mt: 2,
+						width: "100%",
+					}}
+				>
+					<StatusDisplay />
+				</Box>
+
+				{/* Buttons */}
+				<Box sx={{ display: "flex", gap: 2, justifyContent: "center", mt: 2 }}>
+					<Button variant="contained" color="primary" onClick={saveSettings}>
+						Save Settings
+					</Button>
+					<Button
+						variant="contained"
+						color="secondary"
+						onClick={startProgram}
+						sx={{ display: "flex", alignItems: "center" }}
+						disabled={ !selectedGame || !selectedProgram || loading || (status?.status === "Starting" || status?.status === "Running") }
+					>
+						{loading || (status && (status.status === "Starting" || status.status === "Running")) ? <CircularProgress size={24} /> : "Start Program"}
+					</Button>
+				</Box>
 			</Box>
 
-			{/* Status Display */}
-			{status && (status.status === "Starting" || status.status === "Running" || status.status === "Error" || status.status === "Finished") && (
-				<Box sx={{mt: 2, width: "100%", textAlign: "center"}}>
-					<Typography variant="h6" color="textSecondary">
-						Current Status: {status.status}
-					</Typography>
-					{status.currentGame && (
-						<Typography variant="body1" color="textSecondary">
-							Game: {status.currentGame.name}
-						</Typography>
-					)}
-					{status.currentProgram && (
-						<Typography variant="body1" color="textSecondary">
-							Program: {status.currentProgram.name}
-						</Typography>
+			<Box sx={{ display: "flex", width: "100%" }}>
+				{/* Game Selection & Program Selection */}
+				<Box sx={{ flex: 1, pr: 4 }}>
+					{/* Game Selection Dropdown */}
+					<FormControl fullWidth sx={{ mt: 2 }}>
+						<InputLabel id="game-selection-label">Select Game</InputLabel>
+						<Select
+							labelId="game-selection-label"
+							value={selectedGame}
+							onChange={handleGameChange}
+							label="Select Game"
+						>
+							{games.map((game) => (
+								<MenuItem key={game} value={game}>
+									{game}
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
+
+					{/* Program Selection List */}
+					{selectedGame && programs.length > 0 && (
+						<Box sx={{ width: "100%", mt: 3 }}>
+							<List>
+								{programs.map((program) => (
+									<ListItem
+										component="button"
+										key={program.id}
+										onClick={() => handleProgramSelect(program)}
+										sx={{
+											backgroundColor: theme.palette.background.paper,
+											borderRadius: 1,
+											border: `1px solid ${theme.palette.divider}`,
+											boxShadow: 3,
+											'&:hover': {
+												backgroundColor: theme.palette.primary.dark,
+											},
+											padding: "8px 16px",
+											marginBottom: 1,
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "center",
+										}}
+										//selected={selectedProgram?.id === program.id}
+									>
+										<ListItemText
+											primary={program.name}
+											sx={{
+											  color: theme.palette.text.primary, // Use the primary text color from the theme
+											}}
+										/>
+
+									</ListItem>
+								))}
+							</List>
+						</Box>
 					)}
 				</Box>
-			)}
 
-			{/* Game Selection Accordion */}
-			<Accordion sx={{mt: 2, width: "100%"}}>
-				<AccordionSummary
-					expandIcon={<ExpandMoreIcon/>}
-					aria-controls="game-selection-content"
-					id="game-selection-header"
-				>
-					<Typography>{selectedGame || "Select Game"}</Typography>
-				</AccordionSummary>
-				<AccordionDetails>
-					<List>
-						{games.map((game) => (
-							<ListItem
-								key={game}
-								onClick={() => handleGameChange({target: {value: game}} as SelectChangeEvent<string>)}
-								sx={{
-									cursor: "pointer",
-									"&:hover": {
-										backgroundColor: theme.palette.action.hover,
-									},
-								}}
-							>
-								<ListItemText primary={game}/>
-							</ListItem>
-						))}
-					</List>
-				</AccordionDetails>
-			</Accordion>
-
-			{/* Program Selection Accordion */}
-			{selectedGame && (
-				<Accordion sx={{mt: 2, width: "100%"}}>
-					<AccordionSummary
-						expandIcon={<ExpandMoreIcon/>}
-						aria-controls="program-selection-content"
-						id="program-selection-header"
-					>
-						<Typography>{selectedProgram ? selectedProgram.name : "Select Program"}</Typography>
-					</AccordionSummary>
-					<AccordionDetails>
-						<List>
-							{programs.map((program) => (
-								<ListItem
-									key={program.id}
-									onClick={() => handleProgramChange(program)}
-									sx={{
-										cursor: "pointer",
-										"&:hover": {
-											backgroundColor: theme.palette.action.hover,
-										},
-									}}
-								>
-									<ListItemText primary={program.name}/>
-								</ListItem>
-							))}
-						</List>
-					</AccordionDetails>
-				</Accordion>
-			)}
-
-			{/* Program Settings Accordion */}
-			{selectedProgram && (
-				<Accordion sx={{mt: 2, width: "100%"}}>
-					<AccordionSummary
-						expandIcon={<ExpandMoreIcon/>}
-						aria-controls="program-settings-content"
-						id="program-settings-header"
-					>
-						<Typography>Program Settings for {selectedProgram.name}</Typography>
-					</AccordionSummary>
-					<AccordionDetails>
-						<Box sx={{width: "100%"}}>
-							{Object.keys(selectedProgram.settings).map((key) => (
-								<TextField
-									key={key}
-									fullWidth
-									label={formatKey(key)}
-									value={settings[key] || ""}
-									onChange={handleSettingChange(key)}
-									sx={{mb: 2}}
-									type={typeof settings[key] === "number" ? "number" : "text"}
-								/>
-							))}
-
-							{/* Button Container */}
-							<Box sx={{display: "flex", gap: 2}}>
-								<Button
-									variant="contained"
-									color="primary"
-									onClick={saveSettings}
-								>
-									Save Settings
-								</Button>
-								<Button
-									variant="contained"
-									color="secondary"
-									onClick={startProgram}
-									sx={{display: "flex", alignItems: "center"}}
-									disabled={buttonDisabled} // Ensure buttonDisabled is a boolean
-								>
-									{buttonDisabled ? <CircularProgress size={24}/> : "Start Program"}
-								</Button>
+				{/*Program Settings */}
+				<Box sx={{ flex: 1 }}>
+					{selectedProgram && (
+						<Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}>
+							<Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+								{Object.keys(selectedProgram.settings).map((key) => (
+									<TextField
+										color="secondary"
+										key={key}
+										fullWidth
+										label={formatKey(key)}
+										value={settings[key] || ""}
+										onChange={handleSettingChange(key)}
+										sx={{ mb: 2 }}
+										type={typeof settings[key] === "number" ? "number" : "text"}
+									/>
+								))}
 							</Box>
 						</Box>
-					</AccordionDetails>
-				</Accordion>
-			)}
+					)}
+				</Box>
+			</Box>
 		</Box>
 	);
 }
