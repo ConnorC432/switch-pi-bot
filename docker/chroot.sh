@@ -20,10 +20,11 @@ mount -v --bind /sys $MOUNT_DIR/sys
 
 install() {
 	# Install Requirements
-	apt update
+	export DEBIAN_FRONTEND=noninteractive
+	apt update -q
 	curl -fsSL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh
 	bash nodesource_setup.sh
-	apt install -y python3 python3-venv python3-pip tesseract-ocr git wget curl nodejs/nodistro ustreamer libgl1
+	apt install -yq python3 python3-venv python3-pip tesseract-ocr git wget curl nodejs/nodistro ustreamer libgl1
 	rm nodesource_setup.sh
 
 	# Enable USB Gadget
