@@ -8,10 +8,9 @@ mkdir -vp /work/chroot
 MOUNT_DIR=/work/chroot
 mount "$PI_ROOT" "$MOUNT_DIR"
 
-cp -vr /src/src/* $MOUNT_DIR/opt/
-cp -v /src/services/*.service $MOUNT_DIR/etc/systemd/system/
-cp -v /src/services/*.sh $MOUNT_DIR/usr/bin/
-cp -v /src/nginx /opt/nginx
+cp -vr /src/* $MOUNT_DIR/opt/pibot/
+ln -s $MOUNT_DIR/opt/pibot/services/*.service $MOUNT_DIR/etc/systemd/system/
+ln -s $MOUNT_DIR/opt/pibot/services/*.sh/ $MOUNT_DIR/usr/bin/
 
 mount -v --bind /dev $MOUNT_DIR/dev
 mount -v --bind /dev/pts $MOUNT_DIR/dev/pts
@@ -38,18 +37,16 @@ dwc2
 g_hid
 EOF
 
-	chown -vR pibot:pibot /opt/switch-control
-	chown -vR pibot:pibot /opt/data
-	chown -vR pibot:pibot /opt/webui
+	chown -vR pibot:pibot /opt/pibot
 
 	# Create venv for python backend
-	sudo -u pibot python3 -m venv /opt/switch-control/venv
-	sudo -u pibot /opt/switch-control/venv/bin/pip install --upgrade pip
-	sudo -u pibot /opt/switch-control/venv/bin/pip install -r /opt/switch-control/requirements.txt
+	sudo -u pibot python3 -m venv /opt/pibot/switch-control/venv
+	sudo -u pibot /opt/pibot/switch-control/venv/bin/pip install --upgrade pip
+	sudo -u pibot /opt/pibot/switch-control/venv/bin/pip install -r /opt/switch-control/requirements.txt
 
 	# NPM Build
-	npm install --prefix /opt/webui
-	npm run build --prefix /opt/webui
+	npm install --prefix /opt/pibot/webui
+	npm run build --prefix /opt/pibot/webui
 
 	# Enable Services
 	systemctl daemon-reload
