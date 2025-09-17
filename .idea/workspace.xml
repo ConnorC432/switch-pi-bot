@@ -15,7 +15,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3d930d6f-0fd4-483d-9b77-010ee73b0f1b" name="Changes" comment="" />
+    <list default="true" id="3d930d6f-0fd4-483d-9b77-010ee73b0f1b" name="Changes" comment="Keep old commits" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -65,6 +65,10 @@
             <RecentBranchesForRepo>
               <option name="branches">
                 <list>
+                  <RecentBranch>
+                    <option name="branchName" value="master" />
+                    <option name="lastUsedInstant" value="1758112661" />
+                  </RecentBranch>
                   <RecentBranch>
                     <option name="branchName" value="temp" />
                     <option name="lastUsedInstant" value="1758112589" />
@@ -121,7 +125,7 @@
     "SHELLCHECK.PATH": "/home/connor/.local/share/JetBrains/PyCharm2024.3/Shell Script/shellcheck",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "temp",
+    "git-widget-placeholder": "master",
     "javascript.nodejs.core.library.configured.version": "22.11.0",
     "javascript.nodejs.core.library.typings.version": "22.18.1",
     "last_opened_file_path": "/home/connor/Git/pi-kvm-cluster",
@@ -131,7 +135,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_interpreter_path": "/home/connor/.config/JetBrains/WebStorm2024.2/node/versions/22.11.0/bin/node",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
     "ts.external.directory.path": "/home/connor/Git/switch-pi-bot/src/webui/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   }
@@ -302,22 +306,6 @@
       <workItem from="1758109682216" duration="127000" />
       <workItem from="1758109993560" duration="1375000" />
       <workItem from="1758111812025" duration="474000" />
-    </task>
-    <task id="LOCAL-00002" summary="added opencv to requirements.txt">
-      <option name="closed" value="true" />
-      <created>1741642816505</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1741642816505</updated>
-    </task>
-    <task id="LOCAL-00003" summary="updated packages in requirements.txt">
-      <option name="closed" value="true" />
-      <created>1741643094137</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1741643094137</updated>
     </task>
     <task id="LOCAL-00004" summary="removed unnecessary packages from requirements.txt">
       <option name="closed" value="true" />
@@ -695,7 +683,23 @@
       <option name="project" value="LOCAL" />
       <updated>1758110756954</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="initial commit">
+      <option name="closed" value="true" />
+      <created>1758112702998</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1758112702999</updated>
+    </task>
+    <task id="LOCAL-00052" summary="Keep old commits">
+      <option name="closed" value="true" />
+      <created>1758112950922</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1758112950922</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -713,7 +717,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="npm build service runs correctly" />
     <MESSAGE value="npm build service starts on boot" />
     <MESSAGE value="ustreamer service extra options" />
     <MESSAGE value="npm build failure service" />
@@ -738,6 +741,7 @@
     <MESSAGE value="build image workflow runs in userspace" />
     <MESSAGE value="Merge remote-tracking branch 'origin/bug/actions' into bug/actions" />
     <MESSAGE value="initial commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="initial commit" />
+    <MESSAGE value="Keep old commits" />
+    <option name="LAST_COMMIT_MESSAGE" value="Keep old commits" />
   </component>
 </project>
