@@ -1,0 +1,743 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BackendCodeEditorMiscSettings">
+    <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
+  </component>
+  <component name="CMakeProjectFlavorService">
+    <option name="flavorId" value="CMakePlainProjectFlavor" />
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3d930d6f-0fd4-483d-9b77-010ee73b0f1b" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="bug/actions" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="MIXED" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;ConnorC432&quot;
+  }
+}</component>
+  <component name="GitToolBoxStore">
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="temp" />
+                    <option name="lastUsedInstant" value="1758112589" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/ConnorC432/switch-pi-bot.git&quot;,
+    &quot;accountId&quot;: &quot;6232bbd1-17f5-41ae-abaa-8ef4e0dc2794&quot;
+  },
+  &quot;recentNewPullRequestHead&quot;: {
+    &quot;server&quot;: {
+      &quot;useHttp&quot;: false,
+      &quot;host&quot;: &quot;github.com&quot;,
+      &quot;port&quot;: null,
+      &quot;suffix&quot;: null
+    },
+    &quot;owner&quot;: &quot;ConnorC432&quot;,
+    &quot;repository&quot;: &quot;switch-pi-bot&quot;
+  }
+}</component>
+  <component name="ProjectApplicationVersion">
+    <option name="ide" value="CLion" />
+    <option name="majorVersion" value="2025" />
+    <option name="minorVersion" value="2.1" />
+    <option name="productBranch" value="Classic" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="2o5HAmQi1qvRvKcQRQSGiUp5ceW" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python..venv.executor": "Run",
+    "RunOnceActivity.RadMigrateCodeStyle": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "SHELLCHECK.PATH": "/home/connor/.local/share/JetBrains/PyCharm2024.3/Shell Script/shellcheck",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "temp",
+    "javascript.nodejs.core.library.configured.version": "22.11.0",
+    "javascript.nodejs.core.library.typings.version": "22.18.1",
+    "last_opened_file_path": "/home/connor/Git/pi-kvm-cluster",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "/home/connor/.config/JetBrains/WebStorm2024.2/node/versions/22.11.0/bin/node",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "ts.external.directory.path": "/home/connor/Git/switch-pi-bot/src/webui/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/services" />
+      <recent name="$PROJECT_DIR$/src/webui/app/fullscreen" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/program-runner/src" />
+      <recent name="$PROJECT_DIR$/src/webui/app/api/programs" />
+      <recent name="$PROJECT_DIR$/src/webui/app/api/settings" />
+      <recent name="$PROJECT_DIR$/src/webui/app/Components" />
+      <recent name="$PROJECT_DIR$/src/webui/app" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python..venv">
+    <configuration name=".venv" type="PythonConfigurationType" factoryName="Python">
+      <module name="RPi-Switch-Bot" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name=".venv" type="PythonConfigurationType" factoryName="Python">
+      <module name="RPi-Switch-Bot" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.13 (switch-pi-bot)" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Flask (app.py)" type="Python.FlaskServer" nameIsGenerated="true">
+      <module name="RPi-Switch-Bot" />
+      <option name="target" value="app.py" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.13 (switch-pi-bot)" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/switch-control" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Flask (app.py)" type="Python.FlaskServer" nameIsGenerated="true">
+      <module name="RPi-Switch-Bot" />
+      <option name="target" value="app.py" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.13 (switch-pi-bot)" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/switch-control" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-PY-252.25557.178" />
+        <option value="bundled-python-sdk-ce6832f46686-7b97d883f26b-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.25557.178" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3d930d6f-0fd4-483d-9b77-010ee73b0f1b" name="Changes" comment="" />
+      <created>1730152376079</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1730152376079</updated>
+      <workItem from="1730152377339" duration="283000" />
+      <workItem from="1730154744941" duration="1302000" />
+      <workItem from="1730294391057" duration="642000" />
+      <workItem from="1730653349849" duration="2936000" />
+      <workItem from="1730678057295" duration="26000" />
+      <workItem from="1730723970701" duration="1291000" />
+      <workItem from="1730762943877" duration="8000" />
+      <workItem from="1732535604093" duration="685000" />
+      <workItem from="1732536294307" duration="125000" />
+      <workItem from="1732536422924" duration="2079000" />
+      <workItem from="1741635875225" duration="156000" />
+      <workItem from="1741636033892" duration="441000" />
+      <workItem from="1741636477208" duration="22844000" />
+      <workItem from="1741687208325" duration="4379000" />
+      <workItem from="1741704006183" duration="2091000" />
+      <workItem from="1742122863110" duration="78000" />
+      <workItem from="1742123127337" duration="28716000" />
+      <workItem from="1742173737800" duration="1229000" />
+      <workItem from="1742222220700" duration="3456000" />
+      <workItem from="1742270562450" duration="4685000" />
+      <workItem from="1742396654655" duration="5157000" />
+      <workItem from="1742484056688" duration="5118000" />
+      <workItem from="1742525985768" duration="15959000" />
+      <workItem from="1742661915609" duration="4875000" />
+      <workItem from="1742749398769" duration="2502000" />
+      <workItem from="1743002365792" duration="61000" />
+      <workItem from="1743085524844" duration="1910000" />
+      <workItem from="1743173173227" duration="605000" />
+      <workItem from="1744632563781" duration="715000" />
+      <workItem from="1744637913284" duration="704000" />
+      <workItem from="1744646794201" duration="649000" />
+      <workItem from="1744719347724" duration="13000" />
+      <workItem from="1744719379282" duration="122000" />
+      <workItem from="1744720753006" duration="7000" />
+      <workItem from="1747133896102" duration="47000" />
+      <workItem from="1747133948230" duration="55000" />
+      <workItem from="1747134922334" duration="3000" />
+      <workItem from="1749377008942" duration="8000" />
+      <workItem from="1750690969954" duration="5000" />
+      <workItem from="1754128636395" duration="804000" />
+      <workItem from="1754239036561" duration="1301000" />
+      <workItem from="1755443472209" duration="40000" />
+      <workItem from="1755680910417" duration="9000" />
+      <workItem from="1756167448391" duration="9000" />
+      <workItem from="1757331982761" duration="1327000" />
+      <workItem from="1757338634607" duration="112000" />
+      <workItem from="1757338783911" duration="12000" />
+      <workItem from="1757355184732" duration="1040000" />
+      <workItem from="1757356647331" duration="5967000" />
+      <workItem from="1757431673997" duration="4000" />
+      <workItem from="1757432243280" duration="84000" />
+      <workItem from="1757432883945" duration="86000" />
+      <workItem from="1757879972106" duration="8000" />
+      <workItem from="1758109682216" duration="127000" />
+      <workItem from="1758109993560" duration="1375000" />
+      <workItem from="1758111812025" duration="474000" />
+    </task>
+    <task id="LOCAL-00002" summary="added opencv to requirements.txt">
+      <option name="closed" value="true" />
+      <created>1741642816505</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1741642816505</updated>
+    </task>
+    <task id="LOCAL-00003" summary="updated packages in requirements.txt">
+      <option name="closed" value="true" />
+      <created>1741643094137</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1741643094137</updated>
+    </task>
+    <task id="LOCAL-00004" summary="removed unnecessary packages from requirements.txt">
+      <option name="closed" value="true" />
+      <created>1741643439370</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1741643439370</updated>
+    </task>
+    <task id="LOCAL-00005" summary="frontend uses websocket for capture card view">
+      <option name="closed" value="true" />
+      <created>1741652690428</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1741652690428</updated>
+    </task>
+    <task id="LOCAL-00006" summary="frontend uses websocket for capture card view">
+      <option name="closed" value="true" />
+      <created>1741652705052</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1741652705052</updated>
+    </task>
+    <task id="LOCAL-00007" summary="capture card backend improved">
+      <option name="closed" value="true" />
+      <created>1741690033980</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1741690033980</updated>
+    </task>
+    <task id="LOCAL-00008" summary="updated frontend dependencies">
+      <option name="closed" value="true" />
+      <created>1741690769141</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1741690769141</updated>
+    </task>
+    <task id="LOCAL-00009" summary="updated status box">
+      <option name="closed" value="true" />
+      <created>1742133291135</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1742133291135</updated>
+    </task>
+    <task id="LOCAL-00010" summary="added example settings for reference">
+      <option name="closed" value="true" />
+      <created>1742143721167</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1742143721167</updated>
+    </task>
+    <task id="LOCAL-00011" summary="simpler status box">
+      <option name="closed" value="true" />
+      <created>1742143906091</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1742143906091</updated>
+    </task>
+    <task id="LOCAL-00012" summary="simpler status box">
+      <option name="closed" value="true" />
+      <created>1742143980341</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1742143980341</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Added Fullscreen capture view">
+      <option name="closed" value="true" />
+      <created>1742145158158</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1742145158158</updated>
+    </task>
+    <task id="LOCAL-00014" summary="fixed program selection style">
+      <option name="closed" value="true" />
+      <created>1742156594290</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1742156594290</updated>
+    </task>
+    <task id="LOCAL-00015" summary="updated web ui test action">
+      <option name="closed" value="true" />
+      <created>1742156984196</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1742156984196</updated>
+    </task>
+    <task id="LOCAL-00016" summary="backend test path">
+      <option name="closed" value="true" />
+      <created>1742157270581</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1742157270581</updated>
+    </task>
+    <task id="LOCAL-00017" summary="updated back end test">
+      <option name="closed" value="true" />
+      <created>1742157451202</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1742157451202</updated>
+    </task>
+    <task id="LOCAL-00018" summary="disable app.py test">
+      <option name="closed" value="true" />
+      <created>1742158031519</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1742158031519</updated>
+    </task>
+    <task id="LOCAL-00019" summary="npm build restarts on failure">
+      <option name="closed" value="true" />
+      <created>1742235591114</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1742235591114</updated>
+    </task>
+    <task id="LOCAL-00020" summary="npm build service runs as the correct user to allow the frontend service to run the build">
+      <option name="closed" value="true" />
+      <created>1742271917854</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1742271917854</updated>
+    </task>
+    <task id="LOCAL-00021" summary="npm build service runs correctly">
+      <option name="closed" value="true" />
+      <created>1742300960077</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1742300960077</updated>
+    </task>
+    <task id="LOCAL-00022" summary="npm build service starts on boot">
+      <option name="closed" value="true" />
+      <created>1742397798044</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1742397798044</updated>
+    </task>
+    <task id="LOCAL-00023" summary="ustreamer service extra options">
+      <option name="closed" value="true" />
+      <created>1742399113579</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1742399113579</updated>
+    </task>
+    <task id="LOCAL-00024" summary="npm build failure service">
+      <option name="closed" value="true" />
+      <created>1742402329247</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1742402329247</updated>
+    </task>
+    <task id="LOCAL-00025" summary="frontend waits for successful npm build">
+      <option name="closed" value="true" />
+      <created>1742485705225</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1742485705225</updated>
+    </task>
+    <task id="LOCAL-00026" summary="ustreamer doesnt encode mjpeg stream">
+      <option name="closed" value="true" />
+      <created>1742492075100</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1742492075100</updated>
+    </task>
+    <task id="LOCAL-00027" summary="changed mjpeg to jpeg script">
+      <option name="closed" value="true" />
+      <created>1742585024700</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1742585024700</updated>
+    </task>
+    <task id="LOCAL-00028" summary="more consistent class name">
+      <option name="closed" value="true" />
+      <created>1742585125782</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1742585125782</updated>
+    </task>
+    <task id="LOCAL-00029" summary="updated egg hatcher program">
+      <option name="closed" value="true" />
+      <created>1742585226167</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1742585226167</updated>
+    </task>
+    <task id="LOCAL-00030" summary="changelog.md">
+      <option name="closed" value="true" />
+      <created>1742585295402</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1742585295402</updated>
+    </task>
+    <task id="LOCAL-00031" summary="build image workflow creates test images">
+      <option name="closed" value="true" />
+      <created>1742585510870</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1742585510870</updated>
+    </task>
+    <task id="LOCAL-00032" summary="build image workflow creates prerelease">
+      <option name="closed" value="true" />
+      <created>1742663197356</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1742663197356</updated>
+    </task>
+    <task id="LOCAL-00033" summary="npm package json">
+      <option name="closed" value="true" />
+      <created>1742663343362</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1742663343362</updated>
+    </task>
+    <task id="LOCAL-00034" summary="README.md requirements and install info">
+      <option name="closed" value="true" />
+      <created>1742665857437</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1742665857437</updated>
+    </task>
+    <task id="LOCAL-00035" summary="stop npm build service restart loop">
+      <option name="closed" value="true" />
+      <created>1742666453325</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1742666453325</updated>
+    </task>
+    <task id="LOCAL-00036" summary="Revert &quot;build image workflow creates test images&quot;&#10;&#10;This reverts commit 44b46bf3">
+      <option name="closed" value="true" />
+      <created>1742749529446</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1742749529446</updated>
+    </task>
+    <task id="LOCAL-00037" summary="fix npm build fail">
+      <option name="closed" value="true" />
+      <created>1742750878643</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1742750878643</updated>
+    </task>
+    <task id="LOCAL-00038" summary="package-lock.json">
+      <option name="closed" value="true" />
+      <created>1743085833260</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1743085833260</updated>
+    </task>
+    <task id="LOCAL-00039" summary="fixed npm build loop">
+      <option name="closed" value="true" />
+      <created>1743085995001</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1743085995001</updated>
+    </task>
+    <task id="LOCAL-00040" summary="xml">
+      <option name="closed" value="true" />
+      <created>1754128842145</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1754128842145</updated>
+    </task>
+    <task id="LOCAL-00041" summary="xml">
+      <option name="closed" value="true" />
+      <created>1754128852793</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1754128852793</updated>
+    </task>
+    <task id="LOCAL-00042" summary="non interactive env for build image action chroot apt update">
+      <option name="closed" value="true" />
+      <created>1754129047171</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1754129047171</updated>
+    </task>
+    <task id="LOCAL-00043" summary="workflow permissions">
+      <option name="closed" value="true" />
+      <created>1754239272801</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1754239272801</updated>
+    </task>
+    <task id="LOCAL-00044" summary="build image workflow runs in userspace">
+      <option name="closed" value="true" />
+      <created>1757357422517</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1757357422517</updated>
+    </task>
+    <task id="LOCAL-00045" summary="build image workflow runs in userspace">
+      <option name="closed" value="true" />
+      <created>1757357835940</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1757357835940</updated>
+    </task>
+    <task id="LOCAL-00046" summary="build image workflow runs in userspace">
+      <option name="closed" value="true" />
+      <created>1757359117898</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1757359117898</updated>
+    </task>
+    <task id="LOCAL-00047" summary="build image workflow runs in userspace">
+      <option name="closed" value="true" />
+      <created>1757360093368</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1757360093368</updated>
+    </task>
+    <task id="LOCAL-00048" summary="Merge remote-tracking branch 'origin/bug/actions' into bug/actions">
+      <option name="closed" value="true" />
+      <created>1757360681379</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1757360681379</updated>
+    </task>
+    <task id="LOCAL-00049" summary="Merge remote-tracking branch 'origin/bug/actions' into bug/actions">
+      <option name="closed" value="true" />
+      <created>1757362089141</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1757362089141</updated>
+    </task>
+    <task id="LOCAL-00050" summary="initial commit">
+      <option name="closed" value="true" />
+      <created>1758110756954</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1758110756954</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="npm build service runs correctly" />
+    <MESSAGE value="npm build service starts on boot" />
+    <MESSAGE value="ustreamer service extra options" />
+    <MESSAGE value="npm build failure service" />
+    <MESSAGE value="frontend waits for successful npm build" />
+    <MESSAGE value="ustreamer doesnt encode mjpeg stream" />
+    <MESSAGE value="changed mjpeg to jpeg script" />
+    <MESSAGE value="more consistent class name" />
+    <MESSAGE value="updated egg hatcher program" />
+    <MESSAGE value="changelog.md" />
+    <MESSAGE value="build image workflow creates test images" />
+    <MESSAGE value="build image workflow creates prerelease" />
+    <MESSAGE value="npm package json" />
+    <MESSAGE value="README.md requirements and install info" />
+    <MESSAGE value="stop npm build service restart loop" />
+    <MESSAGE value="Revert &quot;build image workflow creates test images&quot;&#10;&#10;This reverts commit 44b46bf3" />
+    <MESSAGE value="fix npm build fail" />
+    <MESSAGE value="package-lock.json" />
+    <MESSAGE value="fixed npm build loop" />
+    <MESSAGE value="xml" />
+    <MESSAGE value="non interactive env for build image action chroot apt update" />
+    <MESSAGE value="workflow permissions" />
+    <MESSAGE value="build image workflow runs in userspace" />
+    <MESSAGE value="Merge remote-tracking branch 'origin/bug/actions' into bug/actions" />
+    <MESSAGE value="initial commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="initial commit" />
+  </component>
+</project>
