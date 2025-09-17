@@ -15,7 +15,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3d930d6f-0fd4-483d-9b77-010ee73b0f1b" name="Changes" comment="" />
+    <list default="true" id="3d930d6f-0fd4-483d-9b77-010ee73b0f1b" name="Changes" comment="initial commit" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -65,6 +65,10 @@
             <RecentBranchesForRepo>
               <option name="branches">
                 <list>
+                  <RecentBranch>
+                    <option name="branchName" value="master" />
+                    <option name="lastUsedInstant" value="1758112661" />
+                  </RecentBranch>
                   <RecentBranch>
                     <option name="branchName" value="temp" />
                     <option name="lastUsedInstant" value="1758112589" />
@@ -121,7 +125,7 @@
     "SHELLCHECK.PATH": "/home/connor/.local/share/JetBrains/PyCharm2024.3/Shell Script/shellcheck",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "temp",
+    "git-widget-placeholder": "master",
     "javascript.nodejs.core.library.configured.version": "22.11.0",
     "javascript.nodejs.core.library.typings.version": "22.18.1",
     "last_opened_file_path": "/home/connor/Git/pi-kvm-cluster",
@@ -302,14 +306,6 @@
       <workItem from="1758109682216" duration="127000" />
       <workItem from="1758109993560" duration="1375000" />
       <workItem from="1758111812025" duration="474000" />
-    </task>
-    <task id="LOCAL-00002" summary="added opencv to requirements.txt">
-      <option name="closed" value="true" />
-      <created>1741642816505</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1741642816505</updated>
     </task>
     <task id="LOCAL-00003" summary="updated packages in requirements.txt">
       <option name="closed" value="true" />
@@ -695,7 +691,15 @@
       <option name="project" value="LOCAL" />
       <updated>1758110756954</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="initial commit">
+      <option name="closed" value="true" />
+      <created>1758112702998</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1758112702999</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
