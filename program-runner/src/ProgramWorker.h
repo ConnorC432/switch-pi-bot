@@ -24,8 +24,11 @@ namespace ProgramRunner {
         std::thread captureThread;
         std::mutex programLock;
 
-        crow::websocket::connection* wsConnection{nullptr};
-        std::mutex wsLock;
+        crow::websocket::connection* statusWs{nullptr};
+        std::mutex statusWsLock;
+
+        crow::websocket::connection* outputWs{nullptr};
+        std::mutex outputWsLock;
 
         void sendWebSocket(const std::string& message);
         std::string escapeJson(const std::string &str) const;
@@ -34,13 +37,18 @@ namespace ProgramRunner {
         ProgramWorker() = default;
         ~ProgramWorker();
 
-        void bindWebSocket(crow::websocket::connection* conn);
+        void bindStatusWebSocket(crow::websocket::connection* conn);
+        void unbindStatusWebSocket();
+
+        void bindOutputWebSocket(crow::websocket::connection* conn);
+        void unbindOutputWebSocket();
+
+        void sendStatus(const std::string& message);
+        void sendOutput(const std::string& message);
 
         crow::json::wvalue startProgram(const std::string& program, const std::vector<std::string>& args);
 
         crow::json::wvalue killProgram();
-
-        void status();
     };
 
 } // ProgramRunner

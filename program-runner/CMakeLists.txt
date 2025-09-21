@@ -34,8 +34,10 @@ set(SOURCES
     src/ProgramRegistry.cpp
 )
 
-file(GLOB_RECURSE PROGRAM_SOURCES "Programs/*.cpp")
+file(GLOB_RECURSE PROGRAM_SOURCES "src/Programs/*.cpp")
 list(APPEND SOURCES ${PROGRAM_SOURCES})
+
+message(STATUS "Program sources: ${PROGRAM_SOURCES}")
 
 # Create executable
 add_executable(ProgramRunner ${SOURCES})

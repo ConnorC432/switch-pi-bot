@@ -3,7 +3,7 @@
 //
 
 #include "ProgramWorker.h"
-#include <unistd.h>
+#include "ProgramRegistry.h"
 #include <sys/wait.h>
 #include <signal.h>
 #include <iostream>
@@ -33,70 +33,82 @@ namespace ProgramRunner {
         return escaped;
     }
 
-    void ProgramWorker::sendWebSocket(const std::string &message) {
-        std::lock_guard<std::mutex> lock(wsLock);
-        if (wsConnection) {
-            try {
-                wsConnection->send_text(message);
-            } catch (...) {
-                wsConnection = nullptr;
-            }
+    void ProgramWorker::bindStatusWebSocket(crow::websocket::connection *conn) {
+        std::lock_guard<std::mutex> lock(statusWsLock);
+        statusWs = conn;
+    }
+
+    void ProgramWorker::unbindStatusWebSocket() {
+        std::lock_guard<std::mutex> lock(statusWsLock);
+        statusWs = nullptr;
+    }
+
+    void ProgramWorker::bindOutputWebSocket(crow::websocket::connection *conn) {
+        std::lock_guard<std::mutex> lock(outputWsLock);
+        outputWs = conn;
+    }
+
+    void ProgramWorker::unbindOutputWebSocket() {
+        std::lock_guard<std::mutex> lock(outputWsLock);
+        outputWs = nullptr;
+    }
+
+    void ProgramWorker::sendStatus(const std::string& message) {
+        std::lock_guard<std::mutex> lock(statusWsLock);
+        if (statusWs) {
+            try { statusWs->send_text(message); }
+            catch(...) { statusWs = nullptr; }
         }
     }
 
-    void ProgramWorker::bindWebSocket(crow::websocket::connection *conn) {
-        std::lock_guard<std::mutex> lock(wsLock);
-        wsConnection = conn;
+    void ProgramWorker::sendOutput(const std::string& message) {
+        std::lock_guard<std::mutex> lock(outputWsLock);
+        if (outputWs) {
+            try { outputWs->send_text(message); }
+            catch(...) { outputWs = nullptr; }
+        }
     }
 
     crow::json::wvalue ProgramWorker::startProgram(const std::string &program, const std::vector<std::string> &args) {
         std::lock_guard<std::mutex> lock(programLock);
+
         if (runningPid > 0) {
             return {{"status", "error"}, {"message", "Program already running"}};
         }
 
-        int pipefd[2];
-        if (pipe(pipefd) == -1) {
-            return {{"status", "error"}, {"message", "Failed to create pipe"}};
+        auto func = ProgramRegistry::instance().getProgram(program);
+        if (!func) {
+            return {{"status", "error"}, {"message", "Program not found"}};
         }
 
-        pid_t pid = fork();
-        if (pid == 0) {
-            close(pipefd[0]);
-            dup2(pipefd[1], STDOUT_FILENO);
-            dup2(pipefd[1], STDERR_FILENO);
-            close(pipefd[1]);
+        runningPid = 1;
+        currentProgram = program;
 
-            std::vector<char*> cargs;
-            cargs.push_back(const_cast<char*>(program.c_str()));
-            for (const auto& a : args) cargs.push_back(const_cast<char*>(a.c_str()));
-            cargs.push_back(nullptr);
+        captureThread = std::thread([this, func, args]() {
+            std::ostringstream buffer;
 
-            execvp(program.c_str(), cargs.data());
-            _exit(1);
-        } else if (pid > 0) {
-            close(pipefd[1]);
-            runningPid = pid;
-            currentProgram = program;
+            auto oldCout = std::cout.rdbuf(buffer.rdbuf());
+            auto oldCerr = std::cerr.rdbuf(buffer.rdbuf());
 
-            captureThread = std::thread([this, pipefd]() {
-                char buffer[1024];
-                ssize_t n;
-                while ((n = read(pipefd[0], buffer, sizeof(buffer))) > 0) {
-                    std::string msg(buffer, n);
-                    sendWebSocket("{\"output\":\"" + escapeJson(msg) + "\"}");
-                }
-                close(pipefd[0]);
+            try {
+                func(args);
+            } catch (const std::exception &e) {
+                std::cerr << "Exception: " << e.what() << std::endl;
+            }
 
+            std::cout.rdbuf(oldCout);
+            std::cerr.rdbuf(oldCerr);
+
+            sendOutput(escapeJson(buffer.str()));
+
+            {
                 std::lock_guard<std::mutex> lock(programLock);
                 runningPid = -1;
-                sendWebSocket("{\"status\":\"stopped\"}");
-            });
+                sendStatus("{\"status\":\"stopped\"}");
+            }
+        });
 
-            return {{"status", "started"}, {"pid", pid}};
-        } else {
-            return {{"status", "error"}, {"message", "Fork failed"}};
-        }
+        return {{"status", "started"}, {"pid", 1}};
     }
 
     crow::json::wvalue ProgramWorker::killProgram() {
@@ -110,21 +122,10 @@ namespace ProgramRunner {
             int status;
             waitpid(runningPid, &status, 0);
             runningPid = -1;
-            sendWebSocket("{\"status\":\"killed\"}");
+            sendStatus("{\"status\":\"killed\"}");
             return {{"status", "killed"}};
         } else {
             return {{"status", "error"}, {"message", "Failed to kill program"}};
-        }
-    }
-
-    void ProgramWorker::status() {
-        std::lock_guard<std::mutex> lock(programLock);
-
-        if (runningPid > 0) {
-            sendWebSocket("{\"status\":\"running\",\"program\":\"" + escapeJson(currentProgram)
-                            + "\",\"pid\":" + std::to_string(runningPid.load()) + "}");
-        } else {
-            sendWebSocket("{\"status\":\"stopped\"}");
         }
     }
 } // ProgramRunner

@@ -60,22 +60,17 @@ namespace ProgramRunner {
                 }
             });
 
-            CROW_ROUTE(app, "/program/start")
-            .methods(crow::HTTPMethod::POST)
-                ([this](const crow::request& req){
-                   auto qs = crow::query_string(req.url);
-                   auto name = qs.get("program");
-                   if (!name) {
-                       return crow::response(400, "Missing Program name");
-                   }
+            CROW_ROUTE(app, "/program/start").methods("POST"_method)
+            ([this](const crow::request& req){
+                auto body = crow::json::load(req.body);
+                if (!body || !body.has("program")) {
+                    return crow::response(400, "Missing program");
+                }
 
-                   auto func = ProgramRegistry::instance().getProgram(name);
-                   if (!func) {
-                       return crow::response(404, "Program not found");
-                   }
-
-                   return crow::response(worker.startProgram(name, {}));
-                });
+                std::string programName = body["program"].s();
+                auto result = worker.startProgram(programName, {});
+                return crow::response(result);
+            });
 
             CROW_ROUTE(app, "/program/kill")
             .methods(crow::HTTPMethod::POST)
@@ -87,14 +82,26 @@ namespace ProgramRunner {
             .websocket(&app)
             .onopen([this](crow::websocket::connection& conn){
                 std::cout << "Program WS connected" << std::endl;
-                worker.bindWebSocket(&conn);
-                worker.status();
+                worker.bindStatusWebSocket(&conn);
             })
             .onclose([this](crow::websocket::connection& conn,
                         const std::string& reason,
                         const uint8_t flags){
-                std::cout << "Program WS disconnected: " << reason << std::endl;
-                worker.bindWebSocket(nullptr);
+                worker.unbindStatusWebSocket();
+                std::cout << "Program Status WS disconnected: " << reason << std::endl;
+            });
+
+            CROW_ROUTE(app, "/program/logs")
+            .websocket(&app)
+            .onopen([this](crow::websocket::connection& conn){
+                std::cout << "Program WS connected" << std::endl;
+                worker.bindOutputWebSocket(&conn);
+            })
+            .onclose([this](crow::websocket::connection& conn,
+                        const std::string& reason,
+                        const uint8_t flags){
+                worker.unbindOutputWebSocket();
+                std::cout << "Program Output WS disconnected: " << reason << std::endl;
             });
 
             CROW_ROUTE(app, "/status")
@@ -115,6 +122,8 @@ namespace ProgramRunner {
 
 int main() {
     Capture::Capture cap("/dev/video0", 1920, 1080, 30);
+
+    ProgramRunner::ProgramRegistry::instance().init();
 
     ProgramRunner::ProgramRunner programRunner(cap);
     programRunner.run(8080);

@@ -6,7 +6,7 @@
 #include <iostream>
 
 namespace Programs {
-    static void run(const std::vector<std::string>& args) {
+    void Test::run(const std::vector<std::string>& args) {
         std::cout << "Test Program Success" << std::endl;
     }
 } // Programs
