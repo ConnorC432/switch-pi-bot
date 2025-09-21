@@ -13,5 +13,6 @@ include_directories(
 add_executable(
         HIDGController/HIDGController.cpp,
         HIDGController/Gamepad.cpp,
-        Capture/Capture.cpp
+        Capture/Capture.cpp,
+        Capture/ImageRecognition.cpp,
 )
