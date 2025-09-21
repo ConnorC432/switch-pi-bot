@@ -76,6 +76,10 @@ namespace ProgramRunner {
             return {{"status", "error"}, {"message", "Program already running"}};
         }
 
+        if (captureThread.joinable()) {
+            captureThread.join();
+        }
+
         auto func = ProgramRegistry::instance().getProgram(program);
         if (!func) {
             return {{"status", "error"}, {"message", "Program not found"}};
