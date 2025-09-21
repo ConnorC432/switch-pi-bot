@@ -3,18 +3,31 @@
 //
 
 #include "Capture.h"
+
+#include <cstdint>
+#include <cstring>
+#include <cerrno>
+#include <iostream>
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <linux/videodev2.h>
 #include <sys/mman.h>
-#include <iostream>
-#include <cstring>
-#include <errno.h>
+#include <opencv4/opencv2/opencv.hpp>
+#include <opencv4/opencv2/core.hpp>
+#include <opencv4/opencv2/core/types.hpp>
+#include <opencv4/opencv2/imgcodecs.hpp>
+
 
 namespace Capture {
     Capture::Capture(const std::string& devicePath, uint32_t width, uint32_t height, uint32_t fps)
-        : deviceIndex(devicePath), fd(-1), width(width), height(height), fps(fps). buffer(nullptr), bufferLength(0) {}
+        : devicePath(devicePath),
+        fd(-1),
+        width(width),
+        height(height),
+        fps(fps),
+        buffer(nullptr),
+        bufferLength(0) {}
 
     Capture::~Capture() {
         close();
@@ -58,7 +71,7 @@ namespace Capture {
         fmt.fmt.pix.field = V4L2_FIELD_NONE;
 
         if (ioctl(fd, VIDIOC_S_FMT, &fmt) < 0) {
-            std:cerr << "VIDIOC_S_FMT failed: " << strerror(errno) << std::endl;
+            std::cerr << "VIDIOC_S_FMT failed: " << strerror(errno) << std::endl;
             return false;
         }
 
@@ -107,8 +120,8 @@ namespace Capture {
         return true;
     }
 
-    uint8_t* Capture::grabFrame() {
-        if (fd < 0) return nullptr;
+    cv::Mat Capture::grabFrame() {
+        if (fd < 0) return cv::Mat();
 
         v4l2_buffer buf {};
         buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -116,15 +129,15 @@ namespace Capture {
 
         if (ioctl(fd, VIDIOC_DQBUF, &buf) < 0) {
             std::cerr << "VIDIOC_DQBUF failed: " << strerror(errno) << std::endl;
-            return nullptr;
+            return cv::Mat();
         }
 
         // Requeue buffer
         if (ioctl(fd, VIDIOC_QBUF, &buf) < 0) {
             std::cerr << "VIDIOC_QBUF failed: " << strerror(errno) << std::endl;
-            return nullptr;
+            return cv::Mat();
         }
-
-        return buffer;
+        cv::Mat frame(height, width, CV_8UC3, buffer);
+        return frame.clone();
     }
 } // Capture

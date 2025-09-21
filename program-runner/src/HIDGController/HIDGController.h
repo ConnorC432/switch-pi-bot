@@ -1,4 +1,4 @@
-t//
+//
 // Created by connor on 17/09/2025.
 //
 
@@ -9,28 +9,43 @@ t//
 #include <array>
 #include <string>
 #include <vector>
+#include <mutex>
 
 namespace HIDGController {
     class HIDGController {
     private:
-        constexpr DefaultReport = {
-            0x0000088080808000
+        static constexpr std::array<uint8_t, 8> DefaultReport = {
+            0x00, 0x00, 0x08, 0x80, 0x80, 0x80, 0x80, 0x00
         };
 
         std::string devicePath;
-
-        using HidReport = std::array<uint8_t, 8>;
-        HidReport report;
-
-        void sendReport();
-        void clearReport();
-
+        std::array<uint8_t, 8> report;
         std::mutex reportMutex;
 
     public:
         explicit HIDGController(std::string devicePath = "/dev/hidg0");
 
-        void resetReport();
+        void sendReport();
+        void clearReport();
+        void init();
+
+        void setReportByte(size_t index, uint8_t value) {
+            std::lock_guard<std::mutex> lock(reportMutex);
+            if (index < report.size()) {
+                report[index] = value;
+                sendReport();
+            }
+        }
+
+        void setReportWord(size_t lowIndex, uint16_t value) {
+            std::lock_guard<std::mutex> lock(reportMutex);
+            if (lowIndex + 1 < report.size()) {
+                report[lowIndex] = value & 0xFF;
+                report[lowIndex + 1] = (value >> 8) & 0xFF;
+                sendReport();
+    }
+}
+
     };
 } // HIDGController
 

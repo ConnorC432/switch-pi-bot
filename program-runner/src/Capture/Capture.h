@@ -5,8 +5,13 @@
 #ifndef SWITCH_PI_BOT_CAPTURE_H
 #define SWITCH_PI_BOT_CAPTURE_H
 
+#pragma once
 #include <cstdint>
 #include <string>
+#include <opencv4/opencv2/opencv.hpp>
+#include <opencv4/opencv2/core.hpp>
+#include <opencv4/opencv2/core/types.hpp>
+#include <opencv4/opencv2/imgcodecs.hpp>
 
 namespace Capture {
     struct ROI {
@@ -18,23 +23,28 @@ namespace Capture {
 
     class Capture {
     private:
-        std::string devicePath = 0;
+        std::string devicePath = nullptr;
         int fd;
         uint32_t width = 1920;
         uint32_t height = 1080;
         uint32_t fps = 30;
-        uint8_t buffer;
+        uint8_t* buffer;
         size_t bufferLength;
+
+        bool initDevice();
 
     public:
         Capture(const std::string& devicePath = "/dev/video0",
-                uint32_t width, uint32_t height, uint32_t fps);
+                uint32_t width = 1920,
+                uint32_t height = 1080,
+                uint32_t fps = 30);
+
         ~Capture();
 
         bool open();
         void close();
 
-        uint8_t* grabFrame();
+        cv::Mat grabFrame();
 
         uint32_t getWidth() const { return width; }
         uint32_t getHeight() const { return height; }

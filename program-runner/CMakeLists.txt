@@ -6,32 +6,38 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-find_package(PkgConfig REQUIRED)
-# OpenCV
-pkg_check_modules(OPENCV REQUIRED opencv4)
+add_definitions(-DCROW_ENABLE_ASIO_STANDALONE)
 
-# Tesseract
-pkg_check_modules(TESSERACT REQUIRED tesseract lept)
-
+# Include directories
 include_directories(
-        HIDGController
-        Capture
-        ${OpenCV_INCLUDE_DIRS} # OpenCV
-        ${TESSERACT_INCLUDE_DIRS} # Tesseract
-        ../include/crow/include # Crow Headers
+    HIDGController
+    Capture
+    ../include/crow/include
+    /usr/include
+    /usr/include/opencv4
+    /usr/include/tesseract
 )
 
+# Source files
 set(SOURCES
-        src/main.cpp
-        src/HIDGController/HIDGController.cpp
-        src/HIDGController/Gamepad.cpp
-        src/Capture/Capture.cpp
-        src/Capture/ImageRecognition.cpp
-        src/Capture/TextRecognition.cpp
+    src/main.cpp
+    src/HIDGController/HIDGController.cpp
+    src/HIDGController/Gamepad.cpp
+    src/Capture/Capture.cpp
+    src/Capture/ImageRecognition.cpp
+    src/Capture/TextRecognition.cpp
 )
+
+# Create executable
 add_executable(ProgramRunner ${SOURCES})
 
-target_link_libraries(ProgramRunner
-        ${OPENCV_LIBRARIES}
-        ${TESSERACT_LIBRARIES}
+# Libraries (link against system libraries directly)
+target_link_libraries(ProgramRunner PRIVATE
+    opencv_core
+    opencv_imgproc
+    opencv_imgcodecs
+    opencv_highgui
+    tesseract
+    lept
+    pthread
 )

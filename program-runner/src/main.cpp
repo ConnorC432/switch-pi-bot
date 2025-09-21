@@ -13,48 +13,61 @@
 namespace ProgramRunner {
     class ProgramRunner {
     private:
+        crow::SimpleApp app;
         Capture::Capture& capture;
         std::mutex frameMutex;
 
+        bool cameraOpened = false;
+
     public:
-        explicit ProgramRunner(Capture::Capture& cap) : capture(cap) {}
+        explicit ProgramRunner(Capture::Capture& cap) : capture(cap) {
+            cameraOpened = capture.open();
+            if (!cameraOpened) {
+                std::cerr << "Capture Card failed to open" << std::endl;
+            }
+        }
 
         void setupRoutes() {
             CROW_ROUTE(app, "/stream")
-            .websocket()
+            .websocket(&app)
             .onopen([](crow::websocket::connection& conn){
-                std::cout << "WebSocket connected: " << conn.get_id() << std::endl;
+                std::cout << "WebSocket connected" << std::endl;
             })
-            .onclose([](crow::websocket::connection& conn, const std::string& reason){
-                std::cout << "WebSocket disconnected: " << conn.get_id()
-                          << " Reason : " << reason << std::endl;
+
+            .onclose([](crow::websocket::connection& conn,
+                    const std::string& reason,
+                    const uint8_t flags){
+                std::cout << "WebSocket disconnected: " << reason << std::endl;
             })
+
             .onmessage([this](crow::websocket::connection& conn,
                     const std::string&, bool){
                 cv::Mat frame;
                 {
                     std::lock_guard<std::mutex> lock(frameMutex);
-                    frame = capture.getFrame();
+                    frame = capture.grabFrame();
                 }
 
                 if (!frame.empty()) {
                     std::vector<uchar> buffer;
                     cv::imencode(".jpg", frame, buffer);
-                    conn.send_binary(buffer);
+                    std::string binaryMessage(buffer.begin(), buffer.end());
+                    conn.send_binary(binaryMessage);
                 }
             });
 
             CROW_ROUTE(app, "/status")
-            ([]{
+            ([](){
                 crow::json::wvalue x;
                 x["status"] = "ok";
-                return x;
+                return crow::response(x);
             });
         }
 
         void run(int port = 8080) {
             setupRoutes();
-            app.port(port).multithreaded().run();
+            std::cout << "Starting server..." << std::endl;
+            app.bindaddr("0.0.0.0").port(port).multithreaded().run();
         }
     };
 }

@@ -5,24 +5,26 @@
 #ifndef SWITCH_PI_BOT_TEXTRECOGNITION_H
 #define SWITCH_PI_BOT_TEXTRECOGNITION_H
 
+#include "Capture.h"
 #include <string>
 #include <optional>
-#include <opencv2/opencv.hpp>
+#include <opencv4/opencv2/opencv.hpp>
 #include <tesseract/baseapi.h>
 
 namespace Capture {
     class TextRecognition {
     private:
-        Capture::Capture& capture;
-        tesseract::TessBaseAPI ocr;
+        Capture& capture;
+        tesseract::TessBaseAPI* ocr = nullptr;
         bool initialised = false;
 
     public:
-        TextRecognition(Capture::Capture& cap, const std::string& language = "eng", const std::string& datapath = "");
+        explicit TextRecognition(Capture& cap,
+                                 const std::string& language = "eng",
+                                 const std::string& datapath = "");
         ~TextRecognition();
 
-        bool finxText(
-            const cv::Mat& frame,
+        bool findText(
             const std::string& searchText,
             int timeoutMs = 1000,
             const std::optional<ROI>& roi = std::nullopt

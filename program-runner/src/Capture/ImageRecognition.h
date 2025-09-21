@@ -5,22 +5,22 @@
 #ifndef SWITCH_PI_BOT_IMAGERECOGNITION_H
 #define SWITCH_PI_BOT_IMAGERECOGNITION_H
 
+#include "Capture.h"
 #include <string>
 #include <optional>
-#include <opencv2/opencv.hpp>
+#include <opencv4/opencv2/opencv.hpp>
 
 namespace Capture {
     class ImageRecognition {
     private:
-        Capture::Capture& capture;
+        Capture& capture;
         double defaultThreshold = 0.8;
 
     public:
-        ImageRecognition() = default;
+        explicit ImageRecognition(Capture& cap) : capture(cap) {}
         ~ImageRecognition() = default;
 
         std::optional<cv::Rect> findImage(
-            const cv::Mat& frame,
             const std::string& imagePath,
             int timeoutMs = 1000,
             double threshold = -1,

@@ -3,6 +3,7 @@
 //
 
 #include "Gamepad.h"
+#include "HIDGController.h"
 #include <thread>
 #include <chrono>
 #include <iostream>
@@ -11,100 +12,65 @@ namespace HIDGController {
     Gamepad::Gamepad(HIDGController& controller)
         : controller(controller) {}
 
-    static uint8_t stickX(HIDGController::Stick s) { return static_cast<uint16_t>(s) >> 8; }
-    static uint8_t stickY(HIDGController::Stick s) { return static_cast<uint16_t>(s) & 0xFF; }
+    static inline uint8_t stickX(Gamepad::Stick s) { return static_cast<uint16_t>(s) >> 8; }
+    static inline uint8_t stickY(Gamepad::Stick s) { return static_cast<uint16_t>(s) & 0xFF; }
 
-    // Input Functions
+    // Buttons
     void Gamepad::pressButton(const std::vector<Button>& buttons, int holdMs) {
         std::lock_guard<std::mutex> lock(buttonMutex);
 
         uint16_t added = 0;
         for (auto button : buttons) added |= static_cast<uint16_t>(button);
 
-        {
-            std::lock_guard<std::mutex> reportLock(controller.reportMutex);
-            uint16_t current = controller.report[0] | (controller.report[1] << 8);
-            current |= added;
-            controller.report[0] = current & 0xFF;
-            controller.report[1] = (current >> 8) & 0xFF;
-            controller.sendReport();
-        }
+        controller.setReportWord(0, added);
 
         std::thread([this, added, holdMs]() {
             std::this_thread::sleep_for(std::chrono::milliseconds(holdMs));
-            std::lock_guard<std::mutex> reportLock(controller.reportMutex);
-            uint16_t current = controller.report[0] | (controller.report[1] << 8);
-            current &= ~added;
-            controller.report[0] = current & 0xFF;
-            controller.report[1] = (current >> 8) & 0xFF;
-            controller.sendReport();
+            controller.clearReport();
         }).detach();
     }
 
+    // DPad
     void Gamepad::moveDPad(DPad direction, int holdMs) {
         std::lock_guard<std::mutex> lock(dpadMutex);
 
-        {
-            std::lock_guard<std::mutex> reportLock(controller.reportMutex);
-            controller.report[2] = static_cast<uint8_t>(direction);
-            controller.sendReport();
+        controller.setReportByte(2, static_cast<uint8_t>(direction));
 
-            std::thread([this, holdMs]() {
-                std::this_thread::sleep_for(std::chrono::milliseconds(holdMs));
-                std::lock_guard<std::mutex> reportLock(controller.reportMutex);
-                controller.report[2] = DefaultReport[2];
-                controller.sendReport();
-            }).detach();
-        }
+        std::thread([this, holdMs]() {
+            std::this_thread::sleep_for(std::chrono::milliseconds(holdMs));
+            controller.clearReport();
+        }).detach();
     }
 
+    // Left Stick
     void Gamepad::moveLeftStick(Stick direction, int holdMs) {
         std::lock_guard<std::mutex> lock(leftStickMutex);
 
         uint8_t x = stickX(direction);
         uint8_t y = stickY(direction);
 
-        std::thread([this, x, y, holdMs]() {
-            {
-                std::lock_guard<std::mutex> reportLock(controller.reportMutex);
-                controller.report[3] = x;
-                controller.report[4] = y;
-                controller.sendReport();
-            }
+        controller.setReportByte(3, x);
+        controller.setReportByte(4, y);
 
+        std::thread([this, holdMs]() {
             std::this_thread::sleep_for(std::chrono::milliseconds(holdMs));
-
-            {
-                std::lock_guard<std::mutex> reportLock(controller.reportMutex);
-                controller.report[3] = DefaultReport[3];
-                controller.report[4] = DefaultReport[4];
-                controller.sendReport();
-            }
+            controller.clearReport();
         }).detach();
     }
 
+    // Right Stick
     void Gamepad::moveRightStick(Stick direction, int holdMs) {
         std::lock_guard<std::mutex> lock(rightStickMutex);
 
         uint8_t x = stickX(direction);
         uint8_t y = stickY(direction);
 
-        std::thread([this, x, y, holdMs]() {
-            {
-                std::lock_guard<std::mutex> reportLock(controller.reportMutex);
-                controller.report[5] = x;
-                controller.report[6] = y;
-                controller.sendReport();
-            }
+        controller.setReportByte(5, x);
+        controller.setReportByte(6, y);
 
+        std::thread([this, holdMs]() {
             std::this_thread::sleep_for(std::chrono::milliseconds(holdMs));
-
-            {
-                std::lock_guard<std::mutex> reportLock(controller.reportMutex);
-                controller.report[5] = DefaultReport[5];
-                controller.report[6] = DefaultReport[6];
-                controller.sendReport();
-            }
+            controller.clearReport();
         }).detach();
     }
 } // HIDGController

@@ -5,17 +5,16 @@
 #ifndef SWITCH_PI_BOT_GAMEPAD_H
 #define SWITCH_PI_BOT_GAMEPAD_H
 
+#include "HIDGController.h"
 #include <vector>
 #include <string>
+#include <array>
+#include <mutex>
 
 namespace HIDGController {
     class Gamepad {
     private:
-        constexpr DefaultReport = {
-            0x0000088080808000
-        };
-
-        HIDGController controller;
+        HIDGController& controller;
 
         std::mutex buttonMutex;
         std::mutex dpadMutex;
@@ -23,6 +22,8 @@ namespace HIDGController {
         std::mutex rightStickMutex;
 
     public:
+        static constexpr std::array<uint8_t, 8> DefaultReport = {0x00,0x00,0x08,0x80,0x80,0x80,0x80,0x00};
+
         // Buttons
         enum class Button : uint16_t {
             Y       = 0x0001,
@@ -67,12 +68,12 @@ namespace HIDGController {
             NW     = 0x0000
         };
 
-        explicit Gamepad(HIDGController &controller);
+        explicit Gamepad(HIDGController& controller);
 
-        void pressButton(std::vector<Button> buttons, int holdMs = 100);
-        void moveDPad(const std::string& direction, int holdMs = 100);
-        void moveLeftStick(const std::string& direction, int holdMs = 100);
-        void moveRightStick(const std::string& direction, int holdMs = 100);
+        void pressButton(const std::vector<Button>& buttons, int holdMs = 100);
+        void moveDPad(DPad direction, int holdMs = 100);
+        void moveLeftStick(Stick direction, int holdMs = 100);
+        void moveRightStick(Stick direction, int holdMs = 100);
     };
 } // HIDGController
 
