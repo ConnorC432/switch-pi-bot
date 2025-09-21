@@ -29,6 +29,8 @@ RUN apt update \
         libtesseract-dev \
         libleptonica-dev \
         tesseract-ocr-eng \
+        libasio-dev \
+        curl \
     && apt clean
 
 WORKDIR /app
