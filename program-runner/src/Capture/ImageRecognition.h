@@ -10,15 +10,9 @@
 #include <opencv2/opencv.hpp>
 
 namespace Capture {
-    struct ROI {
-        int x = 0;
-        int y = 0;
-        int width = -1;
-        int height = -1;
-    };
-
     class ImageRecognition {
     private:
+        Capture::Capture& capture;
         double defaultThreshold = 0.8;
 
     public:
