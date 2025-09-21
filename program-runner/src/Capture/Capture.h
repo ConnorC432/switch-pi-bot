@@ -9,6 +9,13 @@
 #include <string>
 
 namespace Capture {
+    struct ROI {
+        int x = 0;
+        int y = 0;
+        int width = -1;
+        int height = -1;
+    };
+
     class Capture {
     private:
         std::string devicePath = 0;

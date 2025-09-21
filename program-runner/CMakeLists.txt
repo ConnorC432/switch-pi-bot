@@ -7,7 +7,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 include_directories(
-        HIDGController
+        HIDGController,
+        Capture,
 )
 
 add_executable(
@@ -15,4 +16,5 @@ add_executable(
         HIDGController/Gamepad.cpp,
         Capture/Capture.cpp,
         Capture/ImageRecognition.cpp,
+        Capture/TextRecognition.cpp,
 )
