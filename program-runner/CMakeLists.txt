@@ -10,8 +10,12 @@ add_definitions(-DCROW_ENABLE_ASIO_STANDALONE)
 
 # Include directories
 include_directories(
+    ## Classes
     HIDGController
     Capture
+    Programs
+
+    ## System includes
     ../include/crow/include
     /usr/include
     /usr/include/opencv4
@@ -26,7 +30,12 @@ set(SOURCES
     src/Capture/Capture.cpp
     src/Capture/ImageRecognition.cpp
     src/Capture/TextRecognition.cpp
+    src/ProgramWorker.cpp
+    src/ProgramRegistry.cpp
 )
+
+file(GLOB_RECURSE PROGRAM_SOURCES "Programs/*.cpp")
+list(APPEND SOURCES ${PROGRAM_SOURCES})
 
 # Create executable
 add_executable(ProgramRunner ${SOURCES})
