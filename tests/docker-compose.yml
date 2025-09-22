@@ -2,7 +2,10 @@ version: '3.8'
 
 services:
   mongodb:
-    image: ${MONGODB_IMAGE}
+    build:
+      context: ./database
+      dockerfile: database.Dockerfile
+    image: mongodb:test
     container_name: mongodb
     restart: unless-stopped
     ports:
@@ -16,7 +19,10 @@ services:
       - mongo_data:/data/db
 
   backend:
-    image: ${PROGRAM_RUNNER_IMAGE}
+    build:
+      context: ./program-runner
+      dockerfile: program-runner/docker/program-runner.Dockerfile
+    image: program-runner:test
     container_name: backend
     restart: unless-stopped
     ports:
@@ -25,7 +31,10 @@ services:
       - pi_network
 
   frontend:
-    image: ${WEBUI_IMAGE}
+    build:
+      context: ./webui
+      dockerfile: docker/webui.Dockerfile
+    image: webui:test
     container_name: frontend
     restart: unless-stopped
     ports:
