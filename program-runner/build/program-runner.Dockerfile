@@ -35,4 +35,11 @@ RUN apt update \
 
 WORKDIR /app
 
+COPY ../CMakeLists.txt /app/
+COPY ../src /app/src/
+
+RUN mkdir -p build && cd build && cmake .. && cmake --build . -- -j$(nproc)
+
 EXPOSE 8080
+
+CMD ["./build/ProgramRunner"]
