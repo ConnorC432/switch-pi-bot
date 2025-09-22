@@ -23,6 +23,16 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Python Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r $REPO_ROOT/tests/requirements.txt
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -103,6 +113,18 @@ jobs:
             echo "Test failed"
             exit 1
           fi
+
+      - name: Test /program/status
+        run: |
+          curl -s -X POST http://localhost:8080/program/kill
+          
+          python $REPO_ROOT/tests/test_status_ws.py
+
+      - name: Test /program/output
+        run: |
+          curl -s -X POST http://localhost:8080/program/kill
+          
+          python $REPO_ROOT/tests/test_output_ws.py
 
       - name: Stop container
         run: |
