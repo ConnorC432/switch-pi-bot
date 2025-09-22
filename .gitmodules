@@ -1,3 +1,3 @@
-[submodule "include/crow"]
-	path = include/crow
+[submodule "program-runner/include/crow"]
+	path = program-runner/include/crow
 	url = https://github.com/CrowCpp/Crow.git
