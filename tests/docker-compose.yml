@@ -21,7 +21,7 @@ services:
   backend:
     build:
       context: ./program-runner
-      dockerfile: program-runner/docker/program-runner.Dockerfile
+      dockerfile: docker/program-runner.Dockerfile
     image: program-runner:test
     container_name: backend
     restart: unless-stopped
