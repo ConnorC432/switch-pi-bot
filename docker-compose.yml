@@ -31,7 +31,7 @@ services:
     networks:
       - pi_network
     devices:
-      - "/dev/hidg0:/dev/hidg0:rwm"
+#      - "/dev/hidg0:/dev/hidg0:rwm"
       - "/dev/video0:/dev/video0:rwm"
       - "/dev/video1:/dev/video1:rwm"
 
