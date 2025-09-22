@@ -21,7 +21,7 @@ services:
   backend:
     build:
       context: ./program-runner
-      dockerfile: build/program-runner.Dockerfile
+      dockerfile: program-runner/docker/program-runner.Dockerfile
     image: program-runner:latest
     container_name: backend
     restart: unless-stopped
@@ -38,7 +38,7 @@ services:
   frontend:
     build:
       context: ./webui
-      dockerfile: build/webui.Dockerfile
+      dockerfile: docker/webui.Dockerfile
     image: webui:latest
     container_name: frontend
     restart: unless-stopped

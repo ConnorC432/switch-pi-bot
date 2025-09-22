@@ -46,7 +46,7 @@ jobs:
       - name: Build Docker Image
         id: build
         run: |
-          docker build -f $REPO_ROOT/program-runner/build/program-runner.Dockerfile \
+          docker build -f $REPO_ROOT/program-runner/docker/program-runner.Dockerfile \
           -t $IMAGE_NAME:$IMAGE_TAG $REPO_ROOT/program-runner/
           echo "image=$IMAGE_NAME:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
@@ -189,7 +189,7 @@ jobs:
       - name: Build Docker Image
         id: build
         run: |
-          docker build -f $REPO_ROOT/webui/build/webui.Dockerfile \
+          docker build -f $REPO_ROOT/webui/docker/webui.Dockerfile \
           -t $IMAGE_NAME:$IMAGE_TAG $REPO_ROOT/webui/
           echo "image=$IMAGE_NAME:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
