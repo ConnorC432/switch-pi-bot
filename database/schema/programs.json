@@ -1,0 +1,15 @@
+[
+  {
+    "programName": "Test",
+    "displayName": "Test",
+    "description": "Test Program, exits instantly",
+    "category": "TestPrograms",
+    "settings": [
+      {
+        "argName": "waitTime",
+        "displayName": "Wait Time",
+        "value": 10
+      }
+    ]
+  }
+]

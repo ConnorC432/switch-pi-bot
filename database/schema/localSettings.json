@@ -1,0 +1,12 @@
+[
+  {
+    "setting": "hidg",
+    "displayName": "HIDG USB Device",
+    "value": "/dev/hidg0"
+  },
+  {
+    "setting": "video",
+    "displayName": "Capture Card Device",
+    "value": "/dev/video0"
+  }
+]
