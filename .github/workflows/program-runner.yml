@@ -105,6 +105,8 @@ jobs:
             ]
           }'
           
+          sleep 5
+          
           RESPONSE=$(curl -s -X POST http://localhost:8080/program/kill)
           
           echo "Response: $RESPONSE"
