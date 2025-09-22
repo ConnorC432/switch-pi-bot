@@ -35,6 +35,7 @@ RUN apt update \
 
 WORKDIR /app
 
+COPY ../include/crow /app/include/crow
 COPY ../CMakeLists.txt /app/
 COPY ../src /app/src/
 

@@ -11,12 +11,12 @@ add_definitions(-DCROW_ENABLE_ASIO_STANDALONE)
 # Include directories
 include_directories(
     ## Classes
-    HIDGController
-    Capture
-    Programs
+    ${CMAKE_SOURCE_DIR}/HIDGController
+    ${CMAKE_SOURCE_DIR}/Capture
+    ${CMAKE_SOURCE_DIR}/Programs
 
-    ## System includes
-    ../include/crow/include
+    ## Includes
+    ${CMAKE_SOURCE_DIR}/include/crow/include
     /usr/include
     /usr/include/opencv4
     /usr/include/tesseract
@@ -35,7 +35,7 @@ set(SOURCES
 )
 
 # Find and add all programs
-file(GLOB_RECURSE PROGRAM_SOURCES "src/Programs/**/*.cpp")
+file(GLOB_RECURSE PROGRAM_SOURCES "${CMAKE_SOURCE_DIR}/src/Programs/**/*.cpp")
 list(APPEND SOURCES ${PROGRAM_SOURCES})
 
 message(STATUS "Program sources: ${PROGRAM_SOURCES}")
