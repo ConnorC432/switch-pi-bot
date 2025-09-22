@@ -18,6 +18,9 @@ jobs:
   program-runner:
     name: Program Runner
     runs-on: ubuntu-22.04
+    env:
+      IMAGE_NAME: program-runner
+      IMAGE_TAG: test
     outputs:
       program-runner-image: ${{ steps.build.outputs.image }}
     steps:
@@ -43,16 +46,14 @@ jobs:
       - name: Build Docker Image
         id: build
         run: |
-          IMAGE_NAME=program-runner:test
           docker build -f $REPO_ROOT/program-runner/build/program-runner.Dockerfile \
-          -t $IMAGE_NAME $REPO_ROOT/program-runner/
-          echo "image=$IMAGE_NAME" >> $GITHUB_OUTPUT
+          -t $IMAGE_NAME:$IMAGE_TAG $REPO_ROOT/program-runner/
+          echo "image=$IMAGE_NAME:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
       - name: Run Container
         run: |
-          IMAGE_NAME=program-runner:test
           # Run container detached
-          docker run -d --name test-runner -p 8080:8080 $IMAGE_NAME
+          docker run -d --name $IMAGE_NAME -p 8080:8080 $IMAGE_NAME:$IMAGE_TAG
           sleep 5
 
       - name: Test /program/start
@@ -127,15 +128,18 @@ jobs:
             exit 1
           fi
 
-      - name: Stop container
+      - name: Stop Container
         run: |
-          docker stop test-runner
-          docker rm test-runner
+          docker stop $IMAGE_NAME
+          docker rm $IMAGE_NAME
           
 
   mongodb:
     name: MongoDB
     runs-on: ubuntu-22.04
+    env:
+      IMAGE_NAME: mongodb
+      IMAGE_TAG: test
     outputs:
       mongodb-image: ${{ steps.build.outputs.image }}
     steps:
@@ -148,7 +152,82 @@ jobs:
       - name: Build Docker Image
         id: build
         run: |
-          IMAGE_NAME=mongodb:test
           docker build -f $REPO_ROOT/database/database.Dockerfile \
-          -t $IMAGE_NAME $REPO_ROOT/database/
-          echo "image=$IMAGE_NAME" >> $GITHUB_OUTPUT
+          -t $IMAGE_NAME:$IMAGE_TAG $REPO_ROOT/database/
+          echo "image=$IMAGE_NAME:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Run Container
+        run: |
+          # Run container detached
+          docker run -d --name $IMAGE_NAME -p 27017:27017 $IMAGE_NAME:$IMAGE_TAG
+          sleep 5
+
+      - name: Stop Container
+        run: |
+          docker stop $IMAGE_NAME
+          docker rm $IMAGE_NAME
+
+
+  webui:
+    name: WebUI
+    runs-on: ubuntu-22.04
+#    needs:
+#      - program-runner
+#      - mongodb
+    env:
+      IMAGE_NAME: webui
+      IMAGE_TAG: test
+    outputs:
+      frontend-image: ${{ steps.build.outputs.image }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker Image
+        id: build
+        run: |
+          docker build -f $REPO_ROOT/webui/build/webui.Dockerfile \
+          -t $IMAGE_NAME:$IMAGE_TAG $REPO_ROOT/webui/
+          echo "image=$IMAGE_NAME:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Run Container
+        run: |
+          # Run container detached
+          docker run -d --name $IMAGE_NAME -p 27017:27017 $IMAGE_NAME:$IMAGE_TAG
+          sleep 5
+
+      - name: Stop Container
+        run: |
+          docker stop $IMAGE_NAME
+          docker rm $IMAGE_NAME
+
+  deploy-stack:
+    name: Docker Compose Stack
+    runs-on: ubuntu-22.04
+    needs:
+      - program-runner
+      - mongodb
+      - webui
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Create env
+        run: |
+          echo "PROGRAM_RUNNER_IMAGE=${{ needs.program-runner.outputs.program-runner-image }}" >> $GITHUB_ENV
+          echo "MONGODB_IMAGE=${{ needs.mongodb.outputs.mongodb-image }}" >> $GITHUB_ENV
+          echo "WEBUI_IMAGE=${{ needs.webui.outputs.frontend-image }}" >> $GITHUB_ENV
+
+      - name: Run Docker Compose
+        run: |
+          docker-compose -f $REPO_ROOT/tests/docker-compose.yml up -d
+          docker-compose -f $REPO_ROOT/tests/docker-compose.yml ps
