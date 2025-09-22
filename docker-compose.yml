@@ -23,6 +23,11 @@ services:
       - "8080:8080"
     networks:
       - pi_network
+    devices:
+      - "/dev/hidg0:/dev/hidg0"
+      - "/dev/video0:/dev/video0"
+      - "/dev/video1:/dev/video1"
+    privileged: true
 
   frontend:
     image: webui:latest
