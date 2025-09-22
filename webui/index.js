@@ -33,7 +33,7 @@ function connectBackend() {
 connectBackend();
 
 wss.on('connection', (ws) => {
-    console.log('Connection connected');;
+    console.log('Connection connected');
     ws.on('close', () => console.log('Connection closed'));
 })
 
