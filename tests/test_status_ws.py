@@ -46,7 +46,8 @@ async def test_status_ws():
                 while True:
                     msg = await asyncio.wait_for(websocket.recv(), timeout=15)
                     print(msg)
-                    if "{\"status\", \"started\"}" in msg:
+                    data = json.loads(msg)
+                    if data.get("status") == "started":
                         found = True
                         break
 

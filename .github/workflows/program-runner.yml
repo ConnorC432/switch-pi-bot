@@ -80,6 +80,14 @@ jobs:
             exit 1
           fi
 
+      - name: Test /program/status
+        run: |
+          python $REPO_ROOT/tests/test_status_ws.py
+
+      - name: Test /program/output
+        run: |
+          python $REPO_ROOT/tests/test_output_ws.py
+
       - name: Test /program/kill
         run: |
           curl -s -X POST http://localhost:8080/program/start \
@@ -113,14 +121,6 @@ jobs:
             echo "Test failed"
             exit 1
           fi
-
-      - name: Test /program/status
-        run: |
-          python $REPO_ROOT/tests/test_status_ws.py
-
-      - name: Test /program/output
-        run: |
-          python $REPO_ROOT/tests/test_output_ws.py
 
       - name: Stop container
         run: |
