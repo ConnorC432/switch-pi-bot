@@ -2,6 +2,9 @@ version: '3.8'
 
 services:
   mongodb:
+    build:
+      context: ./database
+      dockerfile: database.Dockerfile
     image: mongodb:latest
     container_name: mongodb
     restart: unless-stopped
@@ -16,15 +19,26 @@ services:
       - mongo_data:/data/db
 
   backend:
+    build:
+      context: ./program-runner
+      dockerfile: build/program-runner.Dockerfile
     image: program-runner:latest
     container_name: backend
     restart: unless-stopped
+    user: root
     ports:
       - "8080:8080"
     networks:
       - pi_network
+    devices:
+#      - "/dev/hidg0:/dev/hidg0:rwm"
+      - "/dev/video0:/dev/video0:rwm"
+      - "/dev/video1:/dev/video1:rwm"
 
   frontend:
+    build:
+      context: ./webui
+      dockerfile: build/webui.Dockerfile
     image: webui:latest
     container_name: frontend
     restart: unless-stopped

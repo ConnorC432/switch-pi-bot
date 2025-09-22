@@ -48,7 +48,8 @@ namespace ProgramRunner {
                     if (!frame.empty()) {
                         std::vector<uchar> buffer;
                         cv::imencode(".jpg", frame, buffer);
-                        std::string binaryMessage(buffer.begin(), buffer.end());
+
+                        std::string binaryMessage(reinterpret_cast<char*>(buffer.data()), buffer.size());
 
                         std::lock_guard<std::mutex> lock(clientsMutex);
                         for (auto* client : clients) {
@@ -56,7 +57,7 @@ namespace ProgramRunner {
                         }
                     }
 
-                    std::this_thread::sleep_for(std::chrono::milliseconds(33)); // ~30 FPS
+                    std::this_thread::sleep_for(std::chrono::milliseconds(16)); // ~60 FPS
                 }
             }).detach();
         }

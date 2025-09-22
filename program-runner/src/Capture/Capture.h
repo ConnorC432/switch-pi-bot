@@ -23,13 +23,15 @@ namespace Capture {
 
     class Capture {
     private:
-        std::string devicePath = nullptr;
+        std::string devicePath;
         int fd;
         uint32_t width = 1920;
         uint32_t height = 1080;
         uint32_t fps = 30;
         uint8_t* buffer;
         size_t bufferLength;
+
+        std::mutex frameMutex;
 
         bool initDevice();
 

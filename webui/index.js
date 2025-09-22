@@ -22,6 +22,7 @@ function connectBackend() {
     backendWs.on('error', err => console.log(err));
 
     backendWs.on('message', (data) => {
+        console.log('Received message, frame size:', data.length || data.byteLength);
         wss.clients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
                 client.send(data);
