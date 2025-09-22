@@ -1,4 +1,4 @@
-name: Program Runner
+name: Test Containers
 
 permissions:
   contents: read
@@ -15,11 +15,11 @@ env:
   REPO_ROOT: ${{ github.workspace }}
 
 jobs:
-  build-image:
-    name: Test Program Runner
+  program-runner:
+    name: Program Runner
     runs-on: ubuntu-22.04
     outputs:
-      image: ${{ steps.build.outputs.image }}
+      program-runner-image: ${{ steps.build.outputs.image }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -46,8 +46,9 @@ jobs:
           IMAGE_NAME=program-runner:test
           docker build -f $REPO_ROOT/program-runner/build/program-runner.Dockerfile \
           -t $IMAGE_NAME $REPO_ROOT/program-runner/
+          echo "image=$IMAGE_NAME" >> $GITHUB_OUTPUT
 
-      - name: Run container
+      - name: Run Container
         run: |
           IMAGE_NAME=program-runner:test
           # Run container detached
@@ -130,3 +131,24 @@ jobs:
         run: |
           docker stop test-runner
           docker rm test-runner
+          
+
+  mongodb:
+    name: MongoDB
+    runs-on: ubuntu-22.04
+    outputs:
+      mongodb-image: ${{ steps.build.outputs.image }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker Image
+        id: build
+        run: |
+          IMAGE_NAME=mongodb:test
+          docker build -f $REPO_ROOT/database/database.Dockerfile \
+          -t $IMAGE_NAME $REPO_ROOT/database/
+          echo "image=$IMAGE_NAME" >> $GITHUB_OUTPUT
