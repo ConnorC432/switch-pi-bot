@@ -11,12 +11,18 @@
 namespace Programs {
     void Tests::Test::run(const std::map<std::string, crow::json::rvalue> &args) {
         int waitTime = 0;
-        auto it = args.find("waitTime");
-        if (it != args.end() && it->second.t() == crow::json::type::Number) {
-            waitTime = it->second.i();
+        auto itTime = args.find("waitTime");
+        if (itTime != args.end() && itTime->second.t() == crow::json::type::Number) {
+            waitTime = itTime->second.i();
         }
 
-        std::cout << waitTime << std::endl;
+        std::string testString;
+        auto itString = args.find("testString");
+        if (itString != args.end() && itString->second.t() == crow::json::type::String) {
+            testString = itString->second.s();
+        }
+
+        std::cout << testString << std::endl;
 
         std::this_thread::sleep_for(std::chrono::seconds(waitTime));
 
