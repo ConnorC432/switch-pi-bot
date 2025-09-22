@@ -1,5 +1,5 @@
 FROM mongo:7.0
-LABEL authors="connor"
+LABEL authors="ConnorC432"
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
