@@ -82,8 +82,6 @@ jobs:
 
       - name: Test /program/kill
         run: |
-          curl -s -X POST http://localhost:8080/program/kill
-          
           curl -s -X POST http://localhost:8080/program/start \
           -H "Content-Type: application/json" \
           -d '{
@@ -118,14 +116,10 @@ jobs:
 
       - name: Test /program/status
         run: |
-          curl -s -X POST http://localhost:8080/program/kill
-          
           python $REPO_ROOT/tests/test_status_ws.py
 
       - name: Test /program/output
         run: |
-          curl -s -X POST http://localhost:8080/program/kill
-          
           python $REPO_ROOT/tests/test_output_ws.py
 
       - name: Stop container
