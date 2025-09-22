@@ -12,12 +12,12 @@ const server = createServer(app);
 const wss = new WebSocket.Server({ server, path: '/stream'});
 
 function connectBackend() {
-    const backendWs = new WebSocket('ws://localhost:8080/stream');
+    const backendWs = new WebSocket('ws://backend:8080/stream');
 
     backendWs.on('open', () => console.log('Connection opened'));
     backendWs.on('close', () => {
         console.log('Connection closed, reconnecting...');
-        setTimeout(connectBackend, 60);
+        setTimeout(connectBackend, 600);
     });
     backendWs.on('error', err => console.log(err));
 
@@ -38,5 +38,5 @@ wss.on('connection', (ws) => {
 })
 
 server.listen(PORT, () => {
-    console.log('WebUI running at http://localhost:' + PORT);
+    console.log('WebUI running at http://webui:' + PORT);
 })
