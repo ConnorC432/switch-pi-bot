@@ -25,16 +25,10 @@ services:
     image: program-runner:test
     container_name: backend
     restart: unless-stopped
-    user: root
     ports:
       - "8080:8080"
     networks:
       - pi_network
-    devices:
-#      - "/dev/hidg0:/dev/hidg0:rwm"
-      - "/dev/video0:/dev/video0:rwm"
-      - "/dev/video1:/dev/video1:rwm"
-
   frontend:
     build:
       context: ./webui
