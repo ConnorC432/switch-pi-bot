@@ -70,6 +70,38 @@ jobs:
             exit 1
           fi
 
+      - name: Test /program/kill
+        run: |
+          curl -s -X POST http://localhost:8080/program/start \
+          -H "Content-Type: application/json" \
+          -d '{
+            "programName": "Test",
+            "displayName": "Test",
+            "description": "Test Program, exits instantly",
+            "category": "Tests",
+            "settings": [
+              {
+                "argName": "waitTime",
+                "displayName": "Wait Time",
+                "value": 1000
+              },
+              {
+                "argName": "testString",
+                "displayName": "Test String",
+                "value": "Testing..."
+              }
+            ]
+          }'
+          
+          RESPONSE=$(curl -s -X POST http://localhost:8080/program/kill)
+          
+          echo "Response: $RESPONSE"
+  
+          if [ "$RESPONSE" != '{"status":"killed"}' ]; then
+            echo "Test failed"
+            exit 1
+          fi
+
       - name: Stop container
         run: |
           docker stop test-runner
