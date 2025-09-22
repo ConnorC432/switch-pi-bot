@@ -4,10 +4,12 @@
 
 #include "Test.h"
 #include <iostream>
-#include <crow.h>
+#include <thread>
+#include <chrono>
+#include "crow.h"
 
 namespace Programs {
-    void Test::run(const std::map<std::string, crow::json::rvalue> &args) {
+    void Tests::Test::run(const std::map<std::string, crow::json::rvalue> &args) {
         int waitTime = 0;
         auto it = args.find("waitTime");
         if (it != args.end() && it->second.t() == crow::json::type::Number) {
@@ -15,6 +17,9 @@ namespace Programs {
         }
 
         std::cout << waitTime << std::endl;
+
+        std::this_thread::sleep_for(std::chrono::seconds(waitTime));
+
         std::cout << "Test Program Success" << std::endl;
     }
 } // Programs

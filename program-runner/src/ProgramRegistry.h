@@ -8,7 +8,6 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <unordered_map>
 #include <functional>
 #include <map>
 #include <crow.h>
@@ -18,15 +17,15 @@ namespace ProgramRunner {
     private:
         using ProgramFunc = std::function<void(const std::map<std::string, crow::json::rvalue>)>;
 
-        std::unordered_map<std::string, ProgramFunc> programs;
+        std::map<std::string, std::map<std::string, ProgramFunc>> programs;
 
     public:
         static ProgramRegistry& instance();
 
         void init();
 
-        void registerProgram(const std::string& name, ProgramFunc func);
-        ProgramFunc getProgram(const std::string& name);
+        void registerProgram(const std::string& category, const std::string& name, ProgramFunc func);
+        ProgramFunc getProgram(const std::string& category, const std::string& name);
     };
 } // ProgramRunner
 

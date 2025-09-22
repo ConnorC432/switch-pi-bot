@@ -47,7 +47,9 @@ namespace ProgramRunner {
         void sendStatus(const std::string& message);
         void sendOutput(const std::string& message);
 
-        crow::json::wvalue startProgram(const std::string& program, const std::map<std::string, crow::json::rvalue> &args);
+        crow::json::wvalue startProgram(const std::string &category,
+                                        const std::string& program,
+                                        const std::map<std::string, crow::json::rvalue> &args);
 
         crow::json::wvalue killProgram();
     };

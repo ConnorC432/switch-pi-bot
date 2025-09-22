@@ -8,12 +8,15 @@
 #include <vector>
 #include <string>
 #include <map>
-#include <crow.h>
+#include "crow.h"
 
 namespace Programs {
-    class Test {
+    class Tests {
     public:
-        static void run(const std::map<std::string, crow::json::rvalue> &args);
+        class Test {
+        public:
+            static void run(const std::map<std::string, crow::json::rvalue> &args);
+        };
     };
 } // Programs
 

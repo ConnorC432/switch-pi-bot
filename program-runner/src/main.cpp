@@ -68,19 +68,20 @@ namespace ProgramRunner {
                     return crow::response(400, "Missing programName");
                 }
 
+                std::string category = body["category"].s();
                 std::string programName = body["programName"].s();
 
                 std::map<std::string, crow::json::rvalue> args;
 
                 if (body.has("settings")) {
-                    for (auto& item : body["settings"]) {
+                    for (auto &item: body["settings"]) {
                         std::string argName = item["argName"].s();
                         // Keep the original value type from JSON
                         args[argName] = item["value"];
                     }
                 }
 
-                auto result = worker.startProgram(programName, args);
+                auto result = worker.startProgram(category, programName, args);
                 return crow::response(result);
             });
 

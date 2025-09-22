@@ -70,7 +70,9 @@ namespace ProgramRunner {
         }
     }
 
-    crow::json::wvalue ProgramWorker::startProgram(const std::string &program, const std::map<std::string, crow::json::rvalue> &args) {
+    crow::json::wvalue ProgramWorker::startProgram(const std::string &category,
+                                                   const std::string &program,
+                                                   const std::map<std::string, crow::json::rvalue> &args) {
         std::lock_guard<std::mutex> lock(programLock);
 
         if (runningPid > 0) {
@@ -81,7 +83,7 @@ namespace ProgramRunner {
             captureThread.join();
         }
 
-        auto func = ProgramRegistry::instance().getProgram(program);
+        auto func = ProgramRegistry::instance().getProgram(category, program);
         if (!func) {
             return {{"status", "error"}, {"message", "Program not found"}};
         }
