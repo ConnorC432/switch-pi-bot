@@ -221,13 +221,14 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Create env
-        run: |
-          echo "PROGRAM_RUNNER_IMAGE=${{ needs.program-runner.outputs.program-runner-image }}" >> $GITHUB_ENV
-          echo "MONGODB_IMAGE=${{ needs.mongodb.outputs.mongodb-image }}" >> $GITHUB_ENV
-          echo "WEBUI_IMAGE=${{ needs.webui.outputs.frontend-image }}" >> $GITHUB_ENV
+      - name: Set up Docker Compose
+        uses: docker/setup-compose-action@v1.2.0
 
       - name: Run Docker Compose
         run: |
           docker compose -f $REPO_ROOT/tests/docker-compose.yml up -d
           docker compose -f $REPO_ROOT/tests/docker-compose.yml ps
+
+      - name: Stop Docker Compose
+        run: |
+          docker compose -f $REPO_ROOT/tests/docker-compose.yml down
