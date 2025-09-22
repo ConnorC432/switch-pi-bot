@@ -3,7 +3,6 @@
 //
 
 #include "Capture.h"
-
 #include <cstdint>
 #include <cstring>
 #include <cerrno>
@@ -14,9 +13,7 @@
 #include <linux/videodev2.h>
 #include <sys/mman.h>
 #include <opencv4/opencv2/opencv.hpp>
-#include <opencv4/opencv2/core.hpp>
-#include <opencv4/opencv2/core/types.hpp>
-#include <opencv4/opencv2/imgcodecs.hpp>
+#include <opencv4/opencv2/imgproc.hpp>
 
 
 namespace Capture {
@@ -67,7 +64,7 @@ namespace Capture {
         fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
         fmt.fmt.pix.width = width;
         fmt.fmt.pix.height = height;
-        fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_RGB24;
+        fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_YUYV;
         fmt.fmt.pix.field = V4L2_FIELD_NONE;
 
         if (ioctl(fd, VIDIOC_S_FMT, &fmt) < 0) {
@@ -99,7 +96,7 @@ namespace Capture {
 
         bufferLength = buf.length;
         buffer = static_cast<uint8_t*>(mmap(nullptr, buf.length, PROT_READ | PROT_WRITE, MAP_SHARED, fd, buf.m.offset));
-        if (buffer == MAP_FAILED) {
+        if (!buffer || buffer == MAP_FAILED) {
             std::cerr << "mmap failed: " << strerror(errno) << std::endl;
             return false;
         }
@@ -121,7 +118,12 @@ namespace Capture {
     }
 
     cv::Mat Capture::grabFrame() {
-        if (fd < 0) return cv::Mat();
+        std::lock_guard<std::mutex> lock(frameMutex);
+
+        if (fd < 0 || !buffer || buffer == MAP_FAILED) {
+            std::cerr << "Grab Frame called but device not ready" << std::endl;
+            return cv::Mat();
+        }
 
         v4l2_buffer buf {};
         buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -132,12 +134,16 @@ namespace Capture {
             return cv::Mat();
         }
 
+        cv::Mat yuyv(height, width, CV_8UC2, buffer);
+        cv::Mat rgb;
+        cv::cvtColor(yuyv, rgb, cv::COLOR_YUV2RGB_YUYV);
+
         // Requeue buffer
         if (ioctl(fd, VIDIOC_QBUF, &buf) < 0) {
             std::cerr << "VIDIOC_QBUF failed: " << strerror(errno) << std::endl;
             return cv::Mat();
         }
-        cv::Mat frame(height, width, CV_8UC3, buffer);
-        return frame.clone();
+
+        return rgb;
     }
 } // Capture
