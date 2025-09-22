@@ -34,6 +34,7 @@ set(SOURCES
     src/ProgramRegistry.cpp
 )
 
+# Find and add all programs
 file(GLOB_RECURSE PROGRAM_SOURCES "src/Programs/*.cpp")
 list(APPEND SOURCES ${PROGRAM_SOURCES})
 
