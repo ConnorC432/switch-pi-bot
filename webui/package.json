@@ -1,0 +1,12 @@
+{
+  "name": "webui",
+  "version": "1.0.0",
+  "description": "Switch Pi Bot Web UI",
+  "license": "ISC",
+  "author": "ConnorC432",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
