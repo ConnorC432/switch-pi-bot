@@ -12,13 +12,17 @@
 #include <mutex>
 #include <iostream>
 #include <map>
+#include <thread>
+#include <chrono>
 
 namespace ProgramRunner {
     class ProgramRunner {
     private:
         crow::SimpleApp app;
         Capture::Capture& capture;
+        std::vector<crow::websocket::connection*> clients;
         std::mutex frameMutex;
+        std::mutex clientsMutex;
 
         ProgramWorker worker;
 
@@ -32,33 +36,46 @@ namespace ProgramRunner {
             }
         }
 
+        void startStream() {
+            std::thread([this]() {
+                while (cameraOpened) {
+                    cv::Mat frame;
+                    {
+                        std::lock_guard<std::mutex> lock(frameMutex);
+                        frame = capture.grabFrame();
+                    }
+
+                    if (!frame.empty()) {
+                        std::vector<uchar> buffer;
+                        cv::imencode(".jpg", frame, buffer);
+                        std::string binaryMessage(buffer.begin(), buffer.end());
+
+                        std::lock_guard<std::mutex> lock(clientsMutex);
+                        for (auto* client : clients) {
+                            client->send_binary(binaryMessage);
+                        }
+                    }
+
+                    std::this_thread::sleep_for(std::chrono::milliseconds(33)); // ~30 FPS
+                }
+            }).detach();
+        }
+
         void setupRoutes() {
             CROW_ROUTE(app, "/stream")
             .websocket(&app)
-            .onopen([](crow::websocket::connection& conn){
+            .onopen([this](crow::websocket::connection& conn){
                 std::cout << "WebSocket connected" << std::endl;
+                std::lock_guard<std::mutex> lock(clientsMutex);
+                clients.push_back(&conn);
             })
 
-            .onclose([](crow::websocket::connection& conn,
+            .onclose([this](crow::websocket::connection& conn,
                     const std::string& reason,
                     const uint8_t flags){
                 std::cout << "WebSocket disconnected: " << reason << std::endl;
-            })
-
-            .onmessage([this](crow::websocket::connection& conn,
-                    const std::string&, bool){
-                cv::Mat frame;
-                {
-                    std::lock_guard<std::mutex> lock(frameMutex);
-                    frame = capture.grabFrame();
-                }
-
-                if (!frame.empty()) {
-                    std::vector<uchar> buffer;
-                    cv::imencode(".jpg", frame, buffer);
-                    std::string binaryMessage(buffer.begin(), buffer.end());
-                    conn.send_binary(binaryMessage);
-                }
+                std::lock_guard<std::mutex> lock(clientsMutex);
+                clients.erase(std::remove(clients.begin(), clients.end(), &conn), clients.end());
             });
 
             CROW_ROUTE(app, "/program/start").methods("POST"_method)
@@ -127,6 +144,7 @@ namespace ProgramRunner {
 
         void run(int port = 8080) {
             setupRoutes();
+            startStream();
             std::cout << "Starting server..." << std::endl;
             app.bindaddr("0.0.0.0").port(port).multithreaded().run();
         }
