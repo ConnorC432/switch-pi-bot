@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: ${MONGODB_IMAGE}
+    container_name: mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: root
+    networks:
+      - pi_network
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    image: ${PROGRAM_RUNNER_IMAGE}
+    container_name: backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - pi_network
+
+  frontend:
+    image: ${WEBUI_IMAGE}
+    container_name: frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    networks:
+      - pi_network
+    depends_on:
+      - mongodb
+      - backend
+
+volumes:
+  mongo_data:
+
+networks:
+  pi_network:
+    driver: bridge
