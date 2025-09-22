@@ -72,6 +72,8 @@ jobs:
 
       - name: Test /program/kill
         run: |
+          curl -s -X POST http://localhost:8080/program/kill
+          
           curl -s -X POST http://localhost:8080/program/start \
           -H "Content-Type: application/json" \
           -d '{
