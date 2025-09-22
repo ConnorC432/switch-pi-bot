@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WebSocket Stream</title>
+<style>
+  body { background: #111; display: flex; justify-content: center; align-items: center; height: 100vh; }
+  canvas { border: 1px solid #555; }
+</style>
+</head>
+<body>
+<canvas id="videoCanvas" width="1920" height="1080"></canvas>
+
+<script>
+const canvas = document.getElementById('videoCanvas');
+const ctx = canvas.getContext('2d');
+
+const ws = new WebSocket('ws://' + location.host + '/stream');
+ws.binaryType = 'arraybuffer';
+
+ws.onmessage = (event) => {
+  const blob = new Blob([event.data], { type: 'image/jpeg' });
+  const img = new Image();
+  img.onload = () => {
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    URL.revokeObjectURL(img.src);
+  };
+  img.src = URL.createObjectURL(blob);
+};
+
+ws.onopen = () => console.log('Connected to WebSocket /stream');
+ws.onclose = () => console.log('Disconnected from WebSocket /stream');
+</script>
+</body>
+</html>
