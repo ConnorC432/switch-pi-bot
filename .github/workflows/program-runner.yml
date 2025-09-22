@@ -229,5 +229,5 @@ jobs:
 
       - name: Run Docker Compose
         run: |
-          docker-compose -f $REPO_ROOT/tests/docker-compose.yml up -d
-          docker-compose -f $REPO_ROOT/tests/docker-compose.yml ps
+          docker compose -f $REPO_ROOT/tests/docker-compose.yml up -d
+          docker compose -f $REPO_ROOT/tests/docker-compose.yml ps
