@@ -11,6 +11,7 @@
 #include <vector>
 #include <mutex>
 #include <iostream>
+#include <map>
 
 namespace ProgramRunner {
     class ProgramRunner {
@@ -63,12 +64,23 @@ namespace ProgramRunner {
             CROW_ROUTE(app, "/program/start").methods("POST"_method)
             ([this](const crow::request& req){
                 auto body = crow::json::load(req.body);
-                if (!body || !body.has("program")) {
-                    return crow::response(400, "Missing program");
+                if (!body || !body.has("programName")) {
+                    return crow::response(400, "Missing programName");
                 }
 
-                std::string programName = body["program"].s();
-                auto result = worker.startProgram(programName, {});
+                std::string programName = body["programName"].s();
+
+                std::map<std::string, crow::json::rvalue> args;
+
+                if (body.has("settings")) {
+                    for (auto& item : body["settings"]) {
+                        std::string argName = item["argName"].s();
+                        // Keep the original value type from JSON
+                        args[argName] = item["value"];
+                    }
+                }
+
+                auto result = worker.startProgram(programName, args);
                 return crow::response(result);
             });
 

@@ -11,11 +11,12 @@
 #include <unordered_map>
 #include <functional>
 #include <map>
+#include <crow.h>
 
 namespace ProgramRunner {
     class ProgramRegistry {
     private:
-        using ProgramFunc = std::function<void(const std::vector<std::string>&)>;
+        using ProgramFunc = std::function<void(const std::map<std::string, crow::json::rvalue>)>;
 
         std::unordered_map<std::string, ProgramFunc> programs;
 

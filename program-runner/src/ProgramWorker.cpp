@@ -7,6 +7,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <iostream>
+#include <crow.h>
 
 namespace ProgramRunner {
     ProgramWorker::~ProgramWorker() {
@@ -69,7 +70,7 @@ namespace ProgramRunner {
         }
     }
 
-    crow::json::wvalue ProgramWorker::startProgram(const std::string &program, const std::vector<std::string> &args) {
+    crow::json::wvalue ProgramWorker::startProgram(const std::string &program, const std::map<std::string, crow::json::rvalue> &args) {
         std::lock_guard<std::mutex> lock(programLock);
 
         if (runningPid > 0) {
@@ -112,7 +113,7 @@ namespace ProgramRunner {
             }
         });
 
-        return {{"status", "started"}, {"pid", 1}};
+        return {{"status", "started"}};
     }
 
     crow::json::wvalue ProgramWorker::killProgram() {

@@ -14,6 +14,7 @@
 #include <atomic>
 #include <crow.h>
 #include <crow/websocket.h>
+#include <map>
 
 namespace ProgramRunner {
 
@@ -46,7 +47,7 @@ namespace ProgramRunner {
         void sendStatus(const std::string& message);
         void sendOutput(const std::string& message);
 
-        crow::json::wvalue startProgram(const std::string& program, const std::vector<std::string>& args);
+        crow::json::wvalue startProgram(const std::string& program, const std::map<std::string, crow::json::rvalue> &args);
 
         crow::json::wvalue killProgram();
     };
