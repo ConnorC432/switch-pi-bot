@@ -3,12 +3,17 @@
     "programName": "Test",
     "displayName": "Test",
     "description": "Test Program, exits instantly",
-    "category": "TestPrograms",
+    "category": "Tests",
     "settings": [
       {
         "argName": "waitTime",
         "displayName": "Wait Time",
         "value": 10
+      },
+      {
+        "argName": "testString",
+        "displayName": "Test String",
+        "value": "Testing..."
       }
     ]
   }

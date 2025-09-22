@@ -1,5 +1,5 @@
 const fs = require('fs');
-db = db.getSiblingDB('appConfig');
+db = db.getSiblingDB('switchPiBot');
 
 function mergeDocuments(existingDoc, newDoc) {
   for (const key in newDoc) {

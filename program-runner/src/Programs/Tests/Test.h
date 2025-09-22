@@ -7,11 +7,16 @@
 
 #include <vector>
 #include <string>
+#include <map>
+#include "crow.h"
 
 namespace Programs {
-    class Test {
+    class Tests {
     public:
-        static void run(const std::vector<std::string>& args);
+        class Test {
+        public:
+            static void run(const std::map<std::string, crow::json::rvalue> &args);
+        };
     };
 } // Programs
 

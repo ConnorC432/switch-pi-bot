@@ -7,6 +7,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <iostream>
+#include <crow.h>
 
 namespace ProgramRunner {
     ProgramWorker::~ProgramWorker() {
@@ -69,7 +70,9 @@ namespace ProgramRunner {
         }
     }
 
-    crow::json::wvalue ProgramWorker::startProgram(const std::string &program, const std::vector<std::string> &args) {
+    crow::json::wvalue ProgramWorker::startProgram(const std::string &category,
+                                                   const std::string &program,
+                                                   const std::map<std::string, crow::json::rvalue> &args) {
         std::lock_guard<std::mutex> lock(programLock);
 
         if (runningPid > 0) {
@@ -80,7 +83,7 @@ namespace ProgramRunner {
             captureThread.join();
         }
 
-        auto func = ProgramRegistry::instance().getProgram(program);
+        auto func = ProgramRegistry::instance().getProgram(category, program);
         if (!func) {
             return {{"status", "error"}, {"message", "Program not found"}};
         }
@@ -88,11 +91,40 @@ namespace ProgramRunner {
         runningPid = 1;
         currentProgram = program;
 
-        captureThread = std::thread([this, func, args]() {
-            std::ostringstream buffer;
+        class WebSocketStreamBuf : public std::streambuf {
+        ProgramWorker* worker;
+        std::string buffer;
+        public:
+            explicit WebSocketStreamBuf(ProgramWorker* w) : worker(w) {}
 
-            auto oldCout = std::cout.rdbuf(buffer.rdbuf());
-            auto oldCerr = std::cerr.rdbuf(buffer.rdbuf());
+        protected:
+            virtual int_type overflow(int_type c) override {
+                if (c != EOF) {
+                    char ch = static_cast<char>(c);
+                    buffer += ch;
+                    if (ch == '\n') { // flush line on newline
+                        worker->sendOutput(worker->escapeJson(buffer));
+                        buffer.clear();
+                    }
+                }
+                return c;
+            }
+
+            virtual int sync() override {
+                if (!buffer.empty()) {
+                    worker->sendOutput(worker->escapeJson(buffer));
+                    buffer.clear();
+                }
+                return 0;
+            }
+        };
+
+        captureThread = std::thread([this, func, args]() {
+            WebSocketStreamBuf wsbuf(this);
+            std::ostream wsout(&wsbuf);
+
+            std::streambuf* oldCout = std::cout.rdbuf(wsout.rdbuf());
+            std::streambuf* oldCerr = std::cerr.rdbuf(wsout.rdbuf());
 
             try {
                 func(args);
@@ -103,7 +135,7 @@ namespace ProgramRunner {
             std::cout.rdbuf(oldCout);
             std::cerr.rdbuf(oldCerr);
 
-            sendOutput(escapeJson(buffer.str()));
+            wsout.flush();
 
             {
                 std::lock_guard<std::mutex> lock(programLock);
@@ -112,7 +144,7 @@ namespace ProgramRunner {
             }
         });
 
-        return {{"status", "started"}, {"pid", 1}};
+        return {{"status", "started"}};
     }
 
     crow::json::wvalue ProgramWorker::killProgram() {
