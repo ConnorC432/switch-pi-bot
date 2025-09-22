@@ -34,3 +34,5 @@ RUN apt update \
     && apt clean
 
 WORKDIR /app
+
+EXPOSE 8080
