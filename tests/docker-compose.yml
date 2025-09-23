@@ -5,7 +5,6 @@ services:
     build:
       context: ./database
       dockerfile: database.Dockerfile
-    image: mongodb:test
     container_name: mongodb
     restart: unless-stopped
     ports:
@@ -22,7 +21,6 @@ services:
     build:
       context: ./program-runner
       dockerfile: docker/program-runner.Dockerfile
-    image: program-runner:test
     container_name: backend
     restart: unless-stopped
     ports:
@@ -33,7 +31,6 @@ services:
     build:
       context: ./webui
       dockerfile: docker/webui.Dockerfile
-    image: webui:test
     container_name: frontend
     restart: unless-stopped
     ports:
