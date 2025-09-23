@@ -3,7 +3,7 @@ version: '3.8'
 services:
   mongodb:
     build:
-      context: ./database
+      context: ../database
       dockerfile: database.Dockerfile
     container_name: mongodb
     restart: unless-stopped
@@ -19,7 +19,7 @@ services:
 
   backend:
     build:
-      context: ./program-runner
+      context: ../program-runner
       dockerfile: docker/program-runner.Dockerfile
     container_name: backend
     restart: unless-stopped
@@ -29,7 +29,7 @@ services:
       - pi_network
   frontend:
     build:
-      context: ./webui
+      context: ../webui
       dockerfile: docker/webui.Dockerfile
     container_name: frontend
     restart: unless-stopped
