@@ -35,9 +35,9 @@ RUN apt update \
 
 WORKDIR /app
 
-COPY ../include/crow /app/include/crow
-COPY ../CMakeLists.txt /app/
-COPY ../src /app/src/
+COPY ./include/crow /app/include/crow
+COPY ./CMakeLists.txt /app/
+COPY ./src /app/src/
 
 RUN mkdir -p build && cd build && cmake .. && cmake --build . -- -j$(nproc)
 
