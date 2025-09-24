@@ -31,6 +31,8 @@ RUN apt update \
         tesseract-ocr-eng \
         libasio-dev \
         curl \
+        libmongoc-dev \
+        libbson-dev \
     && apt clean
 
 WORKDIR /app
