@@ -33,6 +33,7 @@ RUN apt update \
         curl \
         libmongoc-dev \
         libbson-dev \
+        libboost-all-dev \
     && apt clean
 
 WORKDIR /app
