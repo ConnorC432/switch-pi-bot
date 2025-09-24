@@ -13,11 +13,15 @@ namespace Database {
     std::vector<Program> Programs::getPrograms() {
         std::vector<Program> programs;
 
-        bson_t* query = bson_new();
+        bson_t* query = bson_new();  // empty query = get all documents
         mongoc_cursor_t* cursor = mongoc_collection_find_with_opts(collection_, query, nullptr, nullptr);
 
         const bson_t* doc;
         while (mongoc_cursor_next(cursor, &doc)) {
+            char* json_str = bson_as_canonical_extended_json(doc, nullptr);
+            std::cout << "Document found: " << json_str << std::endl; // debug print
+            bson_free(json_str);
+
             Program p;
             bson_iter_t iter;
 
@@ -33,39 +37,33 @@ namespace Database {
             if (bson_iter_init_find(&iter, doc, "category") && BSON_ITER_HOLDS_UTF8(&iter))
                 p.category = bson_iter_utf8(&iter, nullptr);
 
-            // Extract settings array
+            // Extract settings array safely
             if (bson_iter_init_find(&iter, doc, "settings") && BSON_ITER_HOLDS_ARRAY(&iter)) {
-                const uint8_t* array_data = nullptr;
-                uint32_t array_len = 0;
-                bson_iter_array(&iter, &array_len, &array_data);
-                bson_t settings_bson;
-                if (bson_init_static(&settings_bson, array_data, array_len)) {
-                    bson_iter_t s_iter;
-                    if (bson_iter_init(&s_iter, &settings_bson)) {
-                        while (bson_iter_next(&s_iter)) {
-                            const uint8_t* subdoc_data = nullptr;
-                            uint32_t subdoc_len = 0;
-                            bson_iter_document(&s_iter, &subdoc_len, &subdoc_data);
-                            bson_t subdoc;
-                            if (bson_init_static(&subdoc, subdoc_data, subdoc_len)) {
-                                Setting s;
-                                bson_iter_t field;
-                                if (bson_iter_init_find(&field, &subdoc, "argName") && BSON_ITER_HOLDS_UTF8(&field))
-                                    s.argName = bson_iter_utf8(&field, nullptr);
-                                if (bson_iter_init_find(&field, &subdoc, "displayName") && BSON_ITER_HOLDS_UTF8(&field))
-                                    s.displayName = bson_iter_utf8(&field, nullptr);
-                                if (bson_iter_init_find(&field, &subdoc, "value")) {
-                                    if (BSON_ITER_HOLDS_INT32(&field))
-                                        s.value = static_cast<int>(bson_iter_int32(&field));
-                                    else if (BSON_ITER_HOLDS_DOUBLE(&field))
-                                        s.value = bson_iter_double(&field);
-                                    else if (BSON_ITER_HOLDS_UTF8(&field))
-                                        s.value = std::string(bson_iter_utf8(&field, nullptr));
-                                    else if (BSON_ITER_HOLDS_BOOL(&field))
-                                        s.value = bson_iter_bool(&field);
-                                }
-                                p.settings.push_back(s);
+                bson_iter_t array_iter;
+                if (bson_iter_recurse(&iter, &array_iter)) {
+                    while (bson_iter_next(&array_iter)) {
+                        const uint8_t* subdoc_data = nullptr;
+                        uint32_t subdoc_len = 0;
+                        bson_iter_document(&array_iter, &subdoc_len, &subdoc_data);
+                        bson_t subdoc;
+                        if (bson_init_static(&subdoc, subdoc_data, subdoc_len)) {
+                            Setting s;
+                            bson_iter_t field;
+                            if (bson_iter_init_find(&field, &subdoc, "argName") && BSON_ITER_HOLDS_UTF8(&field))
+                                s.argName = bson_iter_utf8(&field, nullptr);
+                            if (bson_iter_init_find(&field, &subdoc, "displayName") && BSON_ITER_HOLDS_UTF8(&field))
+                                s.displayName = bson_iter_utf8(&field, nullptr);
+                            if (bson_iter_init_find(&field, &subdoc, "value")) {
+                                if (BSON_ITER_HOLDS_INT32(&field))
+                                    s.value = static_cast<int>(bson_iter_int32(&field));
+                                else if (BSON_ITER_HOLDS_DOUBLE(&field))
+                                    s.value = bson_iter_double(&field);
+                                else if (BSON_ITER_HOLDS_UTF8(&field))
+                                    s.value = std::string(bson_iter_utf8(&field, nullptr));
+                                else if (BSON_ITER_HOLDS_BOOL(&field))
+                                    s.value = bson_iter_bool(&field);
                             }
+                            p.settings.push_back(s);
                         }
                     }
                 }
@@ -74,11 +72,17 @@ namespace Database {
             programs.push_back(p);
         }
 
+        // Debug: if no documents found
+        if (programs.empty()) {
+            std::cerr << "No programs found in collection." << std::endl;
+        }
+
         bson_destroy(query);
         mongoc_cursor_destroy(cursor);
 
         return programs;
     }
+
 
     bool Programs::updatePrograms(const std::string& programName, const std::string& category,
                                   const Setting& setting) {

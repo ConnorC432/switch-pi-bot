@@ -19,7 +19,7 @@ namespace Database {
         Database(const std::string& host = "mongodb",
                  const std::string& user = "admin",
                  const std::string& pass = "root",
-                 const std::string& dbName = "switchPiBot",
+                 const std::string& dbName = "appConfig",
                  const std::string& authDB = "admin"
                  );
         ~Database();
