@@ -29,7 +29,7 @@ services:
       - "8080:8080"
     environment:
       MONGO_HOST: mongodb
-      MONGO_DB: appConfig
+      MONGO_DB: switchPiBot
       MONGO_USER: admin
       MONGO_PASS: root
     networks:
