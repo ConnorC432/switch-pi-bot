@@ -6,20 +6,39 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_definitions(-DCROW_ENABLE_ASIO_STANDALONE)
+#add_definitions(-DCROW_ENABLE_ASIO_STANDALONE)
 
-# Include directories
+# Boost
+find_package(Boost REQUIRED)
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+
+# Crow
 include_directories(
-    ## Classes
+    ${CMAKE_SOURCE_DIR}/include/crow/include
+)
+
+# Mongo C++ driver
+include_directories(
+    /usr/include/libmongoc-1.0
+    /usr/include/libbson-1.0
+)
+
+# OpenCV
+find_package(OpenCV REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
+
+# Tesseract
+include_directories(
+    /usr/include/tesseract
+    /usr/include/leptonica
+)
+
+# Classes
+include_directories(
     ${CMAKE_SOURCE_DIR}/HIDGController
     ${CMAKE_SOURCE_DIR}/Capture
     ${CMAKE_SOURCE_DIR}/Programs
-
-    ## Includes
-    ${CMAKE_SOURCE_DIR}/include/crow/include
-    /usr/include
-    /usr/include/opencv4
-    /usr/include/tesseract
+    ${CMAKE_SOURCE_DIR}/Database
 )
 
 # Source files
@@ -32,6 +51,10 @@ set(SOURCES
     src/Capture/TextRecognition.cpp
     src/ProgramWorker.cpp
     src/ProgramRegistry.cpp
+    src/Database/Programs.cpp
+    src/Database/Programs.h
+        src/Database/Database.cpp
+        src/Database/Database.h
 )
 
 # Find and add all programs
@@ -52,4 +75,6 @@ target_link_libraries(ProgramRunner PRIVATE
     tesseract
     lept
     pthread
+    mongoc-1.0
+    bson-1.0
 )

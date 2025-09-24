@@ -5,6 +5,8 @@
 #include "Capture/Capture.h"
 #include "ProgramWorker.h"
 #include "ProgramRegistry.h"
+#include "Database/Database.h"
+#include "Database/Programs.h"
 #include <crow.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core.hpp>
@@ -14,6 +16,8 @@
 #include <map>
 #include <thread>
 #include <chrono>
+#include <nlohmann/json.hpp>
+#include <cstdlib>
 
 namespace ProgramRunner {
     class ProgramRunner {
@@ -28,8 +32,24 @@ namespace ProgramRunner {
 
         bool cameraOpened = false;
 
+        // Database
+
+
+        Database::Database db;
+        Database::Programs programsDB;
+
     public:
-        explicit ProgramRunner(Capture::Capture& cap) : capture(cap) {
+        explicit ProgramRunner(Capture::Capture& cap)
+            : capture(cap),
+            db(
+                std::getenv("MONGO_HOST") ? std::getenv("MONGO_HOST") : "mongodb://mongodb:27017",
+                std::getenv("MONGO_USER") ? std::getenv("MONGO_USER") : "admin",
+                std::getenv("MONGO_PASS") ? std::getenv("MONGO_PASS") : "root",
+                std::getenv("MONGO_DB") ? std::getenv("MONGO_DB") : "switchPiBot",
+                "admin"
+            ),
+            programsDB(db, "programs")
+        {
             cameraOpened = capture.open();
             if (!cameraOpened) {
                 std::cerr << "Capture Card failed to open" << std::endl;
@@ -63,6 +83,7 @@ namespace ProgramRunner {
         }
 
         void setupRoutes() {
+            // Capture Card Stream
             CROW_ROUTE(app, "/stream")
             .websocket(&app)
             .onopen([this](crow::websocket::connection& conn){
@@ -79,6 +100,7 @@ namespace ProgramRunner {
                 clients.erase(std::remove(clients.begin(), clients.end(), &conn), clients.end());
             });
 
+            // Programs
             CROW_ROUTE(app, "/program/start").methods("POST"_method)
             ([this](const crow::request& req){
                 auto body = crow::json::load(req.body);
@@ -135,11 +157,69 @@ namespace ProgramRunner {
                 std::cout << "Program Output WS disconnected: " << reason << std::endl;
             });
 
-            CROW_ROUTE(app, "/status")
-            ([](){
-                crow::json::wvalue x;
-                x["status"] = "ok";
-                return crow::response(x);
+            // Database
+            CROW_ROUTE(app, "/database/programs")
+            ([this]() {
+                auto programs = programsDB.getPrograms();
+                nlohmann::json result = nlohmann::json::array();
+
+                for (const auto& p : programs) {
+                    nlohmann::json prog_json;
+                    prog_json["programName"] = p.programName;
+                    prog_json["displayName"] = p.displayName;
+                    prog_json["description"] = p.description;
+                    prog_json["category"] = p.category;
+
+                    prog_json["settings"] = nlohmann::json::array();
+                    for (const auto& s : p.settings) {
+                        nlohmann::json s_json;
+                        s_json["argName"] = s.argName;
+                        s_json["displayName"] = s.displayName;
+
+                        std::visit([&s_json](auto&& v){
+                            s_json["value"] = v;
+                        }, s.value);
+
+                        prog_json["settings"].push_back(s_json);
+                    }
+
+                    result.push_back(prog_json);
+                }
+
+                return crow::response(result.dump());
+            });
+
+            CROW_ROUTE(app, "/database/programs/update").methods(crow::HTTPMethod::Post)
+            ([this](const crow::request& req){
+                auto body = nlohmann::json::parse(req.body, nullptr, false);
+                if (body.is_discarded()) return crow::response(400, "Invalid JSON");
+
+                std::string programName = body.value("programName", "");
+                std::string category = body.value("category", "");
+
+                auto setting_json = body["setting"];
+                if (!setting_json.is_object()) return crow::response(400, "Missing setting object");
+
+                Database::Setting s;
+                s.argName = setting_json.value("argName", "");
+                s.displayName = setting_json.value("displayName", "");
+
+                if (setting_json.contains("value")) {
+                    if (setting_json["value"].is_number_integer())
+                        s.value = setting_json["value"].get<int>();
+                    else if (setting_json["value"].is_number_float())
+                        s.value = setting_json["value"].get<double>();
+                    else if (setting_json["value"].is_boolean())
+                        s.value = setting_json["value"].get<bool>();
+                    else if (setting_json["value"].is_string())
+                        s.value = setting_json["value"].get<std::string>();
+                }
+
+                bool ok = programsDB.updatePrograms(programName, category, s);
+                if (ok)
+                    return crow::response(200, "Updated successfully");
+                else
+                    return crow::response(500, "Update failed");
             });
         }
 

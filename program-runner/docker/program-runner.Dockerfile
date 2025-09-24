@@ -34,6 +34,7 @@ RUN apt update \
         libmongoc-dev \
         libbson-dev \
         libboost-all-dev \
+        nlohmann-json3-dev \
     && apt clean
 
 WORKDIR /app
