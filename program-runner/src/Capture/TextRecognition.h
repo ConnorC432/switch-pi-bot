@@ -24,6 +24,11 @@ namespace Capture {
                                  const std::string& datapath = "");
         ~TextRecognition();
 
+        ///
+        /// \param searchText Text to search for
+        /// \param timeoutMs Time in milliseconds to search for image before timing out
+        /// \param roi Optional Bounding Box ROI to limit search area
+        /// \return bool - True for match, False for no match
         bool findText(
             const std::string& searchText,
             int timeoutMs = 1000,

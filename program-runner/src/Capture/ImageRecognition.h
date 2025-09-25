@@ -20,6 +20,12 @@ namespace Capture {
         explicit ImageRecognition(Capture& cap) : capture(cap) {}
         ~ImageRecognition() = default;
 
+        ///
+        /// \param imagePath Absolute path to reference image to search for
+        /// \param timeoutMs Time in milliseconds to search for image before timing out
+        /// \param threshold Image match threshold, recommended value is 0.8
+        /// \param roi Optional Bounding Box ROI to limit search area
+        /// \return bool - True for match, False for no match
         bool findImage(
             const std::string& imagePath,
             int timeoutMs = 1000,

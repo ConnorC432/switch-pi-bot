@@ -15,10 +15,10 @@
 
 namespace Capture {
     struct ROI {
-        int x = 0;
-        int y = 0;
-        int width = -1;
-        int height = -1;
+        int x = 0; /// ROI Top Left X
+        int y = 0; /// ROI Top Left Y
+        int width = -1; /// ROI Width
+        int height = -1; /// ROI Height
     };
 
     class Capture {
@@ -36,6 +36,11 @@ namespace Capture {
         bool initDevice();
 
     public:
+        ///
+        /// \param devicePath Absolute path to V4L2 device.
+        /// \param width Resolution width
+        /// \param height Resolution height
+        /// \param fps Capture card FPS
         Capture(const std::string& devicePath = "/dev/video0",
                 uint32_t width = 1920,
                 uint32_t height = 1080,

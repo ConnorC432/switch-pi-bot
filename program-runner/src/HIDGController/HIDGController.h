@@ -23,6 +23,8 @@ namespace HIDGController {
         std::mutex reportMutex;
 
     public:
+        ///
+        /// \param devicePath Absolute path to USB HIDG device
         explicit HIDGController(std::string devicePath = "/dev/hidg0");
 
         void sendReport();
