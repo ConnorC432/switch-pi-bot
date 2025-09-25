@@ -3,28 +3,47 @@
 //
 
 #ifndef SWITCH_PI_BOT_DATABASE_H
-#define SWITCH_PI_BOT_DATABASE_
+#define SWITCH_PI_BOT_DATABASE_H
 
 #pragma once
-#include <mongoc.h>
 #include <string>
+#include <mutex>
+#include <memory>
+#include <mongocxx/instance.hpp>
+#include <mongocxx/uri.hpp>
+#include <mongocxx/client.hpp>
+#include <mongocxx/database.hpp>
+#include <mongocxx/collection.hpp>
 
 namespace Database {
     class Database {
     private:
-        mongoc_client_t* client_;
-        std::string databaseName_;
+        mongocxx::instance instance;
+        mongocxx::client client;
+        mongocxx::database db;
+
+        static std::unique_ptr<Database> instance;
+        static std::mutex mutex;
+
+        Database(const std::string& host,
+                 const std::string& user,
+                 const std::string& password,
+                 const std::string& dbName,
+                 const std::string& authDB);
 
     public:
-        Database(const std::string& host = "mongodb",
-                 const std::string& user = "admin",
-                 const std::string& pass = "root",
-                 const std::string& dbName = "switchPiBot",
-                 const std::string& authDB = "admin"
-                 );
+        Database(const Database&) = delete;
+        Database& operator=(const Database&) = delete;
+
         ~Database();
 
-        mongoc_collection_t* getCollection(const std::string& collectionName);
+        static Database& getInstance(const std::string& host = "mongodb",
+                                     const std::string& user = "admin",
+                                     const std::string& password = "root",
+                                     const std::string& dbName = "switchPiBot",
+                                     const std::string& authDB = "admin");
+
+        mongocxx::collection getCollection(const std::string& collectionName);
     };
 } // Database
 

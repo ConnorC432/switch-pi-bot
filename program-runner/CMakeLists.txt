@@ -17,10 +17,10 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/include/crow/include
 )
 
-# Mongo C++ driver
+# Mongo C/C++ driver
 include_directories(
-    /usr/include/libmongoc-1.0
-    /usr/include/libbson-1.0
+    /usr/include/mongocxx/v_noabi/
+    /usr/include/bsoncxx/v_noabi/
 )
 
 # OpenCV
@@ -43,18 +43,20 @@ include_directories(
 
 # Source files
 set(SOURCES
-    src/main.cpp
-    src/HIDGController/HIDGController.cpp
-    src/HIDGController/Gamepad.cpp
-    src/Capture/Capture.cpp
-    src/Capture/ImageRecognition.cpp
-    src/Capture/TextRecognition.cpp
-    src/ProgramWorker.cpp
-    src/ProgramRegistry.cpp
-    src/Database/Programs.cpp
-    src/Database/Programs.h
+        src/main.cpp
+        src/HIDGController/HIDGController.cpp
+        src/HIDGController/Gamepad.cpp
+        src/Capture/Capture.cpp
+        src/Capture/ImageRecognition.cpp
+        src/Capture/TextRecognition.cpp
+        src/ProgramWorker.cpp
+        src/ProgramRegistry.cpp
+        src/Database/Programs.cpp
+        src/Database/Programs.h
         src/Database/Database.cpp
         src/Database/Database.h
+        src/Database/Programs.cpp
+        src/Database/Programs.h
 )
 
 # Find and add all programs
@@ -77,4 +79,5 @@ target_link_libraries(ProgramRunner PRIVATE
     pthread
     mongoc-1.0
     bson-1.0
+    mongocxx
 )
