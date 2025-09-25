@@ -20,7 +20,7 @@ namespace Capture {
         explicit ImageRecognition(Capture& cap) : capture(cap) {}
         ~ImageRecognition() = default;
 
-        std::optional<cv::Rect> findImage(
+        bool findImage(
             const std::string& imagePath,
             int timeoutMs = 1000,
             double threshold = -1,

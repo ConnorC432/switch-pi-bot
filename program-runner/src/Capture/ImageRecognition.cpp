@@ -13,7 +13,7 @@
 
 namespace Capture {
 
-    std::optional<cv::Rect> ImageRecognition::findImage(
+    bool ImageRecognition::findImage(
         const std::string &imagePath,
         int timeoutMs,
         double threshold,
@@ -26,7 +26,7 @@ namespace Capture {
         cv::Mat target = cv::imread(imagePath, cv::IMREAD_COLOR);
         if (target.empty()) {
             std::cerr << "Failed to load target image: " << imagePath << std::endl;
-            return std::nullopt;
+            return false;
         }
 
         auto start = std::chrono::steady_clock::now();
@@ -52,7 +52,7 @@ namespace Capture {
             int result_cols = searchRegion.cols - target.cols + 1;
             int result_rows = searchRegion.rows - target.rows + 1;
             if (result_cols <= 0 || result_rows <= 0) {
-                return std::nullopt;
+                return false;
             }
 
             cv::Mat result(result_rows, result_cols, CV_32FC1);
@@ -67,18 +67,18 @@ namespace Capture {
                                    maxLoc.y + searchArea.y,
                                    target.cols,
                                    target.rows);
-                return matchRect;
+                return true; // Valid image match
             }
 
             auto now = std::chrono::steady_clock::now();
             if (std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count() > timeoutMs) {
-                return std::nullopt; // timeout
+                return false; // timeout
             }
 
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
 
-        return std::nullopt;
+        return false;
     }
 
 } // Capture
