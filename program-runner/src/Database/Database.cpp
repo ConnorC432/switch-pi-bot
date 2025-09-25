@@ -11,38 +11,29 @@ namespace Database {
                        const std::string& password,
                        const std::string& dbName,
                        const std::string& authDB)
-        : databaseName_(dbName) {
-        mongoc_init();
+        : instance(),
+        client(mongocxx::uri("mongodb://" + user + ":" + password + "@" + host + "/" + dbName + "?authSource=" + authDB))
+        db(client[dbName])
 
-        std::string uri;
+    Database::~Database() {}
 
-        if (!user.empty() && !password.empty()) {
-            // Construct: mongodb://user:pass@host:27017
-            uri = "mongodb://" + user + ":" + password + "@" + host + ":27017";
-            uri += "/?authSource=" + authDB;
-        } else {
-            uri = "mongodb://" + host + ":27017";
+    Database& Database::getInstance(const std::string &host,
+                                    const std::string &user,
+                                    const std::string &password,
+                                    const std::string &dbName,
+                                    const std::string &authDB) {
+        if (!instance) {
+            std::lock_guard<std::mutex> lock(mutex);
+            if (!instance) {
+                instance = std::unique_ptr<Database>(
+                        new Database(host, user, password, dbName, authDB)
+                );
+            }
         }
-
-        client_ = mongoc_client_new(uri.c_str());
-        if (!client_) {
-            std::cerr << "Failed to initialize MongoDB client with URI: " << uri << std::endl;
-        } else {
-            std::cout << "MongoDB client initialized with URI: " << uri << std::endl;
-        }
-
-        client_ = mongoc_client_new(uri.c_str());
-        if (!client_) {
-            std::cerr << "Failed to initialise MongoDB client" << std::endl;
-        }
+        return *instance;
     }
 
-    Database::~Database() {
-        mongoc_client_destroy(client_);
-        mongoc_cleanup();
-    }
-
-    mongoc_collection_t* Database::getCollection(const std::string &collectionName) {
-        return mongoc_client_get_collection(client_, databaseName_.c_str(), collectionName.c_str());
-    }
+    mongocxx:collection Database::getCollection(const std::string& collectionName) {
+        return db[collectionName];
+    };
 } // Database
