@@ -1,0 +1,6 @@
+v0.2.0
+Added routes for:
+- /dev/video device websocket
+- Start a program
+- Kill a program
+- Status/logs websockets
